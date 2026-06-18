@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Windows XP Test Interface</title>
+    <style>
+        /* Reset e Base do Desktop */
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #245dd7;
+            /* Simulando os tons do Bliss com gradiente puro */
+            background: linear-gradient(to bottom, #6fa1e7 0%, #3a7ec9 40%, #46892e 65%, #275715 100%);
+            font-family: "Tahoma", "Segoe UI", sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        /* --- BARRA DE TAREFAS --- */
+        .xp-taskbar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 30px;
+            background: linear-gradient(to bottom, #245dd7 0%, #0e3cbd 8%, #114fe5 45%, #104ce2 90%, #0a329b 100%);
+            border-top: 1px solid #001c70;
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .xp-taskbar-left {
+            display: flex;
+            align-items: center;
+            height: 100%;
+            flex-grow: 1;
+        }
+
+        /* --- BOTÃO INICIAR (START) --- */
+        .xp-start-button {
+            height: 100%;
+            padding: 0 20px 0 10px;
+            background: linear-gradient(to bottom, #44c433 0%, #3ca82a 10%, #349422 45%, #2b7a1c 85%, #1a4b11 100%);
+            border: none;
+            border-top-right-radius: 9px;
+            border-bottom-right-radius: 9px;
+            box-shadow: inset 1px 1px 2px rgba(255, 255, 255, 0.6), 2px 0 4px rgba(0,0,0,0.4);
+            color: white;
+            font-family: "Tahoma", sans-serif;
+            font-size: 14px;
+            font-weight: bold;
+            font-style: italic;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.6);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .xp-start-button:active {
+            background: linear-gradient(to bottom, #1a4b11 0%, #2b7a1c 100%);
+        }
+
+        /* Logo do Windows em CSS Puro (Flag de pixels) */
+        .xp-flag-icon {
+            display: grid;
+            grid-template-columns: repeat(2, 6px);
+            grid-template-rows: repeat(2, 5px);
+            gap: 1px;
+            transform: skewY(-4deg) rotate(2deg);
+        }
+        .flag-tile { border-radius: 1px; }
+        .red { background-color: #f34b1d; box-shadow: 1px 1px 1px rgba(0,0,0,0.2); }
+        .green { background-color: #7cc31e; box-shadow: 1px 1px 1px rgba(0,0,0,0.2); }
+        .blue { background-color: #00a1f1; box-shadow: 1px 1px 1px rgba(0,0,0,0.2); }
+        .yellow { background-color: #ffb900; box-shadow: 1px 1px 1px rgba(0,0,0,0.2); }
+
+        /* --- CONTAINER DE JANELAS ATIVAS --- */
+        .xp-task-items {
+            display: flex;
+            align-items: center;
+            padding-left: 12px;
+            gap: 5px;
+        }
+
+        /* Item de Tarefa (Baseado no Notepad da sua imagem) */
+        .xp-task-item {
+            height: 22px;
+            width: 155px;
+            background: linear-gradient(to bottom, #3a7ec9 0%, #2659be 12%, #225ad7 45%, #1640a3 90%, #0d2a75 100%);
+            border: 1px solid #081947;
+            border-radius: 2px;
+            color: #ffffff;
+            font-size: 11px;
+            padding: 0 6px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            box-shadow: inset 0 1px 1px rgba(255,255,255,0.2), 1px 1px 1px rgba(0,0,0,0.2);
+            cursor: pointer;
+        }
+
+        .xp-task-item:active {
+            background: linear-gradient(to bottom, #0d2a75 0%, #225ad7 100%);
+            box-shadow: inset 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        /* Ícone genérico de mini-janela/bloco de notas em CSS */
+        .xp-mini-icon {
+            width: 12px;
+            height: 12px;
+            background-color: #f0f0f0;
+            border: 1px solid #1640a3;
+            border-top: 3px solid #3a7ec9;
+            box-shadow: 1px 1px 1px rgba(0,0,0,0.3);
+        }
+
+        /* --- SISTEMA HORÁRIO (SYSTEM TRAY) --- */
+        .xp-system-tray {
+            height: 100%;
+            background: linear-gradient(to bottom, #0c82e9 0%, #0f62bc 12%, #008ee3 45%, #05408f 90%, #002c6b 100%);
+            border-left: 1px solid #09346d;
+            box-shadow: inset 1px 0 0 rgba(255,255,255,0.3);
+            padding: 0 14px;
+            display: flex;
+            align-items: center;
+            color: #ddedff;
+            font-size: 11px;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.4);
+        }
+
+        /* --- ELEMENTOS DE EXEMPLO NO DESKTOP --- */
+        .xp-desktop-icon {
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background-color: #225ad7;
+            border: 1px solid #081947;
+            padding: 5px 12px;
+            color: white;
+            font-size: 12px;
+            box-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+            border-radius: 2px;
+        }
+        .xp-computer-icon-draw {
+            width: 16px;
+            height: 12px;
+            background-color: #d8d8d8;
+            border: 1px solid #555;
+            position: relative;
+        }
+        .xp-computer-icon-draw::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 3px;
+            width: 8px;
+            height: 3px;
+            background-color: #999;
+            border: 1px solid #555;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="xp-desktop-icon">
+        <div class="xp-computer-icon-draw"></div>
+        <span>Computer</span>
+    </div>
+
+    <div class="xp-taskbar">
+        <div class="xp-taskbar-left">
+            
+            <button class="xp-start-button">
+                <div class="xp-flag-icon">
+                    <div class="flag-tile red"></div>
+                    <div class="flag-tile green"></div>
+                    <div class="flag-tile blue"></div>
+                    <div class="flag-tile yellow"></div>
+                </div>
+                start
+            </button>
+            
+            <div class="xp-task-items">
+                <div class="xp-task-item">
+                    <div class="xp-mini-icon"></div>
+                    <span>Untitled - Notepad</span>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="xp-system-tray">
+            <span id="xp-clock">00:00</span>
+        </div>
+    </div>
+
+    <script>
+        function clock() {
+            const now = new Date();
+            document.getElementById('xp-clock').textContent = 
+                now.getHours().toString().padStart(2, '0') + ':' + 
+                now.getMinutes().toString().padStart(2, '0');
+        }
+        setInterval(clock, 1000); clock();
+    </script>
+</body>
+</html>

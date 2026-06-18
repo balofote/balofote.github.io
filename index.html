@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>balofote's rabbit hole</title>
+  <link rel="stylesheet" href="https://unpkg.com/xp.css" />
+  <link rel="stylesheet" href="https://unpkg.com/webamp@1.4.1/built/webamp.min.css" />
+  <style>
+    @font-face {
+      font-family: 'Framdit';
+      src: url('assets/fonts/framdit.ttf') format('truetype');
+    }
+
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── Monitor tube effect background ── */
+    body {
+      width: 100vw;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(ellipse at center, #2a3a4a 0%, #1a2a3a 50%, #0a1a2a 100%);
+      font-family: 'Tahoma', 'Segoe UI', sans-serif;
+      position: relative;
+      overflow: hidden;
+      user-select: none;
+      cursor: url('assets/images/cursor.png'), auto;
+    }
+
+    /* Monitor bezels effect */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background:
+        radial-gradient(ellipse 120% 80% at 50% 50%, transparent 30%, rgba(0,0,0,0.4) 100%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* ── 800×600 screen with monitor frame ── */
+    .screen {
+      width: 800px;
+      height: 600px;
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+      z-index: 2;
+      box-shadow:
+        0 0 0 12px #2a3a4a,
+        0 0 0 14px #1a1a1a,
+        0 0 0 16px #3a4a5a,
+        inset 0 0 20px rgba(0,0,0,0.8);
+      border-radius: 8px;
+    }
+
+    /* ── Wallpaper background ── */
+    .screen::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: url('assets/images/wallpaper.png');
+      background-size: cover;
+      background-position: center;
+      z-index: 1;
+    }
+
+    /* ── Screen overlay for content ── */
+    .screen > * {
+      position: relative;
+      z-index: 2;
+    }
+
+    /* ══════════════════════════════════════════
+       TASKBAR (XP Style)
+    ══════════════════════════════════════════ */
+    .taskbar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 30px;
+      background: linear-gradient(to bottom,
+        #245dd7 0%, #0e3cbd 8%, #114fe5 45%,
+        #104ce2 90%, #0a329b 100%);
+      border-top: 1px solid #001c70;
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .taskbar-left {
+      display: flex;
+      align-items: center;
+      height: 100%;
+      flex-grow: 1;
+    }
+
+    /* ── Start button ── */
+    .start-btn {
+      height: 100%;
+      padding: 0 20px 0 10px;
+      background: linear-gradient(to bottom,
+        #44c433 0%, #3ca82a 10%, #349422 45%,
+        #2b7a1c 85%, #1a4b11 100%);
+      border: none;
+      border-top-right-radius: 9px;
+      border-bottom-right-radius: 9px;
+      box-shadow: inset 1px 1px 2px rgba(255, 255, 255, 0.6),
+                  2px 0 4px rgba(0,0,0,0.4);
+      color: white;
+      font-family: 'Framdit', 'Tahoma', sans-serif;
+      font-size: 18px;
+      font-weight: bold;
+      font-style: italic;
+      text-shadow: 1px 1px 1px rgba(0,0,0,0.6);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      outline: none;
+      border: none;
+    }
+
+    .start-btn:focus,
+    .start-btn:focus-visible {
+      outline: none;
+      border: none;
+    }
+
+    .start-btn.active {
+      background: linear-gradient(to bottom, #1a4b11 0%, #2b7a1c 100%);
+      box-shadow: inset 2px 2px 4px rgba(0,0,0,0.4);
+      outline: none;
+    }
+
+    .start-logo {
+      width: 24px;
+      height: 21px;
+      background-image: url('assets/images/logo.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      flex-shrink: 0;
+    }
+
+    /* ── Task items container ── */
+    .task-items {
+      display: flex;
+      align-items: center;
+      padding-left: 12px;
+      gap: 5px;
+      max-width: calc(100% - 250px);
+      overflow: hidden;
+    }
+
+    /* ── Task item ── */
+    .task-item {
+      height: 22px;
+      min-width: 155px;
+      background: linear-gradient(to bottom,
+        #3a7ec9 0%, #2659be 12%, #225ad7 45%,
+        #1640a3 90%, #0d2a75 100%);
+      border: 1px solid #081947;
+      border-radius: 2px;
+      color: #ffffff;
+      font-size: 11px;
+      padding: 0 6px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: inset 0 1px 1px rgba(255,255,255,0.2),
+                  1px 1px 1px rgba(0,0,0,0.2);
+      cursor: pointer;
+      white-space: nowrap;
+      outline: none;
+    }
+
+    .task-item:active,
+    .task-item.active {
+      background: linear-gradient(to bottom, #0d2a75 0%, #225ad7 100%);
+      box-shadow: inset 1px 1px 2px rgba(0,0,0,0.5);
+    }
+
+    .task-icon {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+
+    /* ── System tray ── */
+    .systray {
+      height: 100%;
+      background: linear-gradient(to bottom,
+        #0c82e9 0%, #0f62bc 12%, #008ee3 45%,
+        #05408f 90%, #002c6b 100%);
+      border-left: 1px solid #09346d;
+      box-shadow: inset 1px 0 0 rgba(255,255,255,0.3);
+      padding: 0 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #ddedff;
+      font-size: 11px;
+      text-shadow: 1px 1px 1px rgba(0,0,0,0.4);
+    }
+
+    .systray-icon {
+      width: 16px;
+      height: 16px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      cursor: default;
+      position: relative;
+    }
+
+    .systray-icon.info {
+      cursor: help;
+    }
+
+    /* ── Tooltip container ── */
+    .tooltip-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .tooltip-box {
+      position: absolute;
+      bottom: 130%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #fffacd;
+      border: 1px solid #000;
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-size: 10px;
+      font-family: Tahoma, sans-serif;
+      color: #333;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 1000;
+      animation: hideTooltip 0.3s ease-out forwards;
+    }
+
+    .tooltip-box::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-top: 6px solid #fffacd;
+    }
+
+    .tooltip-container:hover .tooltip-box {
+      animation: showTooltip 0.3s 1s forwards;
+    }
+
+    @keyframes showTooltip {
+      to { opacity: 1; }
+    }
+
+    @keyframes hideTooltip {
+      to { opacity: 0; }
+    }
+
+    .tray-clock {
+      min-width: 42px;
+      text-align: center;
+    }
+
+    /* ── Tooltips for tray items ── */
+    .tray-tooltip-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .tray-tooltip {
+      position: absolute;
+      bottom: 130%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #fffacd;
+      border: 1px solid #000;
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-size: 10px;
+      font-family: Tahoma, sans-serif;
+      color: #333;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 1000;
+      animation: hideTrayTooltip 0.3s ease-out forwards;
+    }
+
+    .tray-tooltip::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-top: 6px solid #fffacd;
+    }
+
+    .tray-tooltip-container:hover .tray-tooltip {
+      animation: showTrayTooltip 0.3s 1s forwards;
+    }
+
+    @keyframes showTrayTooltip {
+      to { opacity: 1; }
+    }
+
+    @keyframes hideTrayTooltip {
+      to { opacity: 0; }
+    }
+
+    /* ── Date tooltip positioning ── */
+    #dateTooltip {
+      left: auto;
+      right: 0;
+      transform: translateX(0);
+    }
+
+    #dateTooltip::after {
+      left: auto;
+      right: 20px;
+    }
+
+    /* ══════════════════════════════════════════
+       WINDOW (centred on the screen)
+    ══════════════════════════════════════════ */
+    .window-wrapper {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -56%);
+      z-index: 10;
+    }
+
+    .window-wrapper.minimized {
+      display: none;
+    }
+
+    .window {
+      width: 280px;
+    }
+
+    /* Override XP.css title bar to fit buttons properly */
+    .title-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 26px;
+      padding: 4px 2px;
+    }
+
+    .title-bar-text {
+      font-family: 'Trebuchet MS', Tahoma, sans-serif !important;
+      font-size: 12px !important;
+      flex: 1;
+      overflow: hidden;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+    }
+
+    .title-bar-controls {
+      display: flex;
+      gap: 2px;
+      align-items: center;
+    }
+
+    .title-bar-controls button {
+      width: 18px;
+      height: 18px;
+      padding: 0;
+      margin: 0;
+    }
+
+    .window-body {
+      padding: 14px 16px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .just4fun {
+      font-family: Tahoma, sans-serif;
+      font-size: 11px;
+      color: #555;
+      font-style: normal;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 6px;
+    }
+
+    .btn-row button {
+      flex: 1;
+      font-family: Tahoma, sans-serif;
+      font-size: 11px;
+    }
+
+    /* ══════════════════════════════════════════
+       DVD SCREENSAVER
+    ══════════════════════════════════════════ */
+    .dvd-screensaver {
+      position: fixed;
+      width: 48px;
+      height: 48px;
+      background-image: url('assets/images/dvd.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      filter: brightness(0) invert(1);
+      z-index: 999;
+      pointer-events: none;
+      top: 100px;
+      left: 100px;
+    }
+
+    /* ══════════════════════════════════════════
+       DESKTOP ICONS
+    ══════════════════════════════════════════ */
+    .desktop-icons {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 17px;
+      z-index: 5;
+    }
+
+    .desktop-icon {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .desktop-icon-img {
+      width: 48px;
+      height: 48px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .desktop-icon-label {
+      font-size: 11px;
+      color: white;
+      text-align: center;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+      width: 60px;
+      word-wrap: break-word;
+      font-family: Tahoma, sans-serif;
+    }
+
+    .recycle-bin {
+      position: absolute;
+      bottom: 45px;
+      left: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      user-select: none;
+      z-index: 5;
+    }
+
+    .recycle-bin .desktop-icon-img {
+      width: 48px;
+      height: 48px;
+    }
+
+    .recycle-bin .desktop-icon-label {
+      font-size: 11px;
+    }
+
+    /* ══════════════════════════════════════════
+       WEBAMP PLAYER
+    ══════════════════════════════════════════ */
+    #webamp-container {
+      position: absolute;
+      bottom: 40px;
+      right: 20px;
+      z-index: 20;
+      max-width: 275px;
+    }
+
+    #webamp-container.minimized {
+      visibility: hidden;
+    }
+
+    #webamp-container .js-playlist {
+      max-height: 150px;
+      overflow-y: auto;
+    }
+
+    /* Mute button styling */
+    .systray-icon.volume {
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- DVD Screensaver -->
+  <div class="dvd-screensaver" id="dvdScreensaver"></div>
+
+  <div class="screen">
+
+    <!-- Desktop Icons -->
+    <div class="desktop-icons">
+      <div class="desktop-icon">
+        <div class="desktop-icon-img" style="background-image: url('assets/images/cs.png');"></div>
+        <div class="desktop-icon-label">Counter-Strike</div>
+      </div>
+      <div class="desktop-icon">
+        <div class="desktop-icon-img" style="background-image: url('assets/images/winamp.png');"></div>
+        <div class="desktop-icon-label">Winamp</div>
+      </div>
+      <div class="desktop-icon">
+        <div class="desktop-icon-img" style="background-image: url('assets/images/ie.ico');"></div>
+        <div class="desktop-icon-label">Internet Explorer</div>
+      </div>
+    </div>
+
+    <!-- Recycle Bin -->
+    <div class="recycle-bin">
+      <div class="desktop-icon-img" style="background-image: url('assets/images/bin.ico'); width: 48px; height: 48px;"></div>
+      <div class="desktop-icon-label">Recycle Bin</div>
+    </div>
+
+    <!-- Webamp Player Container -->
+    <div id="webamp-container"></div>
+    <div class="window-wrapper" id="mainWindow">
+      <div class="window">
+        <div class="title-bar">
+          <div class="title-bar-text">balofote's rabbit hole</div>
+          <div class="title-bar-controls">
+            <button aria-label="Minimize" id="minimizeBtn"></button>
+            <button aria-label="Maximize"></button>
+            <button aria-label="Close"></button>
+          </div>
+        </div>
+        <div class="window-body">
+          <p class="just4fun">welcome, stranger. are u here just 4fun too? hahahah. now tell me, where u wanna go?</p>
+          <div class="btn-row">
+            <button onclick="window.open('https://youtube.com/@balofote','_blank')">YouTube</button>
+            <button onclick="window.open('https://open.spotify.com/user/theseanlegion','_blank')">Spotify</button>
+            <button onclick="window.open('https://github.com/balofote','_blank')">GitHub</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Taskbar ── -->
+    <div class="taskbar">
+      <div class="taskbar-left">
+
+        <!-- Start button -->
+        <button class="start-btn" id="startBtn">
+          <div class="start-logo"></div>
+          start
+        </button>
+
+        <!-- Task items -->
+        <div class="task-items">
+          <div class="task-item" id="taskItem">
+            <div class="task-icon" style="background-image: url('assets/images/app.png');"></div>
+            <span>Warning://aviso!</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- System tray -->
+      <div class="systray">
+        <!-- Network icon -->
+        <div class="tray-tooltip-container">
+          <div class="systray-icon" style="background-image: url('assets/images/net.png');"></div>
+          <div class="tray-tooltip">redebr1 has internet connection</div>
+        </div>
+        <!-- Audio icon -->
+        <div class="tray-tooltip-container">
+          <div class="systray-icon volume" id="volumeIcon" style="background-image: url('assets/images/sound.ico');"></div>
+          <div class="tray-tooltip" id="volumeTooltip">Speakers: 100%</div>
+        </div>
+        <!-- Info icon with tooltip -->
+        <div class="tooltip-container">
+          <div class="systray-icon info" style="background-image: url('assets/images/info.png');"></div>
+          <div class="tooltip-box">made by balofote</div>
+        </div>
+        <!-- Clock -->
+        <div class="tray-tooltip-container">
+          <div class="tray-clock" id="clock">00:00</div>
+          <div class="tray-tooltip" id="dateTooltip">January 1st 2024</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- .screen -->
+
+  <script src="https://unpkg.com/webamp@1.4.1/built/webamp.min.js"></script>
+  <script>
+    const mainWindow = document.getElementById('mainWindow');
+    const taskItem = document.getElementById('taskItem');
+    const minimizeBtn = document.getElementById('minimizeBtn');
+    const startBtn = document.getElementById('startBtn');
+    const dvdScreensaver = document.getElementById('dvdScreensaver');
+    const screen = document.querySelector('.screen');
+    const dateTooltip = document.getElementById('dateTooltip');
+    const clock = document.getElementById('clock');
+
+    // DVD Screensaver animation - reduced to 2/3 speed
+    let dvdX = 50;
+    let dvdY = 50;
+    let dvdVelX = 1.33;
+    let dvdVelY = 1.33;
+    const dvdSize = 48;
+
+    function animateDVD() {
+      const screenRect = screen.getBoundingClientRect();
+      const windowWidth = window.innerWidth;
+      const windowHeight = window.innerHeight;
+
+      dvdX += dvdVelX;
+      dvdY += dvdVelY;
+
+      // Bounce at window boundaries
+      if (dvdX <= 0) {
+        dvdX = 0;
+        dvdVelX = Math.abs(dvdVelX);
+      }
+      if (dvdX + dvdSize >= windowWidth) {
+        dvdX = windowWidth - dvdSize;
+        dvdVelX = -Math.abs(dvdVelX);
+      }
+
+      if (dvdY <= 0) {
+        dvdY = 0;
+        dvdVelY = Math.abs(dvdVelY);
+      }
+      if (dvdY + dvdSize >= windowHeight) {
+        dvdY = windowHeight - dvdSize;
+        dvdVelY = -Math.abs(dvdVelY);
+      }
+
+      // Check collision with screen
+      const dvdLeft = dvdX;
+      const dvdRight = dvdX + dvdSize;
+      const dvdTop = dvdY;
+      const dvdBottom = dvdY + dvdSize;
+
+      const screenLeft = screenRect.left;
+      const screenRight = screenRect.right;
+      const screenTop = screenRect.top;
+      const screenBottom = screenRect.bottom;
+
+      // Check if DVD is colliding with screen
+      if (dvdRight > screenLeft && dvdLeft < screenRight &&
+          dvdBottom > screenTop && dvdTop < screenBottom) {
+
+        // Determine which side was hit
+        const overlapLeft = dvdRight - screenLeft;
+        const overlapRight = screenRight - dvdLeft;
+        const overlapTop = dvdBottom - screenTop;
+        const overlapBottom = screenBottom - dvdTop;
+
+        const minOverlap = Math.min(overlapLeft, overlapRight, overlapTop, overlapBottom);
+
+        if (minOverlap === overlapLeft) {
+          dvdVelX = -Math.abs(dvdVelX);
+          dvdX = screenLeft - dvdSize;
+        } else if (minOverlap === overlapRight) {
+          dvdVelX = Math.abs(dvdVelX);
+          dvdX = screenRight;
+        }
+
+        if (minOverlap === overlapTop) {
+          dvdVelY = -Math.abs(dvdVelY);
+          dvdY = screenTop - dvdSize;
+        } else if (minOverlap === overlapBottom) {
+          dvdVelY = Math.abs(dvdVelY);
+          dvdY = screenBottom;
+        }
+      }
+
+      dvdScreensaver.style.left = dvdX + 'px';
+      dvdScreensaver.style.top = dvdY + 'px';
+
+      requestAnimationFrame(animateDVD);
+    }
+    animateDVD();
+
+    // Format date for tooltip
+    function formatDate() {
+      const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'];
+      const ordinalsMap = {
+        1: 'st', 2: 'nd', 3: 'rd', 21: 'st', 22: 'nd', 23: 'rd', 31: 'st'
+      };
+
+      const now = new Date();
+      const month = monthNames[now.getMonth()];
+      const day = now.getDate();
+      const ordinal = ordinalsMap[day] || 'th';
+      const year = now.getFullYear();
+
+      return `${month} ${day}${ordinal} ${year}`;
+    }
+
+    dateTooltip.textContent = formatDate();
+
+    // Minimize button functionality
+    minimizeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      mainWindow.classList.add('minimized');
+      taskItem.classList.remove('active');
+    });
+
+    // Task item click to restore/minimize
+    taskItem.addEventListener('click', () => {
+      if (mainWindow.classList.contains('minimized')) {
+        mainWindow.classList.remove('minimized');
+        taskItem.classList.add('active');
+      } else {
+        mainWindow.classList.add('minimized');
+        taskItem.classList.remove('active');
+      }
+    });
+
+    // Window is initially active
+    taskItem.classList.add('active');
+
+    // Start button - only active while pressed
+    startBtn.addEventListener('mousedown', (e) => {
+      e.stopPropagation();
+      startBtn.classList.add('active');
+    });
+
+    startBtn.addEventListener('mouseup', (e) => {
+      e.stopPropagation();
+      startBtn.classList.remove('active');
+    });
+
+    startBtn.addEventListener('mouseleave', () => {
+      startBtn.classList.remove('active');
+    });
+
+    // Update clock
+    function updateClock() {
+      const now = new Date();
+      let h = now.getHours();
+      const m = String(now.getMinutes()).padStart(2, '0');
+      const ampm = h >= 12 ? 'PM' : 'AM';
+      h = h % 12;
+      h = h ? h : 12; // 12 hour format
+      const hStr = String(h).padStart(2, '0');
+      clock.textContent = hStr + ':' + m + ' ' + ampm;
+    }
+    updateClock();
+    setInterval(updateClock, 60000);
+
+    // ══════════════════════════════════════════
+    // WEBAMP PLAYER
+    // ══════════════════════════════════════════
+
+    let webampInstance = null;
+    let isMuted = false;
+    const volumeIcon = document.getElementById('volumeIcon');
+    const volumeTooltip = document.getElementById('volumeTooltip');
+    const webampContainer = document.getElementById('webamp-container');
+
+    // Find Winamp desktop icon
+    const winampDesktopIcon = Array.from(document.querySelectorAll('.desktop-icon')).find(el =>
+      el.textContent.includes('Winamp')
+    );
+
+    // Playlist data
+    const playlist = [
+      { name: 'I Wanna F*ck You', artist: 'Akon feat. Snoop Dogg', url: 'assets/sounds/iwannafku.mp3' },
+      { name: 'Dangerous', artist: 'Akon feat. Kardinal Offishall', url: 'assets/sounds/dangerous.mp3' },
+      { name: 'Closer', artist: 'Ne-Yo', url: 'assets/sounds/closer.mp3' },
+      { name: 'Meet Me Halfway', artist: 'Black Eyed Peas', url: 'assets/sounds/mmhalfway.mp3' },
+      { name: 'Last Night', artist: 'Diddy feat. Keyshia Cole', url: 'assets/sounds/lastnight.mp3' },
+      { name: 'Stereo Love', artist: 'Edward Maya & Vika Jigulina', url: 'assets/sounds/stereolove.mp3' },
+      { name: 'Lady', artist: 'Modjo', url: 'assets/sounds/lady.mp3' },
+      { name: 'Me & U', artist: 'Cassie', url: 'assets/sounds/me_u.mp3' },
+      { name: 'Say It Right', artist: 'Nelly Furtado', url: 'assets/sounds/sayitright.mp3' }
+    ];
+
+    // Initialize Webamp on Winamp desktop icon click
+    if (winampDesktopIcon) {
+      winampDesktopIcon.addEventListener('click', () => {
+        if (!webampInstance) {
+          try {
+            webampInstance = new Webamp({
+              initialTracks: playlist.map(track => ({
+                metaData: {
+                  title: track.name,
+                  artist: track.artist
+                },
+                url: track.url
+              })),
+              enableHotkeys: false
+            });
+
+            webampInstance.renderDOM(webampContainer);
+
+            // Add to taskbar
+            const taskItem = document.createElement('div');
+            taskItem.className = 'task-item active';
+            taskItem.innerHTML = '<div class="task-icon" style="background-image: url(\'assets/images/winamp.png\');"></div><span>Winamp</span>';
+            taskItem.id = 'winamp-task-item';
+
+            const taskItems = document.querySelector('.task-items');
+            taskItems.appendChild(taskItem);
+
+            // Handle minimize
+            webampInstance.onMinimize = () => {
+              webampContainer.classList.add('minimized');
+              taskItem.classList.remove('active');
+            };
+
+            // Handle restore from taskbar
+            taskItem.addEventListener('click', () => {
+              if (webampContainer.classList.contains('minimized')) {
+                webampContainer.classList.remove('minimized');
+                taskItem.classList.add('active');
+              } else {
+                webampContainer.classList.add('minimized');
+                taskItem.classList.remove('active');
+              }
+            });
+
+            // Handle close
+            webampInstance.onClose = () => {
+              webampInstance = null;
+              webampContainer.innerHTML = '';
+              taskItem.remove();
+            };
+          } catch (e) {
+            console.error('Webamp initialization error:', e);
+          }
+        }
+      });
+    }
+
+    // Volume/Mute toggle
+    volumeIcon.addEventListener('click', () => {
+      isMuted = !isMuted;
+
+      if (isMuted) {
+        volumeIcon.style.backgroundImage = "url('assets/images/nosound.ico')";
+        volumeTooltip.textContent = 'Speakers: Mute';
+        // Mute all audio on page
+        document.querySelectorAll('audio').forEach(audio => audio.muted = true);
+        // Mute webamp if available
+        if (webampInstance && webampInstance.store) {
+          webampInstance.store.dispatch({ type: 'SET_VOLUME', payload: 0 });
+        }
+      } else {
+        volumeIcon.style.backgroundImage = "url('assets/images/sound.ico')";
+        volumeTooltip.textContent = 'Speakers: 100%';
+        document.querySelectorAll('audio').forEach(audio => audio.muted = false);
+        // Restore webamp volume if available
+        if (webampInstance && webampInstance.store) {
+          webampInstance.store.dispatch({ type: 'SET_VOLUME', payload: 100 });
+        }
+      }
+    });
+
+    // Play startup sound after 1 second
+    setTimeout(() => {
+      const dingAudio = new Audio('assets/sounds/ding.wav');
+      if (!isMuted) {
+        dingAudio.play().catch(e => console.log('Autoplay may be blocked:', e));
+      }
+    }, 1000);
+  </script>
+
+</body>
+</html>
