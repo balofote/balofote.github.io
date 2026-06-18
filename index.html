@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>balofote's rabbit hole</title>
   <link rel="stylesheet" href="https://unpkg.com/xp.css" />
-  <link rel="stylesheet" href="https://unpkg.com/webamp@1.4.1/built/webamp.min.css" />
+
   <style>
     @font-face {
       font-family: 'Framdit';
@@ -13,7 +13,15 @@
     }
 
     /* ── Reset ── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *, *::before, *::after { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0;
+      -webkit-font-smoothing: none;
+      -moz-osx-font-smoothing: grayscale;
+      font-smooth: never;
+      text-rendering: optimizeSpeed;
+    }
 
     /* ── Monitor tube effect background ── */
     body {
@@ -27,7 +35,35 @@
       position: relative;
       overflow: hidden;
       user-select: none;
-      cursor: url('assets/images/cursor.png'), auto;
+      cursor: url('assets/cursor/3dwarro.cur'), auto;
+    }
+
+    a, button, .desktop-icon, .task-item, .systray-icon, .start-btn, .recycle-bin {
+      cursor: url('assets/cursor/3dwlink.ani'), pointer !important;
+    }
+
+    .systray-icon.info {
+      cursor: url('assets/cursor/3dwhelpsel.cur'), help !important;
+    }
+
+    .systray-icon.volume {
+      cursor: url('assets/cursor/3dwlink.ani'), pointer !important;
+    }
+
+    input, textarea {
+      cursor: url('assets/cursor/3dwbeam.cur'), text;
+    }
+
+    .window-wrapper {
+      cursor: url('assets/cursor/3dwarro.cur'), auto;
+    }
+
+    .title-bar {
+      cursor: url('assets/cursor/3dwmove.cur'), move;
+    }
+
+    button:active, .start-btn:active {
+      cursor: url('assets/cursor/3dwwagtail.ani'), wait;
     }
 
     /* Monitor bezels effect */
@@ -49,19 +85,31 @@
       width: 800px;
       height: 600px;
       position: relative;
-      overflow: hidden;
+      overflow: visible;
       flex-shrink: 0;
       z-index: 2;
-      box-shadow:
-        0 0 0 12px #2a3a4a,
-        0 0 0 14px #1a1a1a,
-        0 0 0 16px #3a4a5a,
-        inset 0 0 20px rgba(0,0,0,0.8);
-      border-radius: 8px;
+      border: 3px solid;
+      border-color: #dfdfdf #808080 #808080 #dfdfdf;
+    }
+
+    /* Inner screen content area with clipping */
+    .screen-inner {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .screen-inner > * {
+      pointer-events: auto;
     }
 
     /* ── Wallpaper background ── */
-    .screen::before {
+    .screen-inner::before {
       content: '';
       position: absolute;
       top: 0;
@@ -71,13 +119,7 @@
       background-image: url('assets/images/wallpaper.png');
       background-size: cover;
       background-position: center;
-      z-index: 1;
-    }
-
-    /* ── Screen overlay for content ── */
-    .screen > * {
-      position: relative;
-      z-index: 2;
+      z-index: 0;
     }
 
     /* ══════════════════════════════════════════
@@ -97,7 +139,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      z-index: 100;
+      z-index: 10;
     }
 
     .taskbar-left {
@@ -225,12 +267,12 @@
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
-      cursor: default;
+      cursor: url('assets/cursor/3dwarro.cur'), default;
       position: relative;
     }
 
     .systray-icon.info {
-      cursor: help;
+      cursor: url('assets/cursor/3dwhelpsel.cur'), help !important;
     }
 
     /* ── Tooltip container ── */
@@ -360,7 +402,12 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -56%);
-      z-index: 10;
+      z-index: 100;
+      pointer-events: auto;
+    }
+
+    .window-wrapper.active {
+      z-index: 110;
     }
 
     .window-wrapper.minimized {
@@ -464,8 +511,12 @@
       flex-direction: column;
       align-items: center;
       gap: 5px;
-      cursor: pointer;
+      cursor: url('assets/cursor/3dwlink.ani'), pointer !important;
       user-select: none;
+    }
+
+    .desktop-icon:first-child .desktop-icon-img {
+      filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.4));
     }
 
     .desktop-icon-img {
@@ -516,24 +567,24 @@
     ══════════════════════════════════════════ */
     #webamp-container {
       position: absolute;
-      bottom: 40px;
-      right: 20px;
-      z-index: 20;
-      max-width: 275px;
+      bottom: 50px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      pointer-events: auto;
+    }
+
+    #webamp-container.active {
+      z-index: 110;
     }
 
     #webamp-container.minimized {
-      visibility: hidden;
-    }
-
-    #webamp-container .js-playlist {
-      max-height: 150px;
-      overflow-y: auto;
+      display: none;
     }
 
     /* Mute button styling */
     .systray-icon.volume {
-      cursor: pointer;
+      cursor: url('assets/cursor/3dwlink.ani'), pointer !important;
     }
   </style>
 </head>
@@ -543,6 +594,7 @@
   <div class="dvd-screensaver" id="dvdScreensaver"></div>
 
   <div class="screen">
+    <div class="screen-inner">
 
     <!-- Desktop Icons -->
     <div class="desktop-icons">
@@ -564,29 +616,6 @@
     <div class="recycle-bin">
       <div class="desktop-icon-img" style="background-image: url('assets/images/bin.ico'); width: 48px; height: 48px;"></div>
       <div class="desktop-icon-label">Recycle Bin</div>
-    </div>
-
-    <!-- Webamp Player Container -->
-    <div id="webamp-container"></div>
-    <div class="window-wrapper" id="mainWindow">
-      <div class="window">
-        <div class="title-bar">
-          <div class="title-bar-text">balofote's rabbit hole</div>
-          <div class="title-bar-controls">
-            <button aria-label="Minimize" id="minimizeBtn"></button>
-            <button aria-label="Maximize"></button>
-            <button aria-label="Close"></button>
-          </div>
-        </div>
-        <div class="window-body">
-          <p class="just4fun">welcome, stranger. are u here just 4fun too? hahahah. now tell me, where u wanna go?</p>
-          <div class="btn-row">
-            <button onclick="window.open('https://youtube.com/@balofote','_blank')">YouTube</button>
-            <button onclick="window.open('https://open.spotify.com/user/theseanlegion','_blank')">Spotify</button>
-            <button onclick="window.open('https://github.com/balofote','_blank')">GitHub</button>
-          </div>
-        </div>
-      </div>
     </div>
 
     <!-- ── Taskbar ── -->
@@ -634,10 +663,38 @@
       </div>
     </div>
 
+    </div><!-- .screen-inner -->
+
+    <!-- Webamp Player Container (outside clipping) -->
+    <div id="webamp-container"></div>
+
+    <!-- Main Window (outside clipping) -->
+    <div class="window-wrapper minimized" id="mainWindow">
+      <div class="window">
+        <div class="title-bar">
+          <div class="title-bar-text">balofote's rabbit hole</div>
+          <div class="title-bar-controls">
+            <button aria-label="Minimize" id="minimizeBtn"></button>
+            <button aria-label="Maximize"></button>
+            <button aria-label="Close"></button>
+          </div>
+        </div>
+        <div class="window-body">
+          <p class="just4fun">welcome, stranger. here you will find some interest things. or not. wanna try it out?</p>
+          <div class="btn-row">
+            <button onclick="window.open('https://youtube.com/@balofote','_blank')">YouTube</button>
+            <button onclick="window.open('https://open.spotify.com/user/theseanlegion','_blank')">Spotify</button>
+            <button onclick="window.open('https://github.com/balofote','_blank')">GitHub</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div><!-- .screen -->
 
-  <script src="https://unpkg.com/webamp@1.4.1/built/webamp.min.js"></script>
-  <script>
+  <script type="module">
+    import Webamp from "https://unpkg.com/webamp@^2";
+
     const mainWindow = document.getElementById('mainWindow');
     const taskItem = document.getElementById('taskItem');
     const minimizeBtn = document.getElementById('minimizeBtn');
@@ -653,6 +710,7 @@
     let dvdVelX = 1.33;
     let dvdVelY = 1.33;
     const dvdSize = 48;
+    const screenBorder = 3;
 
     function animateDVD() {
       const screenRect = screen.getBoundingClientRect();
@@ -681,16 +739,16 @@
         dvdVelY = -Math.abs(dvdVelY);
       }
 
-      // Check collision with screen
+      // Check collision with screen (accounting for 3px border)
       const dvdLeft = dvdX;
       const dvdRight = dvdX + dvdSize;
       const dvdTop = dvdY;
       const dvdBottom = dvdY + dvdSize;
 
-      const screenLeft = screenRect.left;
-      const screenRight = screenRect.right;
-      const screenTop = screenRect.top;
-      const screenBottom = screenRect.bottom;
+      const screenLeft = screenRect.left + screenBorder;
+      const screenRight = screenRect.left + 800 - screenBorder;
+      const screenTop = screenRect.top + screenBorder;
+      const screenBottom = screenRect.top + 600 - screenBorder;
 
       // Check if DVD is colliding with screen
       if (dvdRight > screenLeft && dvdLeft < screenRight &&
@@ -765,8 +823,81 @@
       }
     });
 
-    // Window is initially active
-    taskItem.classList.add('active');
+    // Bring window to front on click
+    mainWindow.addEventListener('mousedown', () => {
+      mainWindow.classList.add('active');
+      webampContainer.classList.remove('active');
+    });
+
+    // Draggable window functionality
+    let isDragging = false;
+    let currentX;
+    let currentY;
+    let initialX;
+    let initialY;
+    let xOffset = 0;
+    let yOffset = 0;
+
+    const titleBar = mainWindow.querySelector('.title-bar');
+
+    titleBar.addEventListener('mousedown', dragStart);
+    document.addEventListener('mousemove', drag);
+    document.addEventListener('mouseup', dragEnd);
+
+    function dragStart(e) {
+      if (e.target.closest('.title-bar-controls')) return;
+      
+      initialX = e.clientX - xOffset;
+      initialY = e.clientY - yOffset;
+      isDragging = true;
+      mainWindow.style.cursor = 'url("assets/cursor/3dwmove.cur"), move';
+    }
+
+    function drag(e) {
+      if (isDragging) {
+        e.preventDefault();
+        
+        currentX = e.clientX - initialX;
+        currentY = e.clientY - initialY;
+
+        xOffset = currentX;
+        yOffset = currentY;
+
+        const screenRect = screen.getBoundingClientRect();
+        const windowRect = mainWindow.getBoundingClientRect();
+        const border = 3;
+        const taskbarHeight = 30;
+        
+        // Calculate bounds within screen (accounting for border)
+        const screenWidth = 800 - (border * 2);
+        const screenHeight = 600 - (border * 2) - taskbarHeight;
+        
+        const maxX = (screenWidth - windowRect.width) / 2;
+        const maxY = (screenHeight - windowRect.height) / 2;
+        const minX = -(screenWidth - windowRect.width) / 2;
+        const minY = -(screenHeight - windowRect.height) / 2;
+
+        const constrainedX = Math.max(minX, Math.min(maxX, xOffset));
+        const constrainedY = Math.max(minY, Math.min(maxY, yOffset));
+
+        mainWindow.style.transform = `translate(calc(-50% + ${constrainedX}px), calc(-56% + ${constrainedY}px))`;
+      }
+    }
+
+    function dragEnd() {
+      isDragging = false;
+      mainWindow.style.cursor = '';
+    }
+
+    // Window is initially minimized
+    setTimeout(() => {
+      mainWindow.classList.remove('minimized');
+      taskItem.classList.add('active');
+      
+      // Play startup sound when window appears
+      const dingAudio = new Audio('assets/sounds/ding.wav');
+      dingAudio.play().catch(e => console.log('Audio playback error:', e));
+    }, 1000);
 
     // Start button - only active while pressed
     startBtn.addEventListener('mousedown', (e) => {
@@ -827,57 +958,60 @@
 
     // Initialize Webamp on Winamp desktop icon click
     if (winampDesktopIcon) {
-      winampDesktopIcon.addEventListener('click', () => {
+      winampDesktopIcon.addEventListener('click', async () => {
         if (!webampInstance) {
-          try {
-            webampInstance = new Webamp({
-              initialTracks: playlist.map(track => ({
-                metaData: {
-                  title: track.name,
-                  artist: track.artist
-                },
-                url: track.url
-              })),
-              enableHotkeys: false
-            });
+          webampInstance = new Webamp({
+            initialTracks: playlist.map(track => ({
+              metaData: {
+                title: track.name,
+                artist: track.artist
+              },
+              url: track.url
+            }))
+          });
 
-            webampInstance.renderDOM(webampContainer);
+          await webampInstance.renderWhenReady(webampContainer);
 
-            // Add to taskbar
-            const taskItem = document.createElement('div');
-            taskItem.className = 'task-item active';
-            taskItem.innerHTML = '<div class="task-icon" style="background-image: url(\'assets/images/winamp.png\');"></div><span>Winamp</span>';
-            taskItem.id = 'winamp-task-item';
+          // Bring webamp to front on click
+          webampContainer.addEventListener('mousedown', () => {
+            webampContainer.classList.add('active');
+            mainWindow.classList.remove('active');
+          });
 
-            const taskItems = document.querySelector('.task-items');
-            taskItems.appendChild(taskItem);
+          // Set initial z-index priority to webamp
+          webampContainer.classList.add('active');
 
-            // Handle minimize
-            webampInstance.onMinimize = () => {
+          // Add to taskbar
+          const taskItemWebamp = document.createElement('div');
+          taskItemWebamp.className = 'task-item active';
+          taskItemWebamp.innerHTML = '<div class="task-icon" style="background-image: url(\'assets/images/winamp.png\');"></div><span>Winamp</span>';
+          taskItemWebamp.id = 'winamp-task-item';
+
+          const taskItems = document.querySelector('.task-items');
+          taskItems.appendChild(taskItemWebamp);
+
+          // Handle minimize
+          webampInstance.onMinimize(() => {
+            webampContainer.classList.add('minimized');
+            taskItemWebamp.classList.remove('active');
+          });
+
+          // Handle restore from taskbar
+          taskItemWebamp.addEventListener('click', () => {
+            if (webampContainer.classList.contains('minimized')) {
+              webampContainer.classList.remove('minimized');
+              taskItemWebamp.classList.add('active');
+            } else {
               webampContainer.classList.add('minimized');
-              taskItem.classList.remove('active');
-            };
+              taskItemWebamp.classList.remove('active');
+            }
+          });
 
-            // Handle restore from taskbar
-            taskItem.addEventListener('click', () => {
-              if (webampContainer.classList.contains('minimized')) {
-                webampContainer.classList.remove('minimized');
-                taskItem.classList.add('active');
-              } else {
-                webampContainer.classList.add('minimized');
-                taskItem.classList.remove('active');
-              }
-            });
-
-            // Handle close
-            webampInstance.onClose = () => {
-              webampInstance = null;
-              webampContainer.innerHTML = '';
-              taskItem.remove();
-            };
-          } catch (e) {
-            console.error('Webamp initialization error:', e);
-          }
+          // Handle close
+          webampInstance.onClose(() => {
+            webampInstance = null;
+            taskItemWebamp.remove();
+          });
         }
       });
     }
@@ -906,13 +1040,7 @@
       }
     });
 
-    // Play startup sound after 1 second
-    setTimeout(() => {
-      const dingAudio = new Audio('assets/sounds/ding.wav');
-      if (!isMuted) {
-        dingAudio.play().catch(e => console.log('Autoplay may be blocked:', e));
-      }
-    }, 1000);
+
   </script>
 
 </body>
