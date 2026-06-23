@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0097)https://web.archive.org/web/20100827141344if_/http://stf.terra.com.br/navbar/superslim/index.html -->
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt-br" xml:lang="pt-br"><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252"><script type="text/javascript" src="./bundle-playback.js.baixados" charset="utf-8"></script>
+<script type="text/javascript" src="./wombat.js.baixados" charset="utf-8"></script>
+<script>window.RufflePlayer=window.RufflePlayer||{};window.RufflePlayer.config={"autoplay":"on","unmuteOverlay":"hidden","showSwfDownload":true};</script>
+<script type="text/javascript" src="./ruffle.js.baixados"></script>
+<script type="text/javascript">
+    __wm.init("https://web.archive.org/web");
+  __wm.wombat("http://stf.terra.com.br/navbar/superslim/index.html","20100827141344","https://web.archive.org/","web","https://web-static.archive.org/_static/",
+	      "1282918424");
+</script>
+<link rel="stylesheet" type="text/css" href="./banner-styles.css">
+<link rel="stylesheet" type="text/css" href="./iconochive.css">
+<!-- End Wayback Rewrite JS Include -->
+
+	
+	<title>Terra</title>
+	<link rel="stylesheet" type="text/css" href="./styles.css">
+
+	<style type="text/css">
+		body {margin:0;padding:0;}
+	</style>
+ <script type="text/javascript" src="./core.modLib.js.baixados" charset="utf-8"></script></head>
+<body>
+	<!-- HEADER //-->
+	<a name="menu"></a>
+	<div id="mod-header" style="width:100%"><!-- --></div>
+	<!-- // HEADER //-->
+
+	<!-- SCRIPTS //-->
+	<script type="text/javascript" src="./jquery.js.baixados"></script>
+	<script type="text/javascript">$(document).ready(function(){});</script>
+	<script type="text/javascript" src="./core.modMan_v1.js.baixados"></script>
+	<script type="text/javascript">
+		function gup(name) {
+			name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+			var regexS = "[\\?&]"+name+"=([^&#]*)";
+			var regex = new RegExp(regexS);
+			var results = regex.exec( window.location.href );
+			if(results == null)
+				return "";
+			else
+				return results[1];
+		}
+		var idCountry = gup("id");
+		idCountry = idCountry == "" ? 1 : idCountry;
+
+		var country = new Array();
+		country[1] = new Array("BR","br");
+		country[21] = new Array("AR","es");
+		country[22] = new Array("PE","es");
+		country[24] = new Array("CO","es");
+		country[25] = new Array("CL","es");
+		country[26] = new Array("EC","es");
+		country[27] = new Array("VE","es");
+		country[28] = new Array("MX","es");
+		country[30] = new Array("US","en");
+		country[31] = new Array("US","es");
+
+		modMan.start({
+			configs:{
+				pageLang:country[idCountry][1], // o valor "auto" também pode ser utilizado
+				pageCountry:country[idCountry][0],
+				lazyLoad:false,
+				transitionEffects:false
+			},
+			modules:[
+				{
+					id:"modHeaderFooter",
+					selector:"#mod-header",
+					loadSkin:false,
+					preLoadDependencies:true,
+					params:{
+						request_url:"../js/json_"+idCountry+".js",
+						idItemMenu:" ", // "home", " ", "id"
+						format:"superslim", // "slim", "full"
+						noLayers:true
+					}
+				}
+			]
+		});
+	</script>
+	<!-- // SCRIPTS //-->
+
+
+</body></html>

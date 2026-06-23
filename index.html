@@ -4,8 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>balofote's rabbit hole</title>
-  <link rel="stylesheet" href="https://unpkg.com/98.css" />
-  <link rel="stylesheet" href="https://unpkg.com/xp.css" />
+  <link rel="stylesheet" href="98.css/dist/98.css" />
+  <link rel="stylesheet" href="xp.css/dist/XP.css" />
+  <!-- Webamp UMD bundle (no module system needed) -->
+  <script src="webamp/built/webamp.bundle.min.js"></script>
 
 <style>
 /* ══════════════════════════════════════════
@@ -52,7 +54,7 @@ body {
   justify-content: center;
   font-family: 'Tahoma', 'Segoe UI', sans-serif;
   user-select: none;
-  cursor: url('assets/cursor/arrow.png'), auto;
+  cursor: url('assets/cursor/arrow.cur'), auto;
   position: relative;
   background-image: url('assets/images/bg.png');
   background-size: 512px 512px;
@@ -63,6 +65,77 @@ body {
   font-smooth: never;
   text-rendering: optimizeSpeed;
 }
+
+/* ── Global cursor cascade ──
+   Every interactive element gets hand.cur; no modern-browser fallbacks left. */
+button:not(#webamp *),
+a:not(#webamp *),
+[role="button"]:not(#webamp *),
+.desktop-icon,
+.desktop-icon *,
+.recycle-bin,
+.recycle-bin *,
+.login-user,
+.login-user *,
+.login-power,
+.login-power *,
+.start-btn,
+.task-item,
+.tray-tooltip-container,
+.tray-tooltip-container *,
+.systray-icon.volume,
+.window-wrapper .title-bar-controls button,
+.cs-wizard-wrapper .title-bar-controls button,
+.ie6-wrapper .title-bar-controls button {
+  cursor: url('assets/cursor/hand.cur'), pointer !important;
+}
+
+/* Part 1: Minimal title-bar-controls override — only no-outline, let XP.css own geometry */
+.window-wrapper .title-bar-controls button,
+.cs-wizard-wrapper .title-bar-controls button,
+.ie6-wrapper .title-bar-controls button {
+  outline: none !important;
+}
+
+.systray-icon.info {
+  cursor: url('assets/cursor/help.cur'), help !important;
+}
+
+.winamp-dropzone {
+  cursor: url('assets/cursor/load.cur'), wait;
+}
+
+.draggable {
+  cursor: url('assets/cursor/move.cur'), move;
+}
+
+.text-selectable {
+  cursor: url('assets/cursor/text.cur'), text;
+}
+
+.loading {
+  cursor: url('assets/cursor/block.cur'), progress;
+}
+
+/* ── Part 3B: Global loading cursor state ── */
+body.cursor-loading,
+body.cursor-loading * {
+  cursor: url('assets/cursor/load.cur'), wait !important;
+}
+
+/* ── Part 3C: Resize handle cursors ── */
+.resize-handle {
+  position: absolute;
+  z-index: 10;
+}
+.resize-n  { top: -4px;  left: 8px;    right: 8px;   height: 8px;  cursor: url('assets/cursor/vertical.cur'),   ns-resize !important; }
+.resize-s  { bottom: -4px; left: 8px;  right: 8px;   height: 8px;  cursor: url('assets/cursor/vertical.cur'),   ns-resize !important; }
+.resize-w  { left: -4px; top: 8px;     bottom: 8px;  width: 8px;   cursor: url('assets/cursor/horizontal.cur'), ew-resize !important; }
+.resize-e  { right: -4px; top: 8px;    bottom: 8px;  width: 8px;   cursor: url('assets/cursor/horizontal.cur'), ew-resize !important; }
+.resize-nw { top: -4px;  left: -4px;  width: 14px;  height: 14px; cursor: url('assets/cursor/diag2.cur'),      nwse-resize !important; }
+.resize-ne { top: -4px;  right: -4px; width: 14px;  height: 14px; cursor: url('assets/cursor/diag1.cur'),      nesw-resize !important; }
+.resize-sw { bottom: -4px; left: -4px; width: 14px; height: 14px; cursor: url('assets/cursor/diag1.cur'),      nesw-resize !important; }
+.resize-se { bottom: -4px; right: -4px; width: 14px; height: 14px; cursor: url('assets/cursor/diag2.cur'),     nwse-resize !important; }
 
 /* Dark vignette overlay for depth illusion */
 body::before {
@@ -171,6 +244,9 @@ body::before {
 .login-screen.hidden {
   opacity: 0;
   pointer-events: none;
+  /* FIX: visibility:hidden prevents children (.login-body.visible) from
+     intercepting pointer events even when their pointer-events are auto */
+  visibility: hidden;
 }
 
 .login-welcome {
@@ -199,6 +275,8 @@ body::before {
   width: 100%;
   padding: 0 40px;
   opacity: 0;
+  /* FIX 1: block all clicks until Phase 2 is active */
+  pointer-events: none;
   transition: opacity 0.8s ease;
   position: absolute;
   top: 50%;
@@ -206,7 +284,10 @@ body::before {
   transform: translate(-50%, -55%);
 }
 
-.login-body.visible { opacity: 1; }
+.login-body.visible {
+  opacity: 1;
+  pointer-events: auto; /* clicks enabled only after 3s Phase 2 */
+}
 
 .login-left {
   display: flex;
@@ -405,17 +486,18 @@ body::before {
   flex-grow: 1;
 }
 
+/* ── Part 5: Start Button – image-asset states ── */
 .start-btn {
   height: 100%;
   padding: 0 20px 0 10px;
-  background: linear-gradient(to bottom,
-    #44c433 0%, #3ca82a 10%, #349422 45%,
-    #2b7a1c 85%, #1a4b11 100%);
+  /* Image-based button casing */
+  background-image: url('assets/images/start-normal.png');
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-color: transparent;
   border: none;
   border-top-right-radius: 9px;
   border-bottom-right-radius: 9px;
-  box-shadow: inset 1px 1px 2px rgba(255,255,255,0.6),
-              2px 0 4px rgba(0,0,0,0.4);
   color: white;
   font-family: 'Framdit', 'Tahoma', sans-serif;
   font-size: 18px;
@@ -427,16 +509,24 @@ body::before {
   align-items: center;
   gap: 6px;
   outline: none;
-  border: none;
+  transition: background-image 0.05s;
+}
+
+.start-btn:hover {
+  background-image: url('assets/images/start-highlight.png');
+}
+
+.start-btn:active,
+.start-btn.active {
+  background-image: url('assets/images/start-pressed.png');
+  outline: none !important;
+  border: none !important;
 }
 
 .start-btn:focus,
-.start-btn:focus-visible { outline: none; border: none; }
-
-.start-btn.active {
-  background: linear-gradient(to bottom, #1a4b11 0%, #2b7a1c 100%);
-  box-shadow: inset 2px 2px 4px rgba(0,0,0,0.4);
-  outline: none;
+.start-btn:focus-visible {
+  outline: none !important;
+  border: none !important;
 }
 
 .start-logo {
@@ -449,18 +539,23 @@ body::before {
   flex-shrink: 0;
 }
 
+/* Part 2A: Fluid + chronological taskbar */
 .task-items {
   display: flex;
   align-items: center;
-  padding-left: 12px;
-  gap: 5px;
-  max-width: calc(100% - 250px);
+  padding-left: 8px;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
   overflow: hidden;
 }
 
 .task-item {
   height: 22px;
-  min-width: 155px;
+  /* Fluid: shrink/grow to share space equally */
+  flex: 1 1 0;
+  min-width: 60px;
+  max-width: 200px;
   background: linear-gradient(to bottom,
     #3a7ec9 0%, #2659be 12%, #225ad7 45%,
     #1640a3 90%, #0d2a75 100%);
@@ -475,8 +570,20 @@ body::before {
   box-shadow: inset 0 1px 1px rgba(255,255,255,0.2),
               1px 1px 1px rgba(0,0,0,0.2);
   cursor: pointer;
+  /* Prevent overflow / clip text */
   white-space: nowrap;
+  overflow: hidden;
   outline: none;
+  flex-shrink: 1;
+}
+
+/* Task item label text — ellipsis when compressed */
+.task-item span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+  flex: 1;
 }
 
 .task-item:active,
@@ -584,12 +691,17 @@ body::before {
 /* ══════════════════════════════════════════
    MAIN WINDOW – starts hidden, appears 1s after desktop
 ╔═══════════════════════════════════════════ */
+/* ══════════════════════════════════════════
+   SHARED DRAGGABLE WINDOW WRAPPER
+   Used by: main warning window, CS wizard
+╔═══════════════════════════════════════════ */
 .window-wrapper {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -56%);
-  z-index: 10;
+  /* FIX 3 / z-index: bumped to 110 so it floats above Webamp (z:15) */
+  z-index: 110;
   opacity: 0;
   transition: opacity 0.5s ease;
   pointer-events: none;
@@ -607,25 +719,13 @@ body::before {
 
 .window-wrapper .window { width: 280px; }
 
-.window-wrapper .title-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.window-wrapper .title-bar-text {
-  font-family: 'Trebuchet MS', Tahoma, sans-serif !important;
-  font-size: 12px !important;
-  flex: 1;
-  overflow: hidden;
-  white-space: nowrap;
-  display: flex;
-  align-items: center;
-}
-
-.title-bar-controls {
-  display: flex;
-  align-items: center;
+/* Part 1: Let XP.css fully own title-bar geometry.
+   We only ensure correct flex layout on the containers. */
+.window-wrapper .title-bar,
+.cs-wizard-wrapper .title-bar,
+.ie6-wrapper .title-bar {
+  display: flex !important;
+  align-items: center !important;
 }
 
 .window-body {
@@ -650,6 +750,175 @@ body::before {
   flex: 1;
   font-family: Tahoma, sans-serif;
   font-size: 11px;
+}
+
+/* ══════════════════════════════════════════
+   COUNTER-STRIKE GLITCHED SETUP WIZARD
+╔═══════════════════════════════════════════ */
+.cs-wizard-wrapper {
+  /* overrides .window-wrapper defaults */
+  top: 80px;
+  left: 160px;
+  transform: none;
+  z-index: 115; /* just above main warning window */
+  width: 420px;
+}
+
+.cs-wizard-wrapper .window {
+  width: 420px;
+  /* remove any min-width from xp.css */
+}
+
+.cs-wizard-wrapper .title-bar-text {
+  font-family: 'Tahoma', sans-serif !important;
+  font-size: 11px !important;
+  letter-spacing: 0.3px;
+}
+
+/* Inner layout: sidebar + main panel */
+.cs-wizard-body {
+  display: flex;
+  flex-direction: row;
+  height: 220px;
+  border-bottom: 1px solid #808080;
+}
+
+/* LEFT SIDEBAR — deep navy with old computer icon */
+.cs-wizard-sidebar {
+  width: 120px;
+  flex-shrink: 0;
+  background: linear-gradient(180deg, #00007b 0%, #000051 100%);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding-bottom: 10px;
+}
+
+/* Retro decorative lines on sidebar */
+.cs-wizard-sidebar::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #3333cc, #6666ff, #3333cc);
+}
+
+.cs-wizard-sidebar-icon {
+  font-size: 44px;
+  line-height: 1;
+  color: #8888dd;
+  text-align: center;
+  opacity: 0.75;
+  /* Subtle shimmer animation */
+  animation: sidebarGlow 3s ease-in-out infinite alternate;
+}
+
+.cs-wizard-sidebar-title {
+  font-family: 'Tahoma', sans-serif;
+  font-size: 8px;
+  color: #6666bb;
+  text-align: center;
+  margin-top: 4px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+@keyframes sidebarGlow {
+  from { color: #6666aa; text-shadow: none; }
+  to   { color: #aaaaff; text-shadow: 0 0 8px rgba(100,100,255,0.6); }
+}
+
+/* RIGHT MAIN PANEL */
+.cs-wizard-content {
+  flex: 1;
+  background: #ffffff;
+  padding: 16px 14px 12px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.cs-wizard-step { display: none; flex-direction: column; height: 100%; }
+.cs-wizard-step.active { display: flex; }
+
+.cs-wizard-title {
+  font-family: 'Tahoma', sans-serif;
+  font-size: 13px;
+  font-weight: bold;
+  color: #000080;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #c0c0c0;
+  line-height: 1.3;
+}
+
+.cs-wizard-text {
+  font-family: 'Courier New', monospace;
+  font-size: 10px;
+  color: #222;
+  line-height: 1.55;
+  flex: 1;
+  overflow-y: auto;
+  word-break: break-all;
+}
+
+.cs-wizard-hint {
+  font-family: 'Tahoma', sans-serif;
+  font-size: 10px;
+  color: #444;
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px solid #e0e0e0;
+  font-style: italic;
+}
+
+/* Part 4: Native XP.css <progress> for CS wizard step 3 */
+#csProgressBar {
+  width: 100%;
+  margin-top: 8px;
+  display: block;
+}
+
+/* FOOTER BUTTON BAR */
+.cs-wizard-footer {
+  background: #d4d0c8;
+  border-top: 1px solid #808080;
+  padding: 6px 8px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 6px;
+}
+
+.cs-wizard-footer button {
+  font-family: 'Tahoma', sans-serif;
+  font-size: 11px;
+  min-width: 72px;
+  height: 23px;
+  padding: 0 8px;
+}
+
+.cs-wizard-footer button:disabled {
+  color: #808080;
+  cursor: not-allowed !important;
+}
+
+/* Glitch flicker on wizard title */
+@keyframes glitchFlicker {
+  0%   { opacity: 1; }
+  92%  { opacity: 1; }
+  93%  { opacity: 0.4; }
+  94%  { opacity: 1; }
+  97%  { opacity: 1; }
+  98%  { opacity: 0.3; }
+  100% { opacity: 1; }
+}
+
+.cs-wizard-wrapper .title-bar-text {
+  animation: glitchFlicker 4s ease-in-out infinite;
 }
 
 /* ══════════════════════════════════════════
@@ -713,26 +982,248 @@ body::before {
 /* ══════════════════════════════════════════
    DVD SCREENSAVER
 ╔═══════════════════════════════════════════ */
+/* Part 4: Multi-instance DVD screensaver — base styles, color managed via JS */
 .dvd-screensaver {
-  position: fixed;
+  position: fixed; /* All 3 logos are body-level, fixed */
   width: 48px;
   height: 48px;
   background-image: url('assets/images/dvd.png');
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
-  filter: brightness(0) invert(1);
-  z-index: 999;
+  /* 50% intensity as a background aesthetic */
+  opacity: 0.5;
+  /* Smooth color fade between chromatic states */
+  transition: filter 2s ease;
+  filter: brightness(0) invert(1); /* default: white */
+  z-index: 0;
   pointer-events: none;
-  top: 100px;
-  left: 100px;
+  top: 0;
+  left: 0;
+}
+
+/* ══════════════════════════════════════════
+   IE6 BROWSER WINDOW
+╔═══════════════════════════════════════════ */
+.ie6-wrapper {
+  top: 30px;
+  left: 80px;
+  transform: none;
+  z-index: 112;
+  width: 600px;
+  /* Part 2B: relative so resize handles position correctly */
+  position: absolute;
+}
+
+.ie6-wrapper .window {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* IE6 Chrome: toolbar area above the iframe */
+.ie6-chrome {
+  background: #ece9d8;
+  border-bottom: 1px solid #aca899;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+/* Menu bar: File | Edit | View | Favorites | Tools | Help */
+.ie6-menubar {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 1px 4px;
+  font-family: Tahoma, 'Microsoft Sans Serif', sans-serif;
+  font-size: 11px;
+  color: #000;
+  border-bottom: 1px solid #aca899;
+  user-select: none;
+}
+
+.ie6-menubar span {
+  padding: 1px 6px;
+  cursor: default;
+  border: 1px solid transparent;
+  border-radius: 2px;
+}
+
+.ie6-menubar span:hover {
+  background: #316ac5;
+  color: #fff;
+  border-color: #0b2463;
+}
+
+/* Icon toolbar row */
+.ie6-toolbar {
+  display: flex;
+  align-items: center;
+  padding: 2px 4px;
+  gap: 1px;
+  border-bottom: 1px solid #aca899;
+}
+
+.ie6-tb-btn {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  background: transparent;
+  padding: 1px;
+  flex-shrink: 0;
+}
+
+.ie6-tb-btn:hover {
+  border-color: #316ac5;
+  background: linear-gradient(to bottom, #dceeff 0%, #c5dfff 100%);
+}
+
+.ie6-tb-btn:active {
+  background: linear-gradient(to bottom, #c5dfff 0%, #dceeff 100%);
+  border-color: #0a2a8f;
+}
+
+.ie6-tb-btn img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  display: block;
+  flex-shrink: 0;
+}
+
+.ie6-tb-label {
+  font-family: Tahoma, sans-serif;
+  font-size: 9px;
+  color: #222;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.ie6-tb-separator {
+  width: 1px;
+  height: 30px;
+  background: linear-gradient(to bottom, transparent, #aca899, transparent);
+  margin: 0 3px;
+  flex-shrink: 0;
+}
+
+/* Address bar row */
+.ie6-addressbar {
+  display: flex;
+  align-items: center;
+  padding: 2px 4px;
+  gap: 4px;
+  border-bottom: 1px solid #aca899;
+  background: #ece9d8;
+}
+
+.ie6-addr-label {
+  font-family: Tahoma, sans-serif;
+  font-size: 11px;
+  color: #000;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.ie6-addr-icon {
+  width: 16px;
+  height: 16px;
+  background-image: url('assets/icons/ie.ico');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  flex-shrink: 0;
+}
+
+.ie6-addr-input {
+  flex: 1;
+  height: 19px;
+  border: 2px inset #808080;
+  background: #fff;
+  font-family: Tahoma, sans-serif;
+  font-size: 11px;
+  color: #000;
+  padding: 0 3px;
+  outline: none;
+  min-width: 0;
+}
+
+.ie6-go-btn {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 21px;
+  padding: 0 5px;
+  font-family: Tahoma, sans-serif;
+  font-size: 11px;
+  background: linear-gradient(to bottom, #f5f4f0 0%, #dbd9cf 100%);
+  border: 1px solid #aca899;
+  border-radius: 2px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.ie6-go-btn:hover {
+  background: linear-gradient(to bottom, #dceeff 0%, #c5dfff 100%);
+  border-color: #316ac5;
+}
+
+.ie6-go-btn img {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+
+/* Part 2C: iframe content scaling — scale Baixaki ~2010 layout to fit window */
+.ie6-frame-wrap {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  background: #fff;
+  min-height: 0;
+}
+
+.ie6-frame {
+  border: none;
+  display: block;
+  background: #fff;
+  /* Scale down the archived page content; compensate dimensions upward */
+  transform: scale(0.6);
+  transform-origin: top left;
+  width: calc(100% / 0.6);
+  height: calc(100% / 0.6);
+}
+
+/* Part 2A: Maximized state — fill the entire .screen minus taskbar */
+.ie6-wrapper.maximized {
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: calc(100% - 30px) !important;
+  transform: none !important;
+}
+
+.ie6-wrapper.maximized .window {
+  width: 100%;
+  height: 100%;
+}
+
+/* In maximized mode the frame-wrap fills all remaining space */
+.ie6-wrapper.maximized .ie6-frame-wrap {
+  flex: 1;
 }
 </style>
 </head>
 <body>
 
-<!-- DVD Screensaver (behind everything) -->
-<div class="dvd-screensaver" id="dvdScreensaver"></div>
 
 <!-- Desktop Window – XP style border encompassing title bar + screen -->
 <div class="window desktop-window">
@@ -768,15 +1259,15 @@ body::before {
   <div class="desktop-wrapper" id="desktopWrapper">
 
     <div class="desktop-icons">
-      <div class="desktop-icon">
+      <div class="desktop-icon" id="csIcon">
         <div class="desktop-icon-img" style="background-image: url('assets/icons/cs_p6.ico');"></div>
         <div class="desktop-icon-label">Counter-Strike</div>
       </div>
-      <div class="desktop-icon">
+      <div class="desktop-icon" id="winampIcon">
         <div class="desktop-icon-img" style="background-image: url('assets/icons/winamp.ico');"></div>
         <div class="desktop-icon-label">Winamp</div>
       </div>
-      <div class="desktop-icon">
+      <div class="desktop-icon" id="ieIcon">
         <div class="desktop-icon-img" style="background-image: url('assets/icons/ie.ico');"></div>
         <div class="desktop-icon-label">Internet Explorer</div>
       </div>
@@ -791,17 +1282,17 @@ body::before {
     <div class="window-wrapper" id="mainWindow">
       <div class="window">
         <div class="title-bar">
-          <div class="title-bar-text">balofote's rabbit hole</div>
+          <div class="title-bar-text">Warning://aviso!</div>
           <div class="title-bar-controls">
             <button aria-label="Minimize" id="minimizeBtn"></button>
-            <button aria-label="Maximize"></button>
-            <button aria-label="Close"></button>
+            <button aria-label="Maximize" id="maximizeBtn"></button>
+            <button aria-label="Close" id="closeBtn"></button>
           </div>
         </div>
         <div class="window-body">
           <p class="just4fun">welcome, stranger. here you'll find interest things, or not! wanna see?</p>
           <div class="btn-row">
-            <button onclick="window.open('https://youtube.com/@balofote','_blank')">YouTube</button>
+            <button onclick="window.open('https://youtube.com/theseanlegion','_blank')">YouTube</button>
             <button onclick="window.open('https://open.spotify.com/user/theseanlegion','_blank')">Spotify</button>
             <button onclick="window.open('https://github.com/balofote','_blank')">GitHub</button>
           </div>
@@ -809,18 +1300,161 @@ body::before {
       </div>
     </div>
 
+    <!-- ═══ CS GLITCHED SETUP WIZARD ═══ (hidden by default) -->
+    <div class="window-wrapper cs-wizard-wrapper" id="csWizardWindow">
+      <div class="window cs-wizard">
+        <div class="title-bar">
+          <div class="title-bar-text">Устàнôвкà Wizàrd — Cöüntër-Strïkê 1.6 █░</div>
+          <div class="title-bar-controls">
+            <button aria-label="Minimize" id="csWizardMinBtn"></button>
+            <button aria-label="Close" id="csWizardCloseBtn"></button>
+          </div>
+        </div>
+        <!-- inner layout: sidebar + content -->
+        <div class="cs-wizard-body">
+          <!-- LEFT SIDEBAR -->
+          <div class="cs-wizard-sidebar">
+            <div class="cs-wizard-sidebar-icon">🖥</div>
+            <div class="cs-wizard-sidebar-title">CS 1.6<br>Setup</div>
+          </div>
+          <!-- RIGHT CONTENT PANEL -->
+          <div class="cs-wizard-content">
+            <!-- STEP 1: Welcome -->
+            <div class="cs-wizard-step active" id="csStep1">
+              <div class="cs-wizard-title">WëLcöМê t0 Th3 InstàLLàtïôN Wizàrd!<br>█ Cöüntër-Strïkê ░░ v1.6 █▄</div>
+              <div class="cs-wizard-text">Этöт Wizàrd устàн0вит Cöüntër-Strïkê 1.6<br>
+░░░ нà вàш köмпьютëр. ░▄█<br><br>
+Пëрëд тëм кàк прôdолжïть,<br>
+зàкрôйтë ВСЁ öткрытыë прôгрàммы.<br><br>
+█ ВНÎМÀНÎË! ░░<br>
+ÿôü MÜST àGRÊÊ t0 thê LÎCÊNSÊ ▄█░<br>
+bëFÖRÊ cöNTÎNÜÎNG!! ░░░░<br><br>
+Вëрсïя: CS_1.6_Full_RU_RePack_v2.exe<br>
+Рàзмëр: 243 МБ (???)<br><br>
+██████▓▓▒▒░░ L0DAENG... ░░▒▒▓▓██████</div>
+              <div class="cs-wizard-hint">Для прод0лжэнïя — нàжмïтэ Далëë &rsaquo;</div>
+            </div>
+            <!-- STEP 2: License Agreement -->
+            <div class="cs-wizard-step" id="csStep2">
+              <div class="cs-wizard-title">Лïцëнзïöннöë Cöглàшëнïë ░░ EULA █▄</div>
+              <div class="cs-wizard-text">ÊÜLÀ ░▄ LÎCÊNSÊ ÀGRÊÊMÊNT ░░░<br><br>
+Прöчïтàйтë дàнный дöгöвöр внïмàтëльнö.<br>
+???? ??? ???? ???? ? ????? ????!<br><br>
+§1. ВÀМ ЗÀПРЕЩËНÖ:<br>
+░ Пëрëпрôdàвàть ïгрü.<br>
+░ Кöпïрöвàть бëз рàзрëшëнïя.<br>
+░ Мödïфïцïрöвàть кöд ïгры.<br>
+░ Рàзрëшàть öрüжïë нà сëрвëрàх.<br><br>
+§2. Ïзгöтöвïтëль НЕ НЕСЕТ:<br>
+??? ??? ???????? ??? ??????????<br>
+!!! WARRÎNG !!! ░░ YÖÜR PC ▄█▓<br>
+màÿ ÊXPÊRÎÊNCÊ █░▄ ÊRRÖRS!!!<br><br>
+Вы прïнïмàëтë услöвïя? ██████▒▒░</div>
+              <div class="cs-wizard-hint">Д à / Yes — нàжмïтë Далëë &rsaquo; &ensp; Нëт / No — Öτмëνà</div>
+            </div>
+            <!-- STEP 3: Installing -->
+            <div class="cs-wizard-step" id="csStep3">
+              <div class="cs-wizard-title">Üstan0vkà... ░░░ Пöжàлüïстà Ждïтë █▄</div>
+              <div class="cs-wizard-text" id="csInstallLog">Кöпïрöвàнïë фàйлöв... ░░░<br></div>
+              <!-- Part 4: Native XP.css progress bar -->
+              <progress id="csProgressBar" max="100" value="0"></progress>
+              <div class="cs-wizard-hint" id="csInstallHint">Нë вïклôчàйтë кöмпьютëр! ░░</div>
+            </div>
+          </div><!-- /.cs-wizard-content -->
+        </div><!-- /.cs-wizard-body -->
+        <!-- FOOTER CONTROLS -->
+        <div class="cs-wizard-footer">
+          <button id="csBackBtn" disabled>&#9664; Нàзàд</button>
+          <button id="csNextBtn">Далëë &#9654;</button>
+          <button id="csCancelBtn">Öτмëνà</button>
+        </div>
+      </div><!-- /.window -->
+    </div><!-- /.cs-wizard-wrapper -->
+
+    <!-- ═══ INTERNET EXPLORER 6 WINDOW ═══ (hidden by default) -->
+    <div class="window-wrapper ie6-wrapper" id="ie6Window">
+      <div class="window ie6-window">
+        <div class="title-bar">
+          <div class="title-bar-text">Internet Explorer - Baixaki.com.br</div>
+          <div class="title-bar-controls">
+            <button aria-label="Minimize" id="ie6MinBtn"></button>
+            <button aria-label="Maximize" id="ie6MaxBtn"></button>
+            <button aria-label="Close" id="ie6CloseBtn"></button>
+          </div>
+        </div>
+        <!-- IE6 Chrome: menu bar, icon toolbar, address bar -->
+        <div class="ie6-chrome">
+          <!-- Menu bar -->
+          <div class="ie6-menubar">
+            <span>File</span>
+            <span>Edit</span>
+            <span>View</span>
+            <span>Favorites</span>
+            <span>Tools</span>
+            <span>Help</span>
+          </div>
+          <!-- Icon toolbar -->
+          <div class="ie6-toolbar">
+            <button class="ie6-tb-btn" title="Back">
+              <img src="iebrowser/icons/back.png" alt="Back">
+              <span class="ie6-tb-label">Back</span>
+            </button>
+            <button class="ie6-tb-btn" title="Forward">
+              <img src="iebrowser/icons/forward.png" alt="Forward">
+              <span class="ie6-tb-label">Forward</span>
+            </button>
+            <button class="ie6-tb-btn" title="Stop">
+              <img src="iebrowser/icons/IE_Stop.png" alt="Stop">
+              <span class="ie6-tb-label">Stop</span>
+            </button>
+            <button class="ie6-tb-btn" title="Refresh">
+              <img src="iebrowser/icons/IE_Refresh.png" alt="Refresh">
+              <span class="ie6-tb-label">Refresh</span>
+            </button>
+            <button class="ie6-tb-btn" title="Home">
+              <img src="iebrowser/icons/IE_Home.png" alt="Home">
+              <span class="ie6-tb-label">Home</span>
+            </button>
+            <div class="ie6-tb-separator"></div>
+            <button class="ie6-tb-btn" title="Search">
+              <img src="iebrowser/icons/IE_Search.png" alt="Search">
+              <span class="ie6-tb-label">Search</span>
+            </button>
+            <button class="ie6-tb-btn" title="Favorites">
+              <img src="iebrowser/icons/Favorites.png" alt="Favorites">
+              <span class="ie6-tb-label">Favorites</span>
+            </button>
+            <button class="ie6-tb-btn" title="History">
+              <img src="iebrowser/icons/IE_History.png" alt="History">
+              <span class="ie6-tb-label">History</span>
+            </button>
+          </div>
+          <!-- Address bar -->
+          <div class="ie6-addressbar">
+            <span class="ie6-addr-label">Address</span>
+            <div class="ie6-addr-icon"></div>
+            <input class="ie6-addr-input" id="ie6AddrInput" type="text" value="http://www.baixaki.com.br/" readonly />
+            <button class="ie6-go-btn" id="ie6GoBtn">
+              <img src="iebrowser/icons/go.png" alt="Go">
+              Go
+            </button>
+          </div>
+        </div>
+        <!-- Part 2C: iframe wrapped for scaling containment -->
+        <div class="ie6-frame-wrap">
+          <iframe class="ie6-frame" id="ie6Frame" src="iebrowser/ie-web.html" sandbox="allow-same-origin allow-scripts"></iframe>
+        </div>
+      </div>
+    </div><!-- /.ie6-wrapper -->
+
     <div class="taskbar">
       <div class="taskbar-left">
         <button class="start-btn" id="startBtn">
           <div class="start-logo"></div>
           start
         </button>
-        <div class="task-items">
-          <div class="task-item" id="taskItem">
-            <div class="task-icon" style="background-image: url('assets/icons/app.ico');"></div>
-            <span>Warning://aviso!</span>
-          </div>
-        </div>
+        <!-- Task items: dynamically managed by JS (chronological, shrinkable) -->
+        <div class="task-items" id="taskItemsContainer"></div>
       </div>
       <div class="systray">
         <div class="tray-tooltip-container">
@@ -850,6 +1484,12 @@ body::before {
 
 <script>
 /* ══════════════════════════════════════════
+   VOLUME / MUTE – declare FIRST to avoid forward-reference from the login IIFE
+   (FIX: AUDIT ALTO #3)
+╔═══════════════════════════════════════════ */
+let isMuted = false;
+
+/* ══════════════════════════════════════════
    LOGIN SCREEN LOGIC
 ╔═══════════════════════════════════════════ */
 (function() {
@@ -858,39 +1498,44 @@ body::before {
   const loginBody    = document.getElementById('loginBody');
   const loginUser    = document.getElementById('loginUser');
   const desktopWrap  = document.getElementById('desktopWrapper');
-  const mainWindow   = document.getElementById('mainWindow');
+  const _mainWindow  = document.getElementById('mainWindow'); // local alias avoids duplicate-const
 
   requestAnimationFrame(() => {
     welcomeEl.classList.add('visible');
   });
 
+  /* Phase 1 → Phase 2: after 3 s the welcome text fades out and
+     .login-body gains .visible which sets pointer-events: auto.
+     FIX 1: No clicks reach .login-user before this point. */
   setTimeout(() => {
     welcomeEl.classList.remove('visible');
     welcomeEl.classList.add('hidden');
-    loginBody.classList.add('visible');
+    loginBody.classList.add('visible'); // ← enables interactions for first time
   }, 3000);
 
   let desktopShown = false;
 
   loginUser.addEventListener('click', function onClick() {
+    // FIX 1: one-shot listener — fires only once, after Phase 2 is visible
+    this.removeEventListener('click', onClick);
     this.classList.add('selected');
 
+    // FIX 1: startup.wav plays exclusively here, on successful user click
     const audio = new Audio('assets/sounds/startup.wav');
     audio.volume = 1;
+    if (isMuted) audio.muted = true;
+
+    const fallbackTimer = setTimeout(showDesktop, 4500);
 
     audio.addEventListener('ended', () => {
       clearTimeout(fallbackTimer);
       showDesktop();
     });
 
-    const fallbackTimer = setTimeout(showDesktop, 3000);
-
     audio.play().catch(() => {
       clearTimeout(fallbackTimer);
       showDesktop();
     });
-
-    this.removeEventListener('click', onClick);
   });
 
   function showDesktop() {
@@ -900,64 +1545,203 @@ body::before {
     loginScreen.classList.add('hidden');
     desktopWrap.classList.add('visible');
 
-    // After 1s, show main window with ding sound
+    // After 1 s show the main warning window + ding
     setTimeout(() => {
-      mainWindow.classList.add('visible');
+      _mainWindow.classList.add('visible');
       const ding = new Audio('assets/sounds/ding.wav');
-      if (!isMuted) {
-        ding.play().catch(() => {});
-      }
+      if (isMuted) ding.muted = true;
+      ding.play().catch(() => {});
+      bringToFront(_mainWindow);
+      // Reveal taskbar item chronologically when window first appears
+      const mti = document.getElementById('mainTaskItem');
+      if (mti) { mti.style.display = ''; mti.classList.add('active'); }
     }, 1000);
   }
 })();
 
 /* ══════════════════════════════════════════
    CORE ELEMENTS
+   FIX (AUDIT CRÍTICO #1): mainWindow declared exactly once here.
 ╔═══════════════════════════════════════════ */
 const mainWindow   = document.getElementById('mainWindow');
-const taskItem     = document.getElementById('taskItem');
 const minimizeBtn  = document.getElementById('minimizeBtn');
 const startBtn     = document.getElementById('startBtn');
-const dvdSaver     = document.getElementById('dvdScreensaver');
 const screen       = document.querySelector('.screen');
 const dateTooltip  = document.getElementById('dateTooltip');
 const clock        = document.getElementById('clock');
 
 /* ══════════════════════════════════════════
-   DVD SCREENSAVER – Win98 border compatible
+   SHARED makeDraggable() UTILITY
+   FIX 2: Coordinates are now relative to .screen, not the viewport.
+   Works for any .window-wrapper child of .screen.
 ╔═══════════════════════════════════════════ */
-let dvdX = 50, dvdY = 50;
-let dvdVX = 1.33, dvdVY = 1.33;
-const SZ = 48;
+function makeDraggable(wrapperEl) {
+  const titleBar = wrapperEl.querySelector('.title-bar');
+  if (!titleBar) return;
+
+  let dragging = false;
+  let offX = 0, offY = 0;
+
+  titleBar.addEventListener('mousedown', e => {
+    if (e.target.closest('.title-bar-controls')) return; // FIX 2: ignore button clicks
+    if (wrapperEl.classList.contains('minimized')) return;
+
+    dragging = true;
+    e.preventDefault(); // stop text selection during drag
+
+    const screenRect = screen.getBoundingClientRect();
+    const winRect    = wrapperEl.getBoundingClientRect();
+
+    // Capture mouse offset from the wrapper's top-left (viewport coords)
+    offX = e.clientX - winRect.left;
+    offY = e.clientY - winRect.top;
+
+    // FIX 2: convert to screen-local absolute coords before removing transform
+    wrapperEl.style.transform = 'none';
+    wrapperEl.style.left = (winRect.left - screenRect.left) + 'px';
+    wrapperEl.style.top  = (winRect.top  - screenRect.top)  + 'px';
+  });
+
+  document.addEventListener('mousemove', e => {
+    if (!dragging) return;
+
+    const screenRect = screen.getBoundingClientRect();
+    const winW = wrapperEl.offsetWidth;
+    const winH = wrapperEl.offsetHeight;
+
+    // FIX 2: new position expressed in .screen-local coordinates
+    let newX = (e.clientX - offX) - screenRect.left;
+    let newY = (e.clientY - offY) - screenRect.top;
+
+    // Clamp inside the 800×600 screen (30 px reserved for taskbar)
+    newX = Math.max(0, Math.min(newX, 800 - winW));
+    newY = Math.max(0, Math.min(newY, 570 - winH));
+
+    wrapperEl.style.left = newX + 'px';
+    wrapperEl.style.top  = newY + 'px';
+  });
+
+  document.addEventListener('mouseup', () => { dragging = false; });
+}
+
+/* ══════════════════════════════════════════
+   WINDOW FOCUS MANAGER (Z-INDEX)
+╔═══════════════════════════════════════════ */
+const managedWindows = []; // { el, isOSWindow }
+
+function registerWindow(el, isOSWindow) {
+  if (!managedWindows.find(w => w.el === el)) {
+    managedWindows.push({ el, isOSWindow });
+    // Webamp container requires capture:true to intercept clicks before Webamp's internal React logic
+    el.addEventListener('mousedown', () => bringToFront(el), true);
+  }
+}
+
+function bringToFront(targetEl) {
+  managedWindows.forEach(w => {
+    if (w.el === targetEl) {
+      w.el.style.zIndex = 120;
+      if (w.isOSWindow) {
+        const tb = w.el.querySelector('.title-bar');
+        if (tb) tb.classList.remove('inactive');
+      }
+    } else {
+      w.el.style.zIndex = 110;
+      if (w.isOSWindow) {
+        const tb = w.el.querySelector('.title-bar');
+        if (tb) tb.classList.add('inactive');
+      }
+    }
+  });
+}
+
+// Attach drag and focus to the main warning window
+makeDraggable(mainWindow);
+registerWindow(mainWindow, true);
+
+/* ══════════════════════════════════════════
+   TASK ITEM FACTORY – chronological, fluid, shrinkable
+   Appends a new .task-item to #taskItemsContainer and returns it.
+╔═══════════════════════════════════════════ */
+function createTaskItem(id, iconUrl, label) {
+  const container = document.getElementById('taskItemsContainer');
+  const item = document.createElement('div');
+  item.className = 'task-item';
+  item.id = id;
+  if (iconUrl) {
+    const icon = document.createElement('div');
+    icon.className = 'task-icon';
+    icon.style.backgroundImage = `url('${iconUrl}')`;
+    item.appendChild(icon);
+  }
+  const span = document.createElement('span');
+  span.textContent = label;
+  item.appendChild(span);
+  container.appendChild(item);
+  return item;
+}
+
+/* Pre-create all task items (hidden by default, revealed chronologically when apps open) */
+const mainTaskItem   = createTaskItem('mainTaskItem',   'assets/icons/app.ico',    'Warning://aviso!');
+const winampTaskItem = createTaskItem('winampTaskItem', 'assets/icons/winamp.ico', 'Winamp');
+const csTaskItem     = createTaskItem('csTaskItem',     'assets/icons/cs_p6.ico',  'CS Setup Wizard');
+const ie6TaskItem    = createTaskItem('ie6TaskItem',    'assets/icons/ie.ico',     'Internet Explorer');
+[mainTaskItem, winampTaskItem, csTaskItem, ie6TaskItem].forEach(ti => ti.style.display = 'none');
+
+/* ══════════════════════════════════════════
+   DVD SCREENSAVER – Part 4: 3 independent logos, chromatic cycle
+   All logos bounce across the full browser viewport (body-level, fixed).
+╔═══════════════════════════════════════════ */
+const DVD_SZ = 48;
+const DVD_LOGOS = [
+  { x: 80,  y: 60,  dx:  1.4, dy:  1.1 },
+  { x: 310, y: 200, dx: -1.2, dy:  1.5 },
+  { x: 560, y: 120, dx:  1.6, dy: -1.3 },
+];
+const DVD_COLOR_FILTERS = {
+  white:   'brightness(0) invert(1)',
+  magenta: 'brightness(0) invert(1) sepia(1) saturate(10) hue-rotate(270deg)',
+  cyan:    'brightness(0) invert(1) sepia(1) saturate(10) hue-rotate(150deg)',
+  yellow:  'brightness(0) invert(1) sepia(1) saturate(10) hue-rotate(40deg)',
+  black:   'brightness(0)',
+};
+const DVD_COLOR_KEYS = ['white', 'magenta', 'cyan', 'yellow', 'black'];
+let dvdColorIdx = 0;
+
+// Create 3 dvd logo elements and append to body
+const dvdEls = DVD_LOGOS.map(() => {
+  const el = document.createElement('div');
+  el.className = 'dvd-screensaver';
+  document.body.appendChild(el);
+  return el;
+});
+
+function applyDvdColor(els, colorKey) {
+  const f = DVD_COLOR_FILTERS[colorKey] || DVD_COLOR_FILTERS.white;
+  els.forEach(el => { el.style.filter = f; });
+}
+// Set initial color
+applyDvdColor(dvdEls, DVD_COLOR_KEYS[dvdColorIdx]);
+
+// Chromatic cycle every 2 seconds with CSS transition smoothing
+setInterval(() => {
+  dvdColorIdx = (dvdColorIdx + 1) % DVD_COLOR_KEYS.length;
+  applyDvdColor(dvdEls, DVD_COLOR_KEYS[dvdColorIdx]);
+}, 2000);
 
 function animateDVD() {
-  const sr = screen.getBoundingClientRect();
-  const ww = window.innerWidth, wh = window.innerHeight;
-
-  dvdX += dvdVX; dvdY += dvdVY;
-
-  if (dvdX <= 0)          { dvdX = 0; dvdVX = Math.abs(dvdVX); }
-  if (dvdX + SZ >= ww)    { dvdX = ww - SZ; dvdVX = -Math.abs(dvdVX); }
-  if (dvdY <= 0)          { dvdY = 0; dvdVY = Math.abs(dvdVY); }
-  if (dvdY + SZ >= wh)    { dvdY = wh - SZ; dvdVY = -Math.abs(dvdVY); }
-
-  const l = dvdX, r = dvdX + SZ, t = dvdY, b = dvdY + SZ;
-  const sl = sr.left, sr2 = sr.right, st = sr.top, sb = sr.bottom;
-  const border = 0;
-
-  if (r > sl && l < sr2 && b > st && t < sb) {
-    const oL = r - sl, oR = sr2 - l, oT = b - st, oB = sb - t;
-    const min = Math.min(oL, oR, oT, oB);
-
-    if (min === oL) { dvdVX = -Math.abs(dvdVX); dvdX = sl - SZ - border; }
-    else if (min === oR) { dvdVX = Math.abs(dvdVX); dvdX = sr2 + border; }
-
-    if (min === oT) { dvdVY = -Math.abs(dvdVY); dvdY = st - SZ - border; }
-    else if (min === oB) { dvdVY = Math.abs(dvdVY); dvdY = sb + border; }
-  }
-
-  dvdSaver.style.left = dvdX + 'px';
-  dvdSaver.style.top  = dvdY + 'px';
+  const sw = window.innerWidth;
+  const sh = window.innerHeight;
+  DVD_LOGOS.forEach((logo, i) => {
+    logo.x += logo.dx;
+    logo.y += logo.dy;
+    if (logo.x <= 0)             { logo.x = 0;            logo.dx =  Math.abs(logo.dx); }
+    if (logo.x + DVD_SZ >= sw)   { logo.x = sw - DVD_SZ;  logo.dx = -Math.abs(logo.dx); }
+    if (logo.y <= 0)             { logo.y = 0;             logo.dy =  Math.abs(logo.dy); }
+    if (logo.y + DVD_SZ >= sh)   { logo.y = sh - DVD_SZ;  logo.dy = -Math.abs(logo.dy); }
+    dvdEls[i].style.left = logo.x + 'px';
+    dvdEls[i].style.top  = logo.y + 'px';
+  });
   requestAnimationFrame(animateDVD);
 }
 animateDVD();
@@ -984,39 +1768,55 @@ function updateClock() {
   clock.textContent = String(h).padStart(2,'0') + ':' + m + ' ' + ap;
 }
 updateClock();
-setInterval(updateClock, 60000);
+// Sync to next minute boundary (AUDIT MÉDIO #5)
+const msToNextMin = (60 - new Date().getSeconds()) * 1000;
+setTimeout(() => { updateClock(); setInterval(updateClock, 60000); }, msToNextMin);
 
 /* ══════════════════════════════════════════
-   MAIN WINDOW – minimize / restore
+   MAIN WINDOW – minimize / restore / close
 ╔═══════════════════════════════════════════ */
+const maximizeBtn = document.getElementById('maximizeBtn');
+const closeBtn    = document.getElementById('closeBtn');
+
 minimizeBtn.addEventListener('click', e => {
   e.stopPropagation();
   mainWindow.classList.add('minimized');
-  taskItem.classList.remove('active');
+  mainTaskItem.classList.remove('active');
 });
 
-taskItem.addEventListener('click', () => {
+maximizeBtn.addEventListener('click', e => {
+  e.stopPropagation();
+  mainWindow.classList.toggle('maximized');
+});
+
+closeBtn.addEventListener('click', e => {
+  e.stopPropagation();
+  mainWindow.classList.add('minimized');
+  mainTaskItem.classList.remove('active');
+});
+
+mainTaskItem.addEventListener('click', () => {
   if (mainWindow.classList.contains('minimized')) {
     mainWindow.classList.remove('minimized');
-    taskItem.classList.add('active');
+    mainTaskItem.classList.add('active');
+    bringToFront(mainWindow);
   } else {
     mainWindow.classList.add('minimized');
-    taskItem.classList.remove('active');
+    mainTaskItem.classList.remove('active');
   }
 });
-taskItem.classList.add('active');
 
 /* ══════════════════════════════════════════
    START BUTTON – press feedback
 ╔═══════════════════════════════════════════ */
-startBtn.addEventListener('mousedown',   e => { e.stopPropagation(); startBtn.classList.add('active'); });
-startBtn.addEventListener('mouseup',     e => { e.stopPropagation(); startBtn.classList.remove('active'); });
-startBtn.addEventListener('mouseleave',    () => { startBtn.classList.remove('active'); });
+startBtn.addEventListener('mousedown', e => { e.stopPropagation(); startBtn.classList.add('active'); });
+startBtn.addEventListener('mouseup',   e => { e.stopPropagation(); startBtn.classList.remove('active'); });
+startBtn.addEventListener('mouseleave', () => { startBtn.classList.remove('active'); });
 
 /* ══════════════════════════════════════════
    VOLUME / MUTE TOGGLE
+   `isMuted` declared at the very top of this script block.
 ╔═══════════════════════════════════════════ */
-let isMuted = false;
 const volIcon = document.getElementById('volumeIcon');
 const volTip  = document.getElementById('volumeTooltip');
 
@@ -1026,13 +1826,472 @@ volIcon.addEventListener('click', () => {
     volIcon.style.backgroundImage = "url('assets/icons/nosound.ico')";
     volTip.textContent = 'Speakers: Mute';
     document.querySelectorAll('audio').forEach(a => a.muted = true);
+    if (window._webamp) {
+      try { window._webamp.store.dispatch({ type: 'SET_VOLUME', volume: 0 }); } catch(ex) {}
+    }
   } else {
     volIcon.style.backgroundImage = "url('assets/icons/sound.ico')";
     volTip.textContent = 'Speakers: 100%';
     document.querySelectorAll('audio').forEach(a => a.muted = false);
+    if (window._webamp) {
+      try { window._webamp.store.dispatch({ type: 'SET_VOLUME', volume: 100 }); } catch(ex) {}
+    }
   }
+});
+
+/* ══════════════════════════════════════════
+   WEBAMP INTEGRATION
+   Opens on double-click of the Winamp desktop icon.
+   Bundle: webamp/built/webamp.bundle.min.js (UMD global Webamp).
+╔═══════════════════════════════════════════ */
+document.getElementById('winampIcon').addEventListener('dblclick', () => {
+  initWebamp();
+});
+
+winampTaskItem.addEventListener('click', () => {
+  const webampEl = document.getElementById('webamp');
+  if (!webampEl) return;
+  if (webampEl.style.display === 'none') {
+    webampEl.style.display = 'block';
+    winampTaskItem.classList.add('active');
+    bringToFront(webampEl);
+  } else {
+    webampEl.style.display = 'none';
+    winampTaskItem.classList.remove('active');
+  }
+});
+
+function initWebamp() {
+  if (typeof Webamp === 'undefined') {
+    console.warn('[Webamp] Bundle not loaded — check <script> tag in <head>.');
+    return;
+  }
+  
+  function clampWebamp(webampEl) {
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach(m => {
+        if (m.attributeName === 'style' && m.target.classList.contains('webamp-window')) {
+          const target = m.target;
+          const transform = target.style.transform;
+          if (!transform) return;
+
+          const match = transform.match(/translate\(([-\d.]+)px,\s*([-\d.]+)px\)/);
+          if (match) {
+            let x = parseFloat(match[1]);
+            let y = parseFloat(match[2]);
+            let clamped = false;
+
+            const maxX = 800 - target.offsetWidth;
+            const maxY = 570 - target.offsetHeight; // 570 = 600 − 30px taskbar
+
+            if (x < 0) { x = 0; clamped = true; }
+            if (x > maxX) { x = maxX; clamped = true; }
+            if (y < 0) { y = 0; clamped = true; }
+            if (y > maxY) { y = maxY; clamped = true; }
+
+            if (clamped) {
+              observer.disconnect();
+              target.style.transform = `translate(${x}px, ${y}px)`;
+              observer.observe(webampEl, { attributes: true, subtree: true, attributeFilter: ['style'] });
+            }
+          }
+        }
+      });
+    });
+    observer.observe(webampEl, { attributes: true, subtree: true, attributeFilter: ['style'] });
+  }
+
+  const webampEl = document.getElementById('webamp');
+  if (window._webamp && webampEl) {
+    // Already initialised, restore it
+    webampEl.style.display = 'block';
+    winampTaskItem.classList.add('active');
+    bringToFront(webampEl);
+    return;
+  }
+
+  const webamp = new Webamp({
+    initialTracks: [
+      { url: 'assets/sounds/iwannafku.mp3',  metaData: { artist: 'Akon feat. Snoop Dogg',          title: 'I Wanna F*ck You' }, duration: 244 },
+      { url: 'assets/sounds/dangerous.mp3',  metaData: { artist: 'Akon feat. Kardinal Offishall',   title: 'Dangerous'        }, duration: 234 },
+      { url: 'assets/sounds/closer.mp3',     metaData: { artist: 'Ne-Yo',                           title: 'Closer'           }, duration: 239 },
+      { url: 'assets/sounds/mmhalfway.mp3',  metaData: { artist: 'Black Eyed Peas',                 title: 'Meet Me Halfway'  }, duration: 286 },
+      { url: 'assets/sounds/lasnight.mp3',   metaData: { artist: 'Diddy feat. Keyshia Cole',        title: 'Last Night'       }, duration: 238 },
+      { url: 'assets/sounds/stereolove.mp3', metaData: { artist: 'Edward Maya & Vika Jigulina',     title: 'Stereo Love'      }, duration: 261 },
+      { url: 'assets/sounds/lady.mp3',       metaData: { artist: 'Modjo',                           title: 'Lady'             }, duration: 287 },
+      { url: 'assets/sounds/me_u.mp3',       metaData: { artist: 'Cassie',                          title: 'Me & U'           }, duration: 193 },
+      { url: 'assets/sounds/sayitright.mp3', metaData: { artist: 'Nelly Furtado',                   title: 'Say It Right'     }, duration: 219 },
+    ],
+    windowLayout: {
+      main:      { position: { top: 40,  left: 480 } },
+      equalizer: { position: { top: 156, left: 480 } },
+      playlist:  { position: { top: 40,  left: 755 }, size: { extraHeight: 4, extraWidth: 0 } },
+    }
+  });
+
+  /* Webamp MUST render into a body-level container. */
+  const webampContainer = document.createElement('div');
+  webampContainer.id = 'webamp-container';
+  document.body.appendChild(webampContainer);
+
+  winampTaskItem.style.display = '';
+  winampTaskItem.classList.add('active');
+
+  webamp.onMinimize(() => {
+    const webampEl = document.getElementById('webamp');
+    if (webampEl) webampEl.style.display = 'none';
+    winampTaskItem.classList.remove('active');
+  });
+
+  webamp.onClose(() => {
+    webamp.dispose();
+    webampContainer.remove();
+    const webampEl = document.getElementById('webamp');
+    if (webampEl) webampEl.remove();
+    window._webamp = null;
+    winampTaskItem.style.display = 'none';
+    winampTaskItem.classList.remove('active');
+  });
+
+  webamp.renderWhenReady(webampContainer).then(() => {
+    window._webamp = webamp;
+    if (isMuted) document.querySelectorAll('audio').forEach(a => a.muted = true);
+    const webampEl = document.getElementById('webamp');
+    if (webampEl) {
+      registerWindow(webampEl, false);
+      bringToFront(webampEl);
+      clampWebamp(webampEl);
+    }
+  }).catch(err => {
+    console.warn('[Webamp] Render failed:', err);
+  });
+}
+
+/* ══════════════════════════════════════════
+   COUNTER-STRIKE GLITCHED SETUP WIZARD
+   Opens on double-click of the CS desktop icon.
+   Draggable via makeDraggable(). Multi-step (3 pages).
+   Taskbar integration: csTaskItem toggles minimise.
+╔═══════════════════════════════════════════ */
+(function() {
+  const csIcon       = document.getElementById('csIcon');
+  const csWizard     = document.getElementById('csWizardWindow');
+  const csMinBtn     = document.getElementById('csWizardMinBtn');
+  const csCloseBtn   = document.getElementById('csWizardCloseBtn');
+  // csTaskItem is the pre-created outer-scope task item (createTaskItem factory)
+  const csBackBtn    = document.getElementById('csBackBtn');
+  const csNextBtn    = document.getElementById('csNextBtn');
+  const csCancelBtn  = document.getElementById('csCancelBtn');
+
+  const steps = [
+    document.getElementById('csStep1'),
+    document.getElementById('csStep2'),
+    document.getElementById('csStep3'),
+  ];
+  const csProgressBar  = document.getElementById('csProgressBar');
+  const csInstallLog   = document.getElementById('csInstallLog');
+  const csInstallHint  = document.getElementById('csInstallHint');
+
+  let currentStep  = 0;
+  let installTimer = null;
+
+  // ── Double-click detection ──
+  csIcon.addEventListener('dblclick', () => {
+    openWizard();
+  });
+
+  function openWizard() {
+    currentStep = 0;
+    showStep(0);
+    csWizard.classList.remove('minimized');
+    csWizard.classList.add('visible');
+    csTaskItem.style.display = '';
+    csTaskItem.classList.add('active');
+  }
+
+  function showStep(idx) {
+    steps.forEach((s, i) => s.classList.toggle('active', i === idx));
+
+    csBackBtn.disabled = (idx === 0);
+
+    if (idx === 0) {
+      csNextBtn.textContent = 'Далëë \u25BA';
+      csNextBtn.disabled = false;
+      csNextBtn.onclick = null;
+    } else if (idx === 1) {
+      csNextBtn.textContent = 'Прïнïмàю \u25BA';
+      csNextBtn.disabled = false;
+      csNextBtn.onclick = null;
+    } else {
+      // Step 3: installation
+      csNextBtn.textContent = 'Устàнôвкà...';
+      csNextBtn.disabled = true;
+      csNextBtn.onclick = null;
+      startInstall();
+    }
+  }
+
+  const installLogLines = [
+    'cstrike\\models\\player.mdl ... \u2591\u2591\u2591\u2591',
+    'cstrike\\maps\\de_dust2.bsp \u2588\u2588',
+    'cstrike\\sound\\weapons\\ak47-1.wav',
+    '\u041e\u0448\u00ef\u0431\u043a\u00e0: cl_dll_000.bsp ???',
+    'sprites\\640hud7.spr \u2591\u2591\u2584',
+    'Reg!str!ng CS 1.6 RePack v2...',
+    'hlds.exe ... WARN!NG \u2588\u2591',
+    '\u0424\u00e0\u0439\u043b \u043d\u00e0\u0439\u0434\u00eb\u043d: hl.exe \u2591\u2591\u2591',
+    '\u0417\u00e0\u043f\u0438\u0441\u044c \u0432 \u0440\u00eb\u0435\u0441\u0442\u0440 ... OK?',
+    '\u0423\u0441\u0442\u00e0\u043d\u043e\u0432\u043a\u00e0 \u0437\u00e0\u0432\u00eb\u0440\u0448\u00eb\u043d\u00e0! \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588',
+  ];
+
+  function startInstall() {
+    let pct = 0;
+    clearInterval(installTimer);
+    // Part 4: drive native <progress> value instead of .style.width
+    csProgressBar.value = 0;
+    csInstallLog.innerHTML = '';
+    let logIdx = 0;
+
+    installTimer = setInterval(() => {
+      pct = Math.min(pct + Math.floor(Math.random() * 7) + 2, 100);
+      csProgressBar.value = pct;
+
+      if (logIdx < installLogLines.length && pct >= (logIdx + 1) * 10) {
+        csInstallLog.innerHTML += installLogLines[logIdx] + '<br>';
+        logIdx++;
+        csInstallLog.scrollTop = csInstallLog.scrollHeight;
+      }
+
+      if (pct >= 100) {
+        clearInterval(installTimer);
+        csInstallHint.textContent =
+          '\u0423\u0441\u0442\u00e0\u043d\u043e\u0432\u043a\u00e0 \u0437\u00e0\u0432\u00eb\u0440\u0448\u00eb\u043d\u00e0! ' +
+          '\u041f\u0435\u0440\u0435\u0437\u00e0\u0433\u0440\u00fc\u0437\u0438\u0442\u0435 CS 1.6 \u2588\u2588\u2588 \u2591\u2591\u2591';
+        csNextBtn.textContent = '\u0413\u043e\u0442\u00f6\u0432\u00f6! \u2714';
+        csNextBtn.disabled = false;
+        csNextBtn.onclick = () => closeWizard();
+      }
+    }, 200);
+  }
+
+  // ── Navigation ──
+  csNextBtn.addEventListener('click', () => {
+    if (currentStep < steps.length - 1 && !csNextBtn.onclick) {
+      currentStep++;
+      showStep(currentStep);
+    }
+  });
+
+  csBackBtn.addEventListener('click', () => {
+    if (currentStep > 0) {
+      clearInterval(installTimer);
+      currentStep--;
+      showStep(currentStep);
+    }
+  });
+
+  csCancelBtn.addEventListener('click', closeWizard);
+
+  // ── Minimize & Close ──
+  csMinBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    csWizard.classList.add('minimized');
+    csTaskItem.classList.remove('active');
+  });
+
+  csCloseBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    closeWizard();
+  });
+
+  // ── Taskbar toggle ──
+  csTaskItem.addEventListener('click', () => {
+    if (csWizard.classList.contains('minimized')) {
+      csWizard.classList.remove('minimized');
+      csTaskItem.classList.add('active');
+      bringToFront(csWizard);
+    } else {
+      csWizard.classList.add('minimized');
+      csTaskItem.classList.remove('active');
+    }
+  });
+
+  function closeWizard() {
+    clearInterval(installTimer);
+    csWizard.classList.remove('visible');
+    csWizard.classList.add('minimized');
+    csTaskItem.style.display = 'none';
+    csTaskItem.classList.remove('active');
+  }
+
+  // Attach drag support to the CS wizard
+  makeDraggable(csWizard);
+  registerWindow(csWizard, true);
+})();
+
+/* ══════════════════════════════════════════
+   INTERNET EXPLORER 6 WINDOW
+   Opens on double-click of the IE desktop icon.
+   Taskbar item uses the pre-created ie6TaskItem.
+╔═══════════════════════════════════════════ */
+(function() {
+  const ie6Win    = document.getElementById('ie6Window');
+  const ie6MinBtn = document.getElementById('ie6MinBtn');
+  const ie6MaxBtn = document.getElementById('ie6MaxBtn');
+  const ie6ClsBtn = document.getElementById('ie6CloseBtn');
+
+  let ie6IsMax  = false;
+  let savedTop  = '30px';
+  let savedLeft = '80px';
+  let savedW    = '600px';
+
+  // ── Part 2B: Inject 8-point resize handles ──
+  const IE6_MIN_W = 320, IE6_MIN_H = 220;
+  ['n','s','e','w','nw','ne','sw','se'].forEach(dir => {
+    const h = document.createElement('div');
+    h.className = `resize-handle resize-${dir}`;
+    h.dataset.dir = dir;
+    ie6Win.appendChild(h);
+  });
+
+  // Resize drag state
+  let resizing = false, resDir = '', rsX0, rsY0, rsW0, rsH0, rsT0, rsL0;
+
+  ie6Win.addEventListener('mousedown', e => {
+    const h = e.target.closest('.resize-handle');
+    if (!h || ie6IsMax) return;
+    e.preventDefault();
+    e.stopPropagation();
+    resizing = true;
+    resDir = h.dataset.dir;
+    rsX0 = e.clientX;
+    rsY0 = e.clientY;
+    const scr = screen.getBoundingClientRect();
+    const wr  = ie6Win.getBoundingClientRect();
+    rsW0 = wr.width;
+    rsH0 = wr.height;
+    rsT0 = wr.top  - scr.top;
+    rsL0 = wr.left - scr.left;
+  });
+
+  document.addEventListener('mousemove', e => {
+    if (!resizing) return;
+    const dx = e.clientX - rsX0;
+    const dy = e.clientY - rsY0;
+    let newW = rsW0, newH = rsH0, newT = rsT0, newL = rsL0;
+
+    if (resDir.includes('e')) newW = Math.max(IE6_MIN_W, rsW0 + dx);
+    if (resDir.includes('s')) newH = Math.max(IE6_MIN_H, rsH0 + dy);
+    if (resDir.includes('w')) {
+      const w2 = Math.max(IE6_MIN_W, rsW0 - dx);
+      newL = rsL0 + (rsW0 - w2);
+      newW = w2;
+    }
+    if (resDir.includes('n')) {
+      const h2 = Math.max(IE6_MIN_H, rsH0 - dy);
+      newT = rsT0 + (rsH0 - h2);
+      newH = h2;
+    }
+
+    // Clamp inside screen (800 wide, 570 tall = 600 - 30 taskbar)
+    newL = Math.max(0, Math.min(newL, 800 - newW));
+    newT = Math.max(0, Math.min(newT, 570 - newH));
+
+    ie6Win.style.width  = newW + 'px';
+    ie6Win.style.top    = newT + 'px';
+    ie6Win.style.left   = newL + 'px';
+    ie6Win.querySelector('.window').style.height = newH + 'px';
+  });
+
+  document.addEventListener('mouseup', () => { resizing = false; });
+
+  // ── Open on double-click ──
+  document.getElementById('ieIcon').addEventListener('dblclick', () => {
+    if (!ie6Win.classList.contains('visible')) {
+      ie6Win.classList.add('visible');
+      ie6Win.classList.remove('minimized');
+      ie6TaskItem.style.display = '';
+      ie6TaskItem.classList.add('active');
+      bringToFront(ie6Win);
+    } else if (ie6Win.classList.contains('minimized')) {
+      ie6Win.classList.remove('minimized');
+      ie6TaskItem.classList.add('active');
+      bringToFront(ie6Win);
+    } else {
+      bringToFront(ie6Win);
+    }
+  });
+
+  // ── Minimize ──
+  ie6MinBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    ie6Win.classList.add('minimized');
+    ie6TaskItem.classList.remove('active');
+  });
+
+  // ── Maximize / Restore ──
+  ie6MaxBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    ie6IsMax = !ie6IsMax;
+    if (ie6IsMax) {
+      savedTop  = ie6Win.style.top    || '30px';
+      savedLeft = ie6Win.style.left   || '80px';
+      savedW    = ie6Win.style.width  || '600px';
+      // Clear inline height set by resize so CSS takes over
+      ie6Win.querySelector('.window').style.height = '';
+      ie6Win.style.width = '';
+      ie6Win.classList.add('maximized');
+    } else {
+      ie6Win.classList.remove('maximized');
+      ie6Win.style.top   = savedTop;
+      ie6Win.style.left  = savedLeft;
+      ie6Win.style.width = savedW;
+    }
+  });
+
+  // ── Close ──
+  ie6ClsBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    ie6Win.classList.remove('visible');
+    ie6Win.classList.add('minimized');
+    ie6TaskItem.style.display = 'none';
+    ie6TaskItem.classList.remove('active');
+    if (ie6IsMax) {
+      ie6IsMax = false;
+      ie6Win.classList.remove('maximized');
+    }
+  });
+
+  // ── Taskbar toggle ──
+  ie6TaskItem.addEventListener('click', () => {
+    if (ie6Win.classList.contains('minimized')) {
+      ie6Win.classList.remove('minimized');
+      ie6TaskItem.classList.add('active');
+      bringToFront(ie6Win);
+    } else {
+      ie6Win.classList.add('minimized');
+      ie6TaskItem.classList.remove('active');
+    }
+  });
+
+  makeDraggable(ie6Win);
+  registerWindow(ie6Win, true);
+})();
+
+/* ══════════════════════════════════════════
+   PART 3B: Global loading cursor on desktop icon dblclick
+   1500ms load.cur, then revert to arrow.
+╔═══════════════════════════════════════════ */
+['csIcon', 'winampIcon', 'ieIcon'].forEach(id => {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.addEventListener('dblclick', () => {
+    document.body.classList.add('cursor-loading');
+    setTimeout(() => document.body.classList.remove('cursor-loading'), 1500);
+  });
 });
 </script>
 
 </body>
 </html>
+

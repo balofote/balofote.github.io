@@ -1,0 +1,1111 @@
+var _____WB$wombat$assign$function_____=function(name){return (globalThis._wb_wombat && globalThis._wb_wombat.local_init && globalThis._wb_wombat.local_init(name))||globalThis[name];};if(!globalThis.__WB_pmw){globalThis.__WB_pmw=function(obj){this.__WB_source=obj;return this;}}{
+let window = _____WB$wombat$assign$function_____("window");
+let self = _____WB$wombat$assign$function_____("self");
+let document = _____WB$wombat$assign$function_____("document");
+let location = _____WB$wombat$assign$function_____("location");
+let top = _____WB$wombat$assign$function_____("top");
+let parent = _____WB$wombat$assign$function_____("parent");
+let frames = _____WB$wombat$assign$function_____("frames");
+let opener = _____WB$wombat$assign$function_____("opener");
+/* 20091176-1605  */
+var modMan = function($){
+	//=-=-=-=-=-=-=-=-=-=-
+	// Local variables
+	//=-=-=-=-=-=-=-=-=-=-
+	var globals = {}; // Stores section configs and shared observers
+	
+	// Error messages
+	var errorMsgs = {
+		defaultLNG:"br",
+		br:{
+			otherFrameworkFound:"modMan uses jQuery and cant work with other frameworks."
+		},
+		en:{
+			otherFrameworkFound:"modMan uses jQuery and cant work with other frameworks."
+		}
+	}
+	
+	// Controlled Vocabulary
+	var controlled = {
+		defaultLNG:'br',
+		defaultRGN:'BR',
+		LNG:{
+			br:{
+				loading:"carregando"
+			},
+			en:{
+				loading:"loading"
+			},
+			es:{
+				loading:"cargando"
+			}
+		},
+		RGN:{
+			BR:{
+				portalURL:"https://web.archive.org/web/20100827141255/http://www.terra.com.br/"
+			}
+		}
+	}	
+
+	/**
+	@updated 20091176-1605 
+	**/
+	var newGalleriesEXP = [
+		/terra(?!\.com\.br)/i,
+		/copa\/2010/i,
+		/estaduais\/2010/i,
+		/vancouver2010\/(fotos|galerias|interna)/i,
+		/gente\/(fotos|galerias|interna|michaeljackson)/i,
+		/tv\/(fotos|galerias|interna)/i,
+		/formula1\/2009/i,
+		/noticias\.terra\.com\.br\/(?!transito)/i,
+		/carnaval/i,
+		/dakkar/i,
+		/sub20/i,
+		/libertadores/,
+		/(copadasconfederacoes|confederaciones)/i,
+		/(futebol|futbol)\/(europeo|europeu)/i
+	]
+	
+	/** 
+	@updated 20091027-1055
+	Base GMT extracted from: 
+	- http://www.timeanddate.com/worldclock/ 
+	- http://24timezones.com/
+	
+	* country codes expressed in ISO 3166-1 Alpha-2
+	**/
+	var Regions = {
+		// Horário de verão suspenso temporariamente
+		//AR:{id:1, isoCode:"AR", lang:"es", flag:"ARG", gmt:-180, domainMatchEXP:/\.?ar[\.-]|\.ar\//i, portalURL:"https://web.archive.org/web/20100827141255/http://www.terra.com.ar/", dst:{gmt:-120, startLocalTimeStamp:"20091018-0000", endLocalTimeStamp:"20100315-0000"}},
+		AR:{id:1, isoCode:"AR", lang:"es", flag:"ARG", gmt:-180, domainMatchEXP:/\.?ar[\.-]|\.ar\//i, portalURL:"https://web.archive.org/web/20100827141255/http://www.terra.com.ar/"},
+		BR:{id:2, isoCode:"BR", lang:"pt", flag:"BRA", gmt:-180, domainMatchEXP:/\.?br[\.-]|pt-br|\.br\//i, portalURL:"https://web.archive.org/web/20100827141255/http://www.terra.com.br/", dst:{gmt:-120, startLocalTimeStamp:"20091018-0000", endLocalTimeStamp:"20100221-0000"}},
+		CA:{id:19, isoCode:"CA", lang:"en", flag:"CAN", gmt:-480, domainMatchEXP:/\.?ca[\.-]|ca|\.ca\//i, portalURL:"", dst:{gmt:-420, startLocalTimeStamp:"20090308-0200", endLocalTimeStamp:"20091101-0200"}},
+		CL:{id:3, isoCode:"CL", lang:"es", flag:"CHI", gmt:-240, domainMatchEXP:/\.?cl[\.-]|\.cl\//i, portalURL:"https://web.archive.org/web/20100827141255/http://www.terra.cl/", dst:{gmt:-180, startLocalTimeStamp:"20091011-0000", endLocalTimeStamp:"20100315-0000"}},
+		CO:{id:4, isoCode:"CO", lang:"es", flag:"COL", gmt:-300, domainMatchEXP:/\.?co[\.-]|\.co\//i, portalURL:"https://web.archive.org/web/20100827141255/http://www.terra.com.co/"},
+		CR:{id:10, isoCode:"CR", lang:"es", flag:"COS", gmt:-360, domainMatchEXP:/\.?cr[\.-]|\.cr\//i, portalURL:"https://web.archive.org/web/20100827141255/http://www.terra.com/"},
+		DO:{id:17, isoCode:"DO", lang:"es", flag:"REP", gmt:-240, domainMatchEXP:/\.?do[\.-]|\.do\//i, portalURL:"https://web.archive.org/web/20100827141255/http://www.terra.com/"},
+		EC:{id:5, isoCode:"EC", lang:"es", flag:"ECU", gmt:-300, domainMatchEXP:/\.?ec[\.-]|\.ec\//i, portalURL:"https://web.archive.org/web/20100827141255/http://www.terra.com.ec/"},
+		ES:{id:18, isoCode:"ES", lang:"es", flag:"ESP", gmt:60, domainMatchEXP:/\.?es[\.-]|\.es\//i, portalURL:"https://web.archive.org/web/20100827141255/http://www.terra.com.es/", dst:{gmt:120, startLocalTimeStamp:"20090329-0200", endLocalTimeStamp:"20091025-0300"}},
+		GT:{id:11, isoCode:"GT", lang:"es", flag:"GUA", gmt:-360, domainMatchEXP:/\.?gt[\.-]|\.gt\//i, portalURL:"https://web.archive.org/web/20100827141255/http://www.terra.com/"},
+		HN:{id:12, isoCode:"HN", lang:"es", flag:"HON", gmt:-360, domainMatchEXP:/\.?hn[\.-]|\.hn\//i, portalURL:"https://web.archive.org/web/20100827141255/http://www.terra.com/"},
+		MX:{id:7, isoCode:"MX", lang:"es", flag:"MEX", gmt:-360, domainMatchEXP:/\.?mx[\.-]|\/es\/|\.mx\//i, portalURL:"https://web.archive.org/web/20100827141255/http://www.terra.com.mx/", dst:{gmt:-300, startLocalTimeStamp:"20090405-0200", endLocalTimeStamp:"20091025-0200"}}, // default for spanish
+		NI:{id:13, isoCode:"NI", lang:"es", flag:"NIC", gmt:-360, domainMatchEXP:/\.?ni[\.-]|\.ni\//i, portalURL:"https://web.archive.org/web/20100827141255/http://www.terra.com/"},
+		PA:{id:14, isoCode:"PA", lang:"es", flag:"PAN", gmt:-300, domainMatchEXP:/\.?pa[\.-]|\.pa\//i, portalURL:"https://web.archive.org/web/20100827141255/http://www.terra.com/"},
+		PE:{id:8, isoCode:"PE", lang:"es", flag:"PER", gmt:-300, domainMatchEXP:/\.?pe[\.-]|\.pe\//i, portalURL:"https://web.archive.org/web/20100827141255/http://www.terra.com.pe/"},
+		PR:{id:16, isoCode:"PR", lang:"es", flag:"POR", gmt:-240, domainMatchEXP:/\.?pr[\.-]|\.pr\//i, portalURL:"https://web.archive.org/web/20100827141255/http://www.terra.com/"},
+		SV:{id:15, isoCode:"SV", lang:"es", flag:"SAL", gmt:-360, domainMatchEXP:/\.?sv[\.-]|\.sv\//i, portalURL:"https://web.archive.org/web/20100827141255/http://www.terra.com/"},
+		US:{id:6, isoCode:"US", lang:"en", flag:"USA", gmt:-300, domainMatchEXP:/(\.?us[\.-])?.+\.com|\/en\//i, portalURL:"https://web.archive.org/web/20100827141255/http://www.terra.com/", dst:{gmt:-240, startLocalTimeStamp:"20090308-0200", endLocalTimeStamp:"20091101-0200"}},
+		VE:{id:9, isoCode:"VE", lang:"es", flag:"VEN", gmt:-270, domainMatchEXP:/\.?ve[\.-]|\.ve\//i, portalURL:"https://web.archive.org/web/20100827141255/http://www.terra.com.ve/"}
+	}
+	// Local variables //
+	
+	// Forçando renovação de cache no safari
+	if($.browser.safari) $.useBrowserCache = false;
+	
+	
+	//=-=-=-=-=-=-=-=-=-
+	// Section configs
+	//=-=-=-=-=-=-=-=-=-
+	(function(){
+
+		//-+-+-+-+-+-+-+-+-+-+
+		// Locale detection
+		//-+-+-+-+-+-+-+-+-+-+
+		var autoDetectedCountryOBJ = function(){
+			for (var isoCode in Regions){
+				if(Regions[isoCode].domainMatchEXP.test(document.location)) {
+					return Regions[isoCode];
+				}
+			}
+			return Regions['BR'];
+		}();
+
+		var userAgentLocale = (navigator.language) ? navigator.language : navigator.userLanguage,
+			userLang = userAgentLocale.split('-')[0].toLowerCase(),
+			userCountry = typeof(userAgentLocale.split('-')[1]) != "undefined" ? userAgentLocale.split('-')[1].toUpperCase() : userAgentLocale.toUpperCase(),
+			
+			pageCountry = autoDetectedCountryOBJ.isoCode,
+			pageLang = autoDetectedCountryOBJ.lang;
+		
+		//var underTerra = (/\.terra\.|stages\.com\.br/i).test(document.domain);
+		var underTerra = false;
+		
+		// Converting exeptions
+		if(userCountry == 'AR') userLang = 'ar';
+		if(userCountry == 'BR') userLang = 'br';
+		
+		var baseURL = (pageCountry == "BR") ? "https://web.archive.org/web/20100827141255/http://stf.terra.com.br/portal" : "https://web.archive.org/web/20100827141255/http://stf.terra.com/portal";
+		
+		if((/P\:/).test(document.location)) baseURL = ($.browser.msie) ? "file:///web.archive.org/web/20100827141255/http://p/WebDev/Desenvolvimento/portal/pt-br" : "file:///web.archive.org/web/20100827141255/http://p/WebDev/Desenvolvimento/portal/pt-br";
+		if((/mainsite\./).test(document.location)) {
+			if((/entregas/i).test(document.location)){
+				var EXP = /.*entregas\/[\d-]+/;
+				baseURL = EXP.exec(document.location) + "/pt-br";				
+			} else baseURL = "https://web.archive.org/web/20100827141255/http://mainsite.int.dsv-webdev01-poa.terra.com.br/portal/pt-br";
+		}
+		
+		var startupTime = new Date().getTime();
+		/*// Detect framework conflict
+		if(window['$'] && !window['jQuery']) {
+			throw new Error(errorMsgs.otherFrameworkFound);
+		} else if(!window['jQuery']){
+			// Inserting jQuery on the fly	
+			objHead = document.getElementsByTagName("head")[0];
+			objScript = document.createElement("script");
+			objScript.type = "text/javascript";
+			objScript.src = "https://web.archive.org/web/20100827141255/http://stages.com.br/terra/main_site/assets/js/core/jquery-latest.js";
+			objHead.appendChild(objScript);
+		}*/
+		
+		// FlashDetect
+		// http://www.featureblend.com/license.txt
+		if(!FlashDetect) var FlashDetect=new function(){var self=this;self.installed=false;self.raw="";self.major=-1;self.minor=-1;self.revision=-1;self.revisionStr="";var activeXDetectRules=[{"name":"ShockwaveFlash.ShockwaveFlash.7","version":function(obj){return getActiveXVersion(obj);}},{"name":"ShockwaveFlash.ShockwaveFlash.6","version":function(obj){var version="6,0,21";try{obj.AllowScriptAccess="always";version=getActiveXVersion(obj);}catch(err){}; return version;}},{"name":"ShockwaveFlash.ShockwaveFlash","version":function(obj){return getActiveXVersion(obj);}}];var getActiveXVersion=function(activeXObj){var version=-1;try{version=activeXObj.GetVariable("$version");}catch(err){}; return version;};var getActiveXObject=function(name){var obj=-1;try{obj=new ActiveXObject(name);}catch(err){}; return obj;};var parseActiveXVersion=function(str){var versionArray=str.split(",");return{"raw":str,"major":parseInt(versionArray[0].split(" ")[1],10),"minor":parseInt(versionArray[1],10),"revision":parseInt(versionArray[2],10),"revisionStr":versionArray[2]};};var parseStandardVersion=function(str){var descParts=str.split(/ +/);var majorMinor=descParts[2].split(/\./);var revisionStr=descParts[3];return{"raw":str,"major":parseInt(majorMinor[0],10),"minor":parseInt(majorMinor[1],10),"revisionStr":revisionStr,"revision":parseRevisionStrToInt(revisionStr)};};var parseRevisionStrToInt=function(str){return parseInt(str.replace(/[a-zA-Z]/g,""),10)||self.revision;};self.majorAtLeast=function(version){return self.major>=version;};self.FlashDetect=function(){if(navigator.plugins&&navigator.plugins.length>0){var type='application/x-shockwave-flash';var mimeTypes=navigator.mimeTypes;if(mimeTypes&&mimeTypes[type]&&mimeTypes[type].enabledPlugin&&mimeTypes[type].enabledPlugin.description){var version=mimeTypes[type].enabledPlugin.description;var versionObj=parseStandardVersion(version);self.raw=versionObj.raw;self.major=versionObj.major;self.minor=versionObj.minor;self.revisionStr=versionObj.revisionStr;self.revision=versionObj.revision;self.installed=true;}}else if(navigator.appVersion.indexOf("Mac")==-1&&window.execScript){var version=-1;for(var i=0;i<activeXDetectRules.length&&version==-1;i++){var obj=getActiveXObject(activeXDetectRules[i].name);if(typeof obj=="object"){self.installed=true;version=activeXDetectRules[i].version(obj);if(version!=-1){var versionObj=parseActiveXVersion(version);self.raw=versionObj.raw;self.major=versionObj.major;self.minor=versionObj.minor;self.revision=versionObj.revision;self.revisionStr=versionObj.revisionStr;}}}}}();};FlashDetect.release="1.0.3";
+		
+		// Set free section configs
+		globals = {
+			page:{
+				lang:pageLang,
+				country:pageCountry,
+				underTerra:underTerra,
+				baseURL:baseURL,
+				startupTime:startupTime,
+				flash:{
+					installed:FlashDetect.installed,
+					version:FlashDetect.major
+				},
+				transitionEffects:true
+			},
+			user:{
+				lang:userLang,
+				country:userCountry
+			},
+			regions:Regions
+		}
+		
+	})(); // Just once
+	
+	// Include Plugin
+	(function($){ $.extend({ ImportBasePath:globals.page.baseURL,convert2absolutePath:function(includePath){if((/^(http:\/\/|www\.)/).test(includePath)) return includePath;var base = document.location.toString().replace(/[^\/]+$/,''),fileRealPath = includePath.replace(/\.\.\//g,'');if((/^\//).test(includePath)) return (document.domain) ? document.domain + includePath : globals.page.baseURL + includePath;if((/^\.\.\//).test(includePath)){var backDirectories = includePath.match(/(\.\.\/)/g).length;for (var i = 0; i < backDirectories; i++){base = base.replace(/\/$/,'').replace(/[^\/]+$/,'');}}return base + fileRealPath;},useBrowserCache:true, loadedFiles:{}, fileinfo:function(data){ data=data.replace(/^\s|\s$/g,""); var m; if(/\.\w+$/.test(data)){ m=data.match(/([^\/\\]+)\.(\w+)$/); if(m){ if(m[2]=='js'){ return{ filename:m[1], ext:m[2], tag:'script' } } else if(m[2]=='css'){ return { filename:m[1], ext:m[2], tag:'link' } } else { return { filename:m[1], ext:m[2], tag:null } } } else { return { filename:null, ext:null } } } else { m=data.match(/([^\/\\]+)$/); if(m){ return { filename:m[1], ext:null, tag:null } } else { return { filename:null, ext:null, tag:null } } } }, checkTemplate:function(){ $.loadedFiles['link'] = {}; var elementsArray=document.getElementsByTagName('link'); for(var i=0;i<elementsArray.length;i++){ if(elementsArray[i].getAttribute('rel').toLowerCase()=='stylesheet' && elementsArray[i].getAttribute('href')){ $.loadedFiles.link[$.convert2absolutePath(elementsArray[i].getAttribute('href'))] = true; } } $.loadedFiles['script'] = {}; var elementsArray=document.getElementsByTagName('script'); for(var i=0;i<elementsArray.length;i++){ if (((/javascript/i).test(elementsArray[i].getAttribute('type')) || (/javascript/i).test(elementsArray[i].getAttribute('language'))) && elementsArray[i].getAttribute('src')){ $.loadedFiles.script[$.convert2absolutePath(elementsArray[i].getAttribute('src'))] = true; } } }, fileExist:function(filename,filetype,attrCheck){if($.loadedFiles[filetype][$.ImportBasePath+filename]) {return true;} else {return false;} }, createElement:function(filename,filetype){ switch(filetype){ case'script': if(!$.fileExist(filename,filetype,'src')){ var src = $.ImportBasePath+filename;  $.loadedFiles.script[src] = true; if(!$.useBrowserCache) { src += ((/\?/).test(src)) ? '&' : '?'; src += 'c=' + new Date().getTime();} var scriptTag=document.createElement(filetype); scriptTag.setAttribute('language','javascript'); scriptTag.setAttribute('type','text/javascript'); scriptTag.setAttribute('src',src); scriptTag.setAttribute('charset','UTF-8'); modMan.log.checkpoint('Including new JS:\n ' + $.ImportBasePath+filename); return scriptTag } else { return false } break; case'link': if(!$.fileExist(filename,filetype,'href')){ var href = $.ImportBasePath+filename; $.loadedFiles.link[href] = true; if(!$.useBrowserCache) { href += ((/\?/).test(href)) ? '&' : '?'; href += 'c=' + new Date().getTime();} var styleTag=document.createElement(filetype); styleTag.setAttribute('type','text/css'); styleTag.setAttribute('rel','stylesheet'); styleTag.setAttribute('href',href); $.loadedFiles.link[$.ImportBasePath+filename] = true; modMan.log.checkpoint('Including new CSS:\n ' + $.ImportBasePath+filename); return styleTag } else { return false } break; default: return false; break } }, cssReady:function(index,callback){ function check(){ if(document.styleSheets[index]){ if(typeof callback=='function'){callback()} window.clearInterval(checkInterval) } } var checkInterval=window.setInterval(check,200) }, include:function(file,callback){ var headerTag=document.getElementsByTagName('head')[0]; var fileArray=[]; typeof file=='string'?fileArray[0]=file:fileArray=file; for(var i=0;i<fileArray.length;i++){ var elementTag=$.fileinfo(fileArray[i]).tag; var el=[]; if(elementTag!==null){ el[i]=$.createElement(fileArray[i],elementTag); if(el[i]){ headerTag.appendChild(el[i]); if(typeof callback=='function' && i == fileArray.length - 1){ if($.browser.msie){ el[i].onreadystatechange=function(){ if(this.readyState==='complete' || this.readyState==='loaded'){ callback(); } } } else { if(elementTag =='link'){ $.cssReady(i,callback) } else { el[i].onload=function(){ callback(); } } } } } else if (i == fileArray.length - 1 && typeof callback=='function'){ callback(); } } else { return false } } } }); $.checkTemplate(); })(jQuery);
+
+	
+	
+	var load = function(){
+		//-+-+-+-+-+-+-+-+
+		// Local VARS
+		//-+-+-+-+-+-+-+-+
+		var firstLoad = true;
+		var modulesQueue = [];
+		var modTypeInProgress = [];
+		var loaded = {};
+		// Local VARS //
+	
+		var modules = function(modulesOBJ){
+			var modByType = {};
+			
+			// Validation loop
+			for(var no = 0; no < modulesOBJ.length; no++){
+				var mod = modulesOBJ[no];
+				
+				// Check if there are permission for this module in the library
+				if(!modLib.modules[mod.id]) {
+					log.critical(mod.id + " - Script não encontrado.");
+					continue;
+				}
+								
+				if(!modByType[mod.id]) {
+					modTypeInProgress.push(mod.id);
+					modByType[mod.id] = [];
+				}
+				modByType[mod.id].push(mod);				
+			}
+			
+			// Execution loop			
+			for(var modType in modByType){
+								
+				log.checkpoint('Requisitando script para: ' + modType);
+				
+				new tools.jsonP({
+					url:globals.page.baseURL + '/' + modLib.modules.baseDIR + '/' + modLib.modules[modType],
+					wrapperName:modType,
+					cache:$.useBrowserCache,
+					callback:function(moduleOBJ){
+						var moduleID = moduleOBJ.info.id;
+						log.checkpoint('Executando callback do: ' + moduleID);
+						window[moduleID] = moduleOBJ;
+						
+						var modPrefs = modByType[moduleID].shift();
+						
+						
+						var sameTypeQueue = modByType[moduleID];
+						var callModPrefs = !!!modTypeInProgress.length;
+						
+						//alert(modTypeInProgress.length + '\n' + moduleID + '\n' + callModPrefs);
+						
+						if (moduleOBJ.dependencies){
+							log.checkpoint(moduleID + " - Avaliando pré-requisitos para o seletor " + modPrefs.selector);
+							components(moduleOBJ, modPrefs, sameTypeQueue);
+						} else {
+							modulesQueue.push(modPrefs);
+						}
+					}
+				});
+			}	
+			
+		}
+		
+		var components = function(modOBJ, modPrefs, sameTypeQueue){
+			var loadSkin = modPrefs.loadSkin;
+			var dependenciesOBJ = modOBJ.dependencies;
+			var urlsOBJ = {};
+			//alert('aqui \n' + modOBJ.name);
+			
+			
+			if(dependenciesOBJ.underTerra && !globals.page.underTerra) {
+				log.critical(modPrefs.id + ' - Este módulo só pode ser carregado sob o domínio do Terra');
+				if(callModPrefs) preferences();
+				return false;
+			}
+			
+			if(dependenciesOBJ.flash && !globals.page.flash.installed) {
+				log.warning(modPrefs.id + ' - Este módulo precisa de flash para ser instanciado');
+				if(callModPrefs) preferences();
+				contingency(modPrefs);
+				return false;
+			}
+			
+			if(dependenciesOBJ && dependenciesOBJ.js){
+				urlsOBJ['js'] = [];
+				for(var type in dependenciesOBJ.js){
+					var item = dependenciesOBJ.js[type];
+					var baseURL = '/' + modLib[type].baseDIR;
+					if(typeof(item) == 'string') urlsOBJ['js'].push(baseURL + item);
+					else if(typeof(item) == 'object' && item.length){
+						for (var i = 0; i < item.length; i++){
+							if(!modLib[type][item[i]]) {
+								log.critical(item[i] + ' - não encontrado na biblioteca '+ type);
+								return false;
+							}
+							var url = baseURL + '/' + modLib[type][item[i]].file;
+							urlsOBJ['js'].push(url);
+						}
+					}
+					/* alert(
+						'type : ' + type +'\n'+
+						'itemName : ' + itemName +'\n'+
+						'baseURL : ' + baseURL +'\n'
+					); */
+				}
+				//alert(urlsOBJ.toSource());
+				tools.Components.set(urlsOBJ, function(){
+					var shift = modTypeInProgress.shift();
+					//log.checkpoint('chamando internalTimer\n' + modPrefs.id);
+					modulesQueue.push(modPrefs);
+					if(sameTypeQueue.length) {
+						for(var i = 0; i < sameTypeQueue.length; i++){
+							modulesQueue.push(sameTypeQueue[i]);
+						}
+					}
+					if(!modTypeInProgress.length) {
+						//alert('chamando módulos. logo após ' + modPrefs.id);
+						preferences();
+					}
+				});
+			} else {				
+				var shift = modTypeInProgress.shift();
+				modulesQueue.push(modPrefs);
+				if(sameTypeQueue.length) {
+					for(var i = 0; i < sameTypeQueue.length; i++){
+						modulesQueue.push(sameTypeQueue[i]);
+					}
+				}
+				
+				if(!modTypeInProgress.length) {
+					preferences();
+				}
+			}
+		}
+		
+		var play = function() {
+			var now = function(modPrefs){
+				//alert("play para " + modPrefs.id);
+				
+				var PARAMS = Interface(modPrefs);
+				if (!PARAMS) new contingency(modPrefs);
+				else {
+					log.checkpoint(modPrefs.id + " - Creating new instance.");
+					var instance = new window[modPrefs.id].CONSTRUCTOR(PARAMS,jQuery);
+					loaded[modPrefs.id + '_' + modPrefs.selector] = true;
+					
+					if(!modulesQueue.length && globals.page.lazyLoad) {
+						$(window).unbind('scroll');
+					}
+				}
+				
+			}
+			
+			var onViewPort = function(modPrefs){
+				if($(modPrefs.selector + ":in-viewport").length) {
+					play.now(modPrefs); 
+				} else {
+					log.checkpoint('scrolling');
+					
+					$(window).scroll(function() { 		
+						if(!loaded[modPrefs.id + '_' + modPrefs.selector] && $(modPrefs.selector + ":in-viewport").length) {
+							new play.now(modPrefs);
+						}
+					});
+				}
+			}
+
+			return {
+				now:now,
+				onViewPort:onViewPort
+			}
+			
+		}();
+		
+		var preferences = function(){
+			//alert('em preferences: ' + modulesQueue.length + " itens");
+				if(firstLoad){		
+					$(document).ready(function(){
+						while(modulesQueue.length){
+							var modPrefs = modulesQueue.shift();
+							if(globals.page.lazyLoad) new play.onViewPort(modPrefs);
+							else play.now(modPrefs);
+							
+							if(!modulesQueue.length) firstLoad = false;
+						}
+					});			
+				} else {
+					while(modulesQueue.length){
+						var modPrefs = modulesQueue.shift();
+						play.now(modPrefs);					
+					}
+				}
+		}
+		
+		var Interface = function (modPrefs){
+			log.checkpoint(modPrefs.id + " - Analisando interface.");
+			
+			
+			var moduleOBJ = window[modPrefs.id];
+			
+			//-+-+-+-+-+-+-+-+-+-+-+-+-+
+			// Double-check for basic dependencies
+			//-+-+-+-+-+-+-+-+-+-+-+-+-+
+			if(!$(modPrefs.selector).length) {
+				log.critical(modPrefs.id+' - Recipiente (DOM element) não encontrado. Favor, verificar seletor e template.');
+				return false;
+			}
+					
+			// Checking for module object
+			if(!moduleOBJ) {
+				log.critical(modPrefs.id + ' - Não foi possível localizar o script para este módulo. Confirme a localização do js e o nome do objeto carregado.' )
+				return false;
+			}
+			
+			// Checking for constructor
+			if (!moduleOBJ.CONSTRUCTOR){
+				log.critical(modPrefs.id + ' - Não foi possível localizar um construtor para este módulo. Verifique se o objeto possui um método chamado "CONSTRUCTOR".' )
+				return false;
+			}	
+			
+			// Checking for contingency method
+			/* if (!moduleOBJ.CONTINGENCY){
+				log.warning(modPrefs.id + ' - Este módulo não possui um método de contingência. Em caso de erros, apenas o procedimento padrão será adotado.' );
+			}	 */		
+			// Double-check for basic dependencies //
+			
+			
+			var PARAMS = {}; // private object - stores valid params		
+		
+			//-+-+-+-+-+-+-+-+-+-+-+-+-+
+			// Validate specific PARAMS
+			//-+-+-+-+-+-+-+-+-+-+-+-+-+
+			if (moduleOBJ.params) {
+				var params = false;
+				if(modPrefs.params) params = $.extend({}, modPrefs.params);
+				
+				var defaults = moduleOBJ.params.defaults;
+				if(defaults) params = $.extend(defaults, modPrefs.params);
+				
+				var needed = moduleOBJ.params.needed;
+				if (needed) {
+					// Check if there are instructions for needed params (help propertie)
+					if (!moduleOBJ.params.helpMsg /* deprecated */ && !moduleOBJ.params.help) {
+						log.critical(modPrefs.id + ' - There are no help instructions for needed params. Create an "help" propertie inside that object.');
+						return false;
+					}
+					// if none was set
+					if (!params) {
+						log.critical(modPrefs.id + ' - Requires some especific params. Documentation: ' + moduleOBJ.params.helpMsg);
+						return false;
+					}
+					for (var paramName in needed){
+						// Checking if the needed param was especified
+						if(!params[paramName] && typeof(params[paramName]) != 'boolean' && params[paramName] != 0){
+							log.critical(modPrefs.id + ' - Param missing: "' + paramName +'". It also should match this model: ' + needed[paramName]);
+							return false;
+						}
+						if(typeof(needed[paramName]) == 'string'){
+							switch(needed[paramName].toLowerCase()){
+								// Validating normal strings
+								case 'string':
+									if (typeof(params[paramName]) == 'string') continue;
+									else {
+										log.critical(modPrefs.id + ' - ' + paramName + ' should be an string');
+										return false;
+									}
+								break;							
+								
+								// Validating boolean
+								case 'boolean':
+									if (typeof(params[paramName]) == 'boolean') continue;
+									else {
+										log.critical(modPrefs.id + ' - "' + paramName + '" should be boolean');
+										return false;
+									}
+								break;
+								
+								// Validating number
+								case 'number':
+									if (typeof(params[paramName]) == 'number') continue;
+									else {
+										log.critical(modPrefs.id + ' - ' + paramName + ' should be an number');
+										return false;
+									}
+								break;
+								
+								// Validating array
+								case 'array':
+									if (typeof(params[paramName]) == 'object' && params[paramName].length) continue;
+									else {
+										log.critical(modPrefs.id + ' - ' + paramName + ' should be an array');
+										return false;
+									}
+								break;
+								
+								// if its not one of these, but its still string
+								default:
+									// Double check for RegExp (FIrefox 2)
+									if(needed[paramName].exec(params[paramName])) continue;
+									log.critical(modPrefs.id + ' - Unknown specified type inside the string "' + paramName + '". Check the constructor object.');
+									return false;
+								break;
+							}
+						} else if(typeof(needed[paramName]) == 'object' && (/^\/.*\/.*/).exec(needed[paramName].toString())) {
+							// Validating RegExp
+							if(needed[paramName].exec(params[paramName])) continue;
+							else{
+								log.critical(modPrefs.id + ' - ' + paramName + ' should match this RegExp: ' + needed[paramName]);
+								return false;
+							}
+						} else {
+							// Double check for RegExp (FIrefox 2)
+							if(needed[paramName].exec(params[paramName])) continue;
+							log.critical(modPrefs.id + ' - Unknown specified type for "' + paramName + '". Check the constructor object.');
+							return false;
+						}
+					}
+				}
+				
+				// If everything is alright
+				for(var paramName in params){
+					PARAMS[paramName] = params[paramName];
+				}
+				log.checkpoint(modPrefs.id + ' - Parâmetros OK.');
+			}
+			// Validate specific PARAMS //
+			
+			
+			//-+-+-+-+-+-+-+-+-+-+-+-+-+
+			// Adjust module language and region
+			//-+-+-+-+-+-+-+-+-+-+-+-+-+
+			PARAMS["LNG"] = {};
+			PARAMS["RGN"] = {};
+			if (moduleOBJ.locale) {
+				// LNG
+				if(moduleOBJ.locale.LNG) {
+					if(moduleOBJ.locale.LNG[globals.page.lang.toLowerCase()]) {
+						PARAMS["LNG"] = moduleOBJ.locale.LNG[globals.page.lang.toLowerCase()];
+						// Check for default specification
+						if (!moduleOBJ.locale.defaultLNG) log.warning(modPrefs.id + ' - A propriedade "defaultLNG" não foi encontrada. Este módulo pode não funcionar corretamente em outros idiomas.');
+					} else {
+						// Check for default specification
+						if (!moduleOBJ.locale.defaultLNG) {
+							log.critical(modPrefs.id + ' - Não existem variáveis de idioma para "'+globals.user.lang+'". A propriedade "defaultLNG" também não foi definida. ');
+							return false;
+						}
+						else {
+							PARAMS["LNG"] = moduleOBJ.locale.LNG[moduleOBJ.locale.defaultLNG.toLowerCase()];
+							log.warning(modPrefs.id + ' - Não existem variáveis de idioma para "'+globals.user.lang+'". O padrão foi implementado.')
+						}
+					}
+				} else {
+					log.warning(modPrefs.id+ " - O objeto 'LNG' não foi encontrado. Verifique se ele realmente é desnecessário.");
+				}
+				
+				// RGN
+				if(moduleOBJ.locale.RGN) {
+					if(moduleOBJ.locale.RGN[globals.page.country.toUpperCase()]) {
+						PARAMS["RGN"] = moduleOBJ.locale.RGN[globals.page.country.toUpperCase()];
+						// Check for default specification
+						if (!moduleOBJ.locale.defaultRGN.toUpperCase()) log.warning(modPrefs.id + ' - A propriedade "defaultRGN" não foi encontrada. Este módulo pode não funcionar corretamente em outros idiomas.');
+					} else {
+						// Check for default specification
+						if (!moduleOBJ.locale.defaultRGN.toUpperCase()) {
+							log.critical(modPrefs.id + ' - Não existem variáveis de região para "'+globals.page.country+'". A propriedade "defaultRGN" também não foi definida. ');
+							return false;
+						}
+						else {
+							PARAMS["RGN"] = moduleOBJ.locale.RGN[moduleOBJ.locale.defaultRGN.toUpperCase()];
+							log.warning(modPrefs.id + ' - Não existem variáveis de região para "'+globals.page.country+'". O padrão foi implementado.')
+						}
+					}
+				} else {
+					log.warning(modPrefs.id+ " - O objeto 'RGN' não foi encontrado. Verifique se ele realmente é desnecessário.");
+				}
+				
+			}
+				
+			// Extendind locale objects with controlled vocabulary
+			/*
+			$.extend(PARAMS['LNG'], controlled.LNG);
+			$.extend(PARAMS['RGN'], controlled.RGN); 
+			*/
+			PARAMS['LNG']['controlled'] = controlled.LNG;
+			PARAMS['RGN']['controlled'] = controlled.RGN;
+			
+			log.checkpoint(modPrefs.id + ' - Configurações de seção (LNG e/ou RGN) foram avaliadas.');			
+			// Adjust module language and region //
+			
+			
+			//-+-+-+-+-+-+-+-+-+-+-+-+-+
+			// Skin interpretation
+			//-+-+-+-+-+-+-+-+-+-+-+-+-+
+					
+			// Validating skin settings
+			if(modPrefs.loadSkin){
+				if(!moduleOBJ.skins) {
+					log.critical(modPrefs.id + " - o parâmetro 'loadSkin' foi definido como 'true', mas o módulo não possui a propriedade um objeto 'skins'. Certifique-se \que módulo requer arquivos externos para habilitar esta opção.");
+					return false;
+				}
+				
+				var skinsOBJ = moduleOBJ.skins;			
+				var skin = {};
+				// Checking skin presence
+				if(modPrefs.skinName && skinsOBJ.items[modPrefs.skinName]) {
+					skin.id = modPrefs.skinName;
+					log.checkpoint(modPrefs.id + " - Validando skin: " + modPrefs.skinName);
+					
+				} else if (skinsOBJ.items[skinsOBJ.defaultSkinName]) {				
+					skin.id = skinsOBJ.defaultSkinName;
+					log.checkpoint(modPrefs.id + " - Validando skin padrão.")
+				} else if (skinsOBJ.items[skinsOBJ.backupSkinName]){
+					skin.id = skinsOBJ.backupSkinName;
+					log.critical(modPrefs.id + " - Validando skin de backup.");
+					return false;
+				} else {
+					if (!skinsOBJ.items[skinsOBJ.defaultSkinName]) {
+						log.critical(modPrefs.id + " - O skin padrão não foi localizado. Verifique se o objeto é uma pririedade de 'items' e se o o seu nome tem o sufix 'skn_'.");
+						return false;
+					}
+				}
+				
+				// Validating skin interface
+				var currentSkin = skinsOBJ.items[skin.id]
+				if(!currentSkin.tplBody) {
+					log.critical(modPrefs.id + " - o parâmetro 'tplBody' não foi encontrado.");
+					return false;
+				} else {
+					if(typeof(currentSkin.tplBody) != 'string') {
+						log.critical(modPrefs.id + " - o parâmetro 'tplBody' deve ser uma string contendo a estrutura HTML para o módulo.");
+						return false;
+					}
+				}
+				
+				// Parsing template
+				if (PARAMS["LNG"] || PARAMS["RGN"]) {
+					var lngOBJ = (PARAMS["LNG"]) ? PARAMS["LNG"] : false;
+					var rgnOBJ = (PARAMS["RGN"]) ? PARAMS["RGN"] : false;
+					
+					var TPL = tools.parseTPL({LNG:lngOBJ, RGN:rgnOBJ}, currentSkin.tplBody);
+				}
+				
+				// Including styles
+				if(currentSkin.css && currentSkin.css.length) {
+					var moduleBaseURL = '/' + modLib.modules.baseDIR + '/' + modPrefs.id.toLowerCase().replace('mod','') + '/';
+					
+					if(typeof(currentSkin.css) == 'string') {
+						tools.Components.set({css:moduleBaseURL + currentSkin.css});
+					} else {
+						var newCssArray = [];
+						for(var i = 0; i < currentSkin.css.length;i++){
+							var currentCss = moduleBaseURL + currentSkin.css[i];
+							newCssArray.push(currentCss);
+						}
+						tools.Components.set({css:newCssArray});
+					}
+				}
+				
+				if(TPL && modPrefs.loadSkin) {
+					$(modPrefs.selector).replaceWith(TPL);
+					var selectorAttr = TPL.match(/(id=|class=)+('|")[^'"]+['"]/gi)[0];
+					var newSelector = ((/id/i).test(selectorAttr)) ? selectorAttr.replace(/(id=)|( )/gi, '#').replace(/['\"]/g,'') : selectorAttr.replace(/(class=)|( )/gi, '.').replace(/['\"]/g,'');
+					//alert(newSelector);
+				}
+			}
+			// Deliver recipient
+			PARAMS['preLoadedSkin'] = !modPrefs.loadSkin;
+			PARAMS['skinName'] = (skin && skin.id) ? skin.id : modPrefs.skinName;
+			PARAMS["recipient"] = (newSelector) ? $(newSelector) : $(modPrefs.selector);
+			
+			// Define loading state
+			//PARAMS["recipient"].addClass("loading");
+			
+			// Applying transition effects
+			if(globals.page.transitionEffects) $(modPrefs.selector).hide().fadeIn('slow');
+			// Skin interpretation//
+			
+			//alert(PARAMS.id + '\n' +  $(modPrefs.selector).length);
+			return PARAMS;
+		}
+		
+		var contingency = function(modOBJ){
+			log.checkpoint(modOBJ.id + ' - Problemas encontratos. Disparando método de contingência.');
+			if($(modOBJ.selector).length) {
+				var skinsOBJ = window[modOBJ.id].skins;
+				var backupSkinName = skinsOBJ.backupSkinName;
+				if(backupSkinName && skinsOBJ.items[backupSkinName]){
+					log.checkpoint(modOBJ.id + ' - Incluindo template de backup - ' + skinsOBJ.backupSkinName);
+					
+					tools.Components.set(skinsOBJ.items[backupSkinName].css, function(){
+						$(modOBJ.selector).html(skinsOBJ.items[backupSkinName].tplBody);
+					});
+					
+					
+				} else $(modOBJ.selector).html('Um problema foi detectado neste módulo.');
+			}
+			else log.critical(modOBJ.id + ' - Não foi possível localizar um elemento HTML para receber o template de backup.');
+		}
+		
+		return {
+			modules:modules
+		}
+	}();
+	
+	// Public //
+	var start = function(setupOBJ){
+		
+		//-+-+-+-+-+-+-+-+-+-+-+-+
+		// Parsing configs
+		//-+-+-+-+-+-+-+-+-+-+-+-+
+		if(setupOBJ.configs) {
+			if(setupOBJ.configs.pageCountry && !setupOBJ.configs.baseURL) globals.page.baseURL = (setupOBJ.configs.pageCountry == "BR") ? "https://web.archive.org/web/20100827141255/http://stf.terra.com.br/portal" : "https://web.archive.org/web/20100827141255/http://stf.terra.com/portal";
+			if(setupOBJ.configs.baseURL) globals.page.baseURL = setupOBJ.configs.baseURL.replace(/\/$/,'');
+			
+			if(setupOBJ.configs.debug || (/trrDebug/).test(document.location)) tools.console();
+			if(setupOBJ.configs.lazyLoad) {
+				$.include(globals.page.baseURL + '/_js/jquery.viewport.js');
+				globals.page.lazyLoad = true;
+			}
+			
+			globals.page.transitionEffects = setupOBJ.configs.transitionEffects;
+			if(setupOBJ.configs.pageCountry && setupOBJ.configs.pageCountry.toLowerCase() != 'auto') globals.page.country = setupOBJ.configs.pageCountry.toUpperCase();
+			if(setupOBJ.configs.pageLang && setupOBJ.configs.pageLang.toLowerCase() != 'auto') globals.page.lang = setupOBJ.configs.pageLang;
+		}
+		
+		// Adjusting configs for external files
+		if(!setupOBJ.configs || !setupOBJ.configs.baseURL){
+			if((/P\:/).test(document.location)) globals.page.baseURL = ($.browser.msie) ? "file:///web.archive.org/web/20100827141255/http://p/WebDev/Desenvolvimento/portal/pt-br" : "file:///web.archive.org/web/20100827141255/http://p/WebDev/Desenvolvimento/portal/pt-br";
+			if((/mainsite\./).test(document.location)) {
+				if((/entregas/i).test(document.location)){
+					var EXP = /.*entregas\/[\d-]+/;
+					globals.page.baseURL = EXP.exec(document.location) + "/pt-br";				
+				} else globals.page.baseURL = "https://web.archive.org/web/20100827141255/http://mainsite.int.dsv-webdev01-poa.terra.com.br/portal/pt-br";
+			}
+		}
+		
+		$.ImportBasePath = globals.page.baseURL;
+		$.useBrowserCache = !(/trrDebug|noCache/).test(document.location);
+		if($.browser.safari) $.useBrowserCache = false;
+		
+		// Set locale objects
+		errorMsgs = (errorMsgs[globals.user.lang]) ? errorMsgs[globals.user.lang] : errorMsgs[globals.user.lang];
+		controlled.LNG = (controlled.LNG[globals.page.lang]) ? controlled.LNG[globals.page.lang] : controlled.LNG[controlled.defaultLNG.toLowerCase()];
+		controlled.RGN = (controlled.RGN[globals.page.country]) ? controlled.RGN[globals.page.country] : controlled.RGN[controlled.defaultRGN.toUpperCase()];
+		
+		// Habilitando expetion languages em CSS (exceto BR)
+		if(globals.page.lang != "br") {
+			if(globals.page.lang == "ar") $(document.body).addClass('LNG_es' ); // AR extends ES
+			$(document.body).addClass('LNG_' + globals.page.lang);
+		}
+		
+		
+		//-+-+-+-+-+-+-+-+-+-+-+-+
+		// Loading library
+		//-+-+-+-+-+-+-+-+-+-+-+-+
+		new tools.jsonP({
+			url: globals.page.baseURL + "/_js/core.modLib.js",
+			wrapperName: "trrModLib",
+			cache:$.useBrowserCache,
+			callback:function(jsonOBJ){
+				window['modLib'] = jsonOBJ;
+				if(setupOBJ.modules) load.modules(setupOBJ.modules);
+			}
+		});
+		
+		return modMan.start = load.modules;
+	}
+	
+	var tools = {
+		console:function(debugMode){
+			debugMode = debugMode || "firebug";
+			if (!log.console.active) {
+				if(!this.console.firstLoad) {
+					this.console.items = [];
+					this.console.firstLoad = true;
+				}
+				log.console.active = true;
+				log.checkpoint('Modo debug ATIVO');
+			}
+			else {
+				if(!this.console.firstLoad) this.console.items = [];
+				var msg = "Modo debug INATIVO";
+				log.checkpoint(msg);
+				log.console.active = false;
+				alert(msg);
+			}
+		},
+		jsonP:function(configsOBJ){
+			var callback = configsOBJ.callback;
+			if(!callback) {
+				log.critical("É preciso indicar um método (callback) para tratar o arquivo:\n" + url );
+				return false;
+			}
+			var wrapperName = configsOBJ.wrapperName || "jsonp";
+
+			var url = configsOBJ.url;
+			
+			var extraParams = configsOBJ.extraParams || false;
+
+			// Json in body
+			if(window[wrapperName]) {
+				log.checkpoint(wrapperName + " - Recuperando json do corpo da página.");
+				configsOBJ.callback(window[wrapperName], extraParams);
+				return true;
+			}
+
+			if(!configsOBJ.cache){
+				var cache = new Date().getTime();
+				url +=  (url.indexOf('?') != -1) ? "&" : "?";
+				url += "cache=" + cache;
+			}
+
+			if(!window[wrapperName]) {
+				window[wrapperName] = function(jsonOBJ){
+					if (typeof(jsonOBJ) != 'object') {
+						log.critical("Erro no parse do arquivo:\n" + url);
+						return false;
+					}
+					//log.checkpoint('disparando resposta para ' + wrapperName)
+					configsOBJ.callback(jsonOBJ, extraParams);
+				};
+			}
+
+			var objHead = document.getElementsByTagName("head")[0];
+			var objScript = document.createElement("script");
+			objScript.type = "text/javascript";
+			objScript.src = url;
+			objScript.charset ="utf-8";
+			objHead.appendChild(objScript);
+
+			objScript.onload = objScript.onreadystatechange = function(){
+				if(objScript.readyState) {
+					if (objScript.readyState == 'complete') objHead.removeChild(objScript);
+				} else objHead.removeChild(objScript);
+
+				try {
+					if(objScript && objScript.readyState > 3) objHead.removeChild(objScript);
+				} catch (err){
+					if(objScript) objHead.removeChild(objScript);
+					log.critical("Erro ao o arquivo:" + url + ". Descrição: " + err);
+				}
+			}
+		},
+		Components:function(callback){
+			
+			var loaded = {} // Stores references to already loaded files
+			
+			var matchLibrary = function(ext, url){
+				if (!loaded[ext]) return false;
+				else {
+					for(var i = 0; i < loaded[ext].length; i++){
+						if(loaded[ext][i] == url) return true;
+					}					
+				}
+				return false;
+			}
+			
+			var set =function(componentsOBJ, callback){
+				if(typeof(componentsOBJ) != 'object' || (!componentsOBJ['js'] && !componentsOBJ['css'])) {
+					if(callback) callback();
+					return false;
+				}
+				var componentsARRAY = [];
+				if(componentsOBJ['css']) componentsARRAY = componentsARRAY.concat(componentsOBJ['css']);				
+				if(componentsOBJ['js']) componentsARRAY = componentsARRAY.concat(componentsOBJ['js']);
+			
+				log.checkpoint('checking components: \n' + componentsARRAY.join('\n'));
+				$.include(componentsARRAY, callback);
+			}
+			
+			var confirm = function(ext, url){
+				if(!loaded[ext]) loaded[ext] = [];
+				loaded[ext].push(url);
+			}
+			
+			return {
+				matchLibrary:matchLibrary,
+				set:set,
+				confirm:confirm
+			}
+		}(),
+		parseTPL:function (variablesOBJ, templateSTR){
+			if(!variablesOBJ || !templateSTR) return templateSTR;
+			
+			var tagPrefix = "({|##)",
+				tagSufix = "(}|##)",
+				placeholderEXP = new RegExp('{\s?foreach([^{]|{[^\/])+{\/foreach}'+'|'+tagPrefix + '[\\w\\d._[\\]\'\"-]+' + tagSufix, 'gi'),
+				tags = templateSTR.match(placeholderEXP);
+			
+			if(!tags) return templateSTR;
+			
+			while(tags.length){
+				var currentTag = tags.shift(),
+					levelsSTR = (currentTag.match(/foreach/gi)) ? currentTag.match(/from=[^}]+/)[0].replace(/from=/, '') : currentTag.replace(/\[['"]?/,'.').replace(/['"]?\]/,''),
+					tagMarkersEXP = new RegExp('^' + tagPrefix + '|' + tagSufix + '$', 'gi'),
+					levels = levelsSTR.replace(tagMarkersEXP,'').split('.'),
+					dataOBJ = variablesOBJ;
+					
+				while(levels.length){
+					var currentLevel = levels.shift(),
+						currentData = dataOBJ[currentLevel];
+
+					if(currentData && !levels.length) {
+						if(currentTag.match(/foreach/gi) && typeof(currentData) == 'object') {
+							var loopItem = currentTag.replace(/^{foreach[^}]+}|{\/foreach}$/gi,''),
+								tmpData = '';
+
+							for(var key in currentData){
+								tmpData += loopItem.replace(/{value/gi,'{'+currentLevel+'["'+key+'"]').replace(/{key}/,key);
+							}
+							tags=tags.concat(tmpData.match(/{[^}]+}/g));
+							currentData = tmpData;
+						} 
+						templateSTR = templateSTR.replace(currentTag, currentData);
+					}
+					else if(currentData) dataOBJ = currentData;
+					else break;
+				}
+			}
+			
+
+			return templateSTR;
+		},
+		adjustTime:function(dateOBJ){
+			var time = dateOBJ.toLocaleTimeString();
+			
+			//var hours = time.split(':')[0];
+			var hours = dateOBJ.getHours();
+			//var minutes = time.split(':')[1];
+			var minutes = dateOBJ.getMinutes();
+			
+			var usa = (modMan.globals.page.country == 'US') ? true : false;
+			var sufix = false;
+			var sep = "h";
+			
+			if(modMan.globals.page.country != 'BR') sep = ":";
+			if (usa){
+				if(hours>12) {
+					hours = hours - 12;
+					sufix = "pm";
+				} else {
+					sufix = "am";
+				}
+			}
+			if(hours<10) hours = '0' + hours.toString().match(/\d$/);
+			if(minutes<10) minutes = '0'+minutes.toString().match(/\d$/);
+			
+			var parsedTime = hours + sep + minutes;
+			if(sufix) parsedTime += sufix;
+			
+			return parsedTime;
+		},
+		/*
+		 * PARAMETERS
+		 * - url (URL of the popup)
+		 * - name (Name of the popup)
+		 * - w (Width)
+		 * - h (Height)
+		 * - scrolling (no = 0 / yes = 1)
+		 */
+		openPopup:function(url,name,w,h,scrolling) {
+			var leftPosition = (screen.width) ? (screen.width-w)/2 : 0;
+			var topPosition = (screen.height) ? (screen.height-h)/2 : 0;
+			var settings = "height="+h+",width="+w+",top="+topPosition+",left="+leftPosition+",scrollbars="+scrolling+",resizable=0";
+			return window.open(url,name,settings);
+		},
+		isNewGalleryUrl:function(url){			
+			for(var i = 0; i < newGalleriesEXP .length;i++){
+				if(newGalleriesEXP[i].test(url)) return true;
+			}
+			return false;
+		},
+		cookie:{
+			create:function(name,value,hours){
+				if (hours) {
+					var date = new Date();
+					date.setTime(date.getTime()+(hours*60*60*1000));
+					var expires = "; expires="+date.toGMTString();
+				}
+				else var expires = "";
+				document.cookie = name+"="+value+expires+"; path=/";
+				
+				return undefined;
+			},
+			read:function(name){
+				var nameEQ = name + "=";
+				var ca = document.cookie.split(';');
+				for(var i=0, c; c = ca[i];i++) {
+					while (c.charAt(0)==' ') c = c.substring(1,c.length);
+					if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+				}
+				return null;
+			},
+			erase:function(name){
+				this.create(name,"",-1);					
+				//return undefined;
+			}
+		}
+	}
+	
+	var log = {
+		console:{
+			startupTime:globals.page.startupTime,
+			lastAlert:0,
+			firstLoad:true,
+			active:false,
+			mode:'firebug', // it could be "false", "firebug" or "console"
+			counter:{
+				warning:0,
+				critical:0
+			},
+			items:[]
+		},
+		setItem:function(itemOBJ){
+			if (this.console.active && !this.console.firstLoad) this.console.items = [];
+			
+			var time = (this.console.lastAlert) ? new Date().getTime() - this.console.lastAlert : new Date().getTime() - this.console.startupTime;
+			this.console.lastAlert = new Date().getTime();
+			itemOBJ['time'] = time;			
+			
+			this.console.items.push(itemOBJ);
+						
+			if(typeof(log.console.counter[itemOBJ.type]) == 'number') log.console.counter[itemOBJ.type]++;
+			
+			this.report();
+			//if(itemOBJ.type == 'critical') return false;
+		},
+		report:function(){
+			if (this.console.active) {
+			
+				if (this.console.mode == 'firebug'){
+					for(var item = 0; item < this.console.items.length; item++){
+						var logAlert = this.console.items[item];
+						if (window.console) console.log(logAlert.time +"ms: [" + logAlert.type.toUpperCase() + "] " + logAlert.msg);
+						else alert(logAlert.time +"ms: [" + logAlert.type.toUpperCase() + "] " + logAlert.msg);
+					}
+				}
+
+				this.console.firstLoad = false;
+			}
+			
+			// Report critical errors
+			if (this.console.counter.critical > 0) {
+				//throw new Error('Erro(s) crítico(s) encontrado(s): '+this.console.counter.critical);
+			}
+		},
+		checkpoint:function(msg){
+			var item = { type:'checkpoint', msg:msg }
+			this.setItem(item);
+		},
+		warning:function(msg){
+			var item = { type:'warning', msg:msg }
+			this.setItem(item);
+		},
+		critical:function(msg){
+			var item = { type:'critical', msg:msg }
+			this.setItem(item);
+		},
+		help:function(msg){
+			var item = { type:'help', msg:msg }
+			this.setItem(item);
+		}		
+	}
+	
+	var help = function(){
+		if (!log.console.active) tools.console();
+		var publicMethods = [];
+		for(method in tools){
+			if(method != 'help') publicMethods.push(method);
+		}
+		var msg = ""+
+		"Total de métodos transversais: " + (publicMethods.length)+".\n"+
+		"São eles: " + publicMethods.join(', ') + ".";
+		log.help(msg);
+	}
+	
+	var observer = {
+		list:{}, // stores cross-component methods
+		set:function(name, method){
+			if(!this.list[name]) this.list[name] = [];
+			
+			this.list[name].push(method);
+		},
+		play:function(name){
+			if (this.list[name]) {
+				for(var no = 0; no < this.list[name].length; no++){
+					this.list[name][no].call();
+				}
+			} else log.warning(LNG.couldntFondMethodsFor + ' "' + name + '"');
+		}
+	}
+	
+	return {
+		globals:globals,
+		start:start,
+		load:load.modules,
+		log:log,
+		tools:tools,
+		help:help
+	}
+}(jQuery);
+}
+
+/*
+     FILE ARCHIVED ON 14:12:55 Aug 27, 2010 AND RETRIEVED FROM THE
+     INTERNET ARCHIVE ON 05:30:17 Jun 23, 2026.
+     JAVASCRIPT APPENDED BY WAYBACK MACHINE, COPYRIGHT INTERNET ARCHIVE.
+
+     ALL OTHER CONTENT MAY ALSO BE PROTECTED BY COPYRIGHT (17 U.S.C.
+     SECTION 108(a)(3)).
+*/
+/*
+playback timings (ms):
+  capture_cache.get: 0.317
+  load_resource: 75.907
+  PetaboxLoader3.resolve: 24.504
+  PetaboxLoader3.datanode: 15.996
+*/

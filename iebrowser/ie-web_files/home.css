@@ -1,0 +1,121 @@
+@charset "ISO-8859-1"; 
+#hid {display:none; position:absolute; left:-5000px; top:-5000px;}
+
+#tv {width:344px; height:255px; background:url(/web/20100827141139im_/http://www.baixaki.com.br/img/v8/home/tv-bg.png) no-repeat; position:relative; padding:0 61px 0 10px; overflow:hidden; float:left;}
+#tv img {margin-left:-10px; margin-bottom:7px; display:block;}
+#tv a { font-size:20px; font-weight:bold;}
+#tv span {font-size:13px; color:#434343; font-weight:normal;display:block;}
+#tv #nav {width:46px; height:170px; overflow:hidden; position:absolute; top:5px; left:359px;}
+#tv #nav img { margin:0 0 5px 0; cursor:pointer; width:46px; height:30px;}
+#tv .transp {filter:alpha(opacity=20);-moz-opacity:.20;opacity:.20; margin-bottom:5px;}
+#tv .opac { filter:alpha(opacity=100);-moz-opacity:1.0;opacity:1.0;margin-bottom:5px;}
+#adbox1 { width:300px; height:250px; position:absolute; top:0px; right:0px;}
+#adbox2 {width:300px; height:250px; margin-top:27px;}
+#adsfundo {padding:15px 0 15px 0; height:190px;}
+
+
+#DestTop {width:224px; height:243px;margin-left:12px;}
+#DestTop, #jogos, #jgoon {float:left;border-top:1px solid #DEDEDE; border-bottom:1px solid #DEDEDE; overflow:hidden; padding-top:7px; position:relative;}
+#DestTop b, #jogos b, #jgoon b, #maisbxk b {font-size:11px; font-weight:bold; color:#434343; line-height:9px;}
+#DestTop img, #jogos img, #jgoon img { margin:5px 0 7px 0; clear:both; display:block;}
+#DestTop img {width:224px; height:112px;}
+#DestTop a { text-align:justify; font-weight:bold; font-size:13px; line-height:14px; } 
+#DestTop .sec {border-top:1px solid #DEDEDE; margin-top:10px; padding-top:7px;}
+#DestTop .sec b { line-height:16px;}
+
+#jogos {height:451px;}
+#jgoon {height:190px; border-bottom:none;}
+#jogos, #jgoon {margin-top:3px; width:315px;}
+#jogos img.um { width:315px; height:158px;}
+#jogos a, #maisbxk a {font-size:14px; text-align:justify; font-weight:bold; word-spacing:-1px;} 
+
+.j2, .j3 {position:absolute; top:240px;width:146px; overflow:hidden; text-align:justify;}
+#jogos .j2 a, #jogos .j3 a, #jgoon .j2, #jgoon .j3 {font-size:12px; font-weight:normal; line-height:14px;}
+ .j2 img,  .j3 img {width:146px; height:82px;}
+ .j1 {text-align:left;}
+.j2 {left:0px; }
+.j3 {right:0px;}
+.j4 {position:absolute; bottom:10px; left:0px; width:315px; text-align:justify;}
+
+
+#jgoon .j2, #jgoon .j3 {top:10px;}
+
+
+
+
+#papeis, #papeiscat {width:298px; border:1px solid #434343; height:180px; background-color:#FFFFFF; margin-top:3px; padding:0; overflow:hidden;}
+#papeis { width:299px; }
+#papeis img, #papeiscat img  {float:left; border-right:1px solid #434343; cursor:pointer; }
+#papeis #paptv img {display:block; width:298px; height:149px; border-bottom:1px solid #434343;}
+
+
+#papeis #tvp5, #papeiscat #tvp5 {overflow:hidden; border-right:none;}
+#papeis .transp, #papeiscat .transp {filter:alpha(opacity=40);-moz-opacity:.40;opacity:.40;}
+#papeis .opac, #papeiscat .opac { filter:alpha(opacity=100);-moz-opacity:1.0;opacity:1.0;}
+
+
+#papeiscat {width:414px; height:250px;}
+#papeiscat #paptv img {display:block; width:414px; height:206px; border-bottom:1px solid #434343;}
+
+
+
+
+
+
+/**/
+#maisbxcont {width:620px;  position:absolute; top:0px; right:0px;}
+#maisbxk {border-top:1px solid #DEDEDE; margin-top:3px; position:relative; width:620px;}
+#maisbxk img { margin:3px 0 3px 0; clear:both; display:block; width:250px; height:125px;}
+#maisbxk ul {list-style:none; margin:0; padding:0; width:620px; position:absolute; top:0px; right:0px;}
+#maisbxk ul li {border-top:1px solid #DEDEDE; list-style:none; padding:9px 0 9px; display:block; width:350px; height:44px; position:relative; left:270px;}
+#maisbxk ul li.umli {border-top:none;}
+#maisbxk ul li.left {border-top:none;width:250px; overflow:hidden; clear:both; position:absolute; top:0px; left:0px; height:180px; padding-bottom:0px;}
+/**/
+
+
+#tops {position:absolute; right:0px; height:auto;}
+#tops ul { list-style:none; margin:0; padding:0; width:300px;}
+#tops ul li { list-style:none; margin:0; padding:0; width:190px; height:32px; overflow:hidden; border-top:1px solid #DEDEDE; padding:10px 10px 9px 100px; margin-top:3px; position:relative;}
+
+#tops ul li a {font-size:14px; font-weight:bold; display:block; overflow:hidden; height:18px;}
+#tops ul li img {position:absolute; left:40px; width:50px; height:32px;}
+#tops ul li b {font-family:Verdana, Arial, Helvetica, sans-serif; font-size:29px; font-weight:bold; color:#999999; position:absolute; left:10px; top:9px;}
+#tops ul li b.um { color:#FF6600;}
+#tops ul li b.dez { letter-spacing:-3px; font-size:24px;left:5px; top:11px;}
+#tops ul li.mais { width:300px; padding:10px 0 10px 0; text-align:center; height:16px; border-bottom:1px solid #DEDEDE;}
+
+
+#icobar {border-top:1px solid #DEDEDE;padding:10px 0 10px 0; font-size:13px; font-weight:bold;}
+#icobar img {margin-right:15px; float:left;}
+#icobar b {font-size:16px; font-weight:bold;}
+#icobar .um { padding:10px 0 0 0; width:260px; float:left;}
+#icobar .dois { padding:10px 0 0 0; width:370px; float:left; margin-left:30x;}
+#icobar .tres { padding:10px 0 0 0; width:260px; float:right;}
+
+
+#fqpdentro { width:574px; height:83px; background:url(/web/20100827141139im_/http://www.baixaki.com.br/img/v8/home/fiquepordentro.png) no-repeat; margin-top:3px;padding:1px 40px 5px 40px;} 
+.stepcarousel{ position: relative; overflow: scroll; width: 569px; height: 83px; }
+.stepcarousel .belt, .stepcarouselcat .belt {position: absolute;left: 0;top: 0;}
+.stepcarousel .panel{float: left;overflow: hidden;border-right:1px solid #DEDEDE;padding:9px 5px 9px 5px;width: 274px;}
+.stepcarousel .panel img, .stepcarouselcat .panel img {margin-right:5px; float:left;}
+
+
+#fqpdentrocat { width:671px; height:83px; background:url(/web/20100827141139im_/http://www.baixaki.com.br/img/v8/homecats/fiquepordentro.png) no-repeat; margin-top:3px;padding:1px 40px 5px 40px;} 
+.stepcarouselcat{ position: relative; overflow: scroll; width: 666px; height: 83px; }
+.stepcarouselcat .panel{float: left;overflow: hidden;border-right:1px solid #DEDEDE;padding:9px 5px 9px 5px;width: 322px;}
+
+/*
+     FILE ARCHIVED ON 14:11:39 Aug 27, 2010 AND RETRIEVED FROM THE
+     INTERNET ARCHIVE ON 05:30:06 Jun 23, 2026.
+     JAVASCRIPT APPENDED BY WAYBACK MACHINE, COPYRIGHT INTERNET ARCHIVE.
+
+     ALL OTHER CONTENT MAY ALSO BE PROTECTED BY COPYRIGHT (17 U.S.C.
+     SECTION 108(a)(3)).
+*/
+/*
+playback timings (ms):
+  capture_cache.get: 0.994
+  load_resource: 87.209
+  PetaboxLoader3.resolve: 58.506
+  PetaboxLoader3.datanode: 28.253
+*/
