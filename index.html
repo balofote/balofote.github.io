@@ -1,5 +1,6 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,2289 +10,2541 @@
   <!-- Webamp UMD bundle (no module system needed) -->
   <script src="webamp/built/webamp.bundle.min.js"></script>
 
-<style>
-/* ══════════════════════════════════════════
+  <style>
+    /* ══════════════════════════════════════════
    FONTS
 ╔═══════════════════════════════════════════ */
-@font-face {
-  font-family: 'Framdit';
-  src: url('assets/fonts/framdit.ttf') format('truetype');
-}
-@font-face {
-  font-family: 'Tahoma';
-  src: url('assets/fonts/tahoma.ttf') format('truetype');
-}
+    @font-face {
+      font-family: 'Framdit';
+      src: url('assets/fonts/framdit.ttf') format('truetype');
+    }
 
-/* ══════════════════════════════════════════
+    @font-face {
+      font-family: 'Tahoma';
+      src: url('assets/fonts/tahoma.ttf') format('truetype');
+    }
+
+    /* ══════════════════════════════════════════
    RESET
 ╔═══════════════════════════════════════════ */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-/* ══════════════════════════════════════════
+    /* ══════════════════════════════════════════
    RETRO TEXT RENDERING – force no ClearType
 ╔═══════════════════════════════════════════ */
-html {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
-  font-smooth: never;
-  -webkit-text-stroke: 0.5px transparent;
-}
+    html {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+      font-smooth: never;
+      -webkit-text-stroke: 0.5px transparent;
+    }
 
-/* ══════════════════════════════════════════
+    /* ══════════════════════════════════════════
    PAGE BACKGROUND – repeating 512×512 tile + vignette
 ╔═══════════════════════════════════════════ */
-html, body {
-  width: 100%;
-  min-height: 100vh;
-  overflow: hidden;
-}
+    html,
+    body {
+      width: 100%;
+      min-height: 100vh;
+      overflow: hidden;
+    }
 
-body {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Tahoma', 'Segoe UI', sans-serif;
-  user-select: none;
-  cursor: url('assets/cursor/arrow.cur'), auto;
-  position: relative;
-  background-image: url('assets/images/bg.png');
-  background-size: 512px 512px;
-  background-repeat: repeat;
-  background-position: 0 0;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-smooth: never;
-  text-rendering: optimizeSpeed;
-}
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Tahoma', 'Segoe UI', sans-serif;
+      user-select: none;
+      cursor: url('assets/cursor/arrow.cur'), auto;
+      position: relative;
+      background-image: url('assets/images/bg.png');
+      background-size: 512px 512px;
+      background-repeat: repeat;
+      background-position: 0 0;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      font-smooth: never;
+      text-rendering: optimizeSpeed;
+    }
 
-/* ── Global cursor cascade ──
+    /* ── Global cursor cascade ──
    Every interactive element gets hand.cur; no modern-browser fallbacks left. */
-button:not(#webamp *),
-a:not(#webamp *),
-[role="button"]:not(#webamp *),
-.desktop-icon,
-.desktop-icon *,
-.recycle-bin,
-.recycle-bin *,
-.login-user,
-.login-user *,
-.login-power,
-.login-power *,
-.start-btn,
-.task-item,
-.tray-tooltip-container,
-.tray-tooltip-container *,
-.systray-icon.volume,
-.window-wrapper .title-bar-controls button,
-.cs-wizard-wrapper .title-bar-controls button,
-.ie6-wrapper .title-bar-controls button {
-  cursor: url('assets/cursor/hand.cur'), pointer !important;
-}
+    button:not(#webamp *),
+    a:not(#webamp *),
+    [role="button"]:not(#webamp *),
+    .desktop-icon,
+    .desktop-icon *,
+    .recycle-bin,
+    .recycle-bin *,
+    .login-user,
+    .login-user *,
+    .login-power,
+    .login-power *,
+    .start-btn,
+    .task-item,
+    .tray-tooltip-container,
+    .tray-tooltip-container *,
+    .systray-icon.volume,
+    .window-wrapper .title-bar-controls button,
+    .cs-wizard-wrapper .title-bar-controls button,
+    .ie6-wrapper .title-bar-controls button {
+      cursor: url('assets/cursor/hand.cur'), pointer !important;
+    }
 
-/* Part 1: Minimal title-bar-controls override — only no-outline, let XP.css own geometry */
-.window-wrapper .title-bar-controls button,
-.cs-wizard-wrapper .title-bar-controls button,
-.ie6-wrapper .title-bar-controls button {
-  outline: none !important;
-}
+    /* Part 1: Minimal title-bar-controls override — only no-outline, let XP.css own geometry */
+    .window-wrapper .title-bar-controls button,
+    .cs-wizard-wrapper .title-bar-controls button,
+    .ie6-wrapper .title-bar-controls button {
+      outline: none !important;
+    }
 
-.systray-icon.info {
-  cursor: url('assets/cursor/help.cur'), help !important;
-}
+    .systray-icon.info {
+      cursor: url('assets/cursor/help.cur'), help !important;
+    }
 
-.winamp-dropzone {
-  cursor: url('assets/cursor/load.cur'), wait;
-}
+    .winamp-dropzone {
+      cursor: url('assets/cursor/load.cur'), wait;
+    }
 
-.draggable {
-  cursor: url('assets/cursor/move.cur'), move;
-}
+    .draggable {
+      cursor: url('assets/cursor/move.cur'), move;
+    }
 
-.text-selectable {
-  cursor: url('assets/cursor/text.cur'), text;
-}
+    .text-selectable {
+      cursor: url('assets/cursor/text.cur'), text;
+    }
 
-.loading {
-  cursor: url('assets/cursor/block.cur'), progress;
-}
+    .loading {
+      cursor: url('assets/cursor/block.cur'), progress;
+    }
 
-/* ── Part 3B: Global loading cursor state ── */
-body.cursor-loading,
-body.cursor-loading * {
-  cursor: url('assets/cursor/load.cur'), wait !important;
-}
+    /* ── Part 3B: Global loading cursor state ── */
+    body.cursor-loading,
+    body.cursor-loading * {
+      cursor: url('assets/cursor/load.cur'), wait !important;
+    }
 
-/* ── Part 3C: Resize handle cursors ── */
-.resize-handle {
-  position: absolute;
-  z-index: 10;
-}
-.resize-n  { top: -4px;  left: 8px;    right: 8px;   height: 8px;  cursor: url('assets/cursor/vertical.cur'),   ns-resize !important; }
-.resize-s  { bottom: -4px; left: 8px;  right: 8px;   height: 8px;  cursor: url('assets/cursor/vertical.cur'),   ns-resize !important; }
-.resize-w  { left: -4px; top: 8px;     bottom: 8px;  width: 8px;   cursor: url('assets/cursor/horizontal.cur'), ew-resize !important; }
-.resize-e  { right: -4px; top: 8px;    bottom: 8px;  width: 8px;   cursor: url('assets/cursor/horizontal.cur'), ew-resize !important; }
-.resize-nw { top: -4px;  left: -4px;  width: 14px;  height: 14px; cursor: url('assets/cursor/diag2.cur'),      nwse-resize !important; }
-.resize-ne { top: -4px;  right: -4px; width: 14px;  height: 14px; cursor: url('assets/cursor/diag1.cur'),      nesw-resize !important; }
-.resize-sw { bottom: -4px; left: -4px; width: 14px; height: 14px; cursor: url('assets/cursor/diag1.cur'),      nesw-resize !important; }
-.resize-se { bottom: -4px; right: -4px; width: 14px; height: 14px; cursor: url('assets/cursor/diag2.cur'),     nwse-resize !important; }
+    /* ── Part 3C: Resize handle cursors ── */
+    .resize-handle {
+      position: absolute;
+      z-index: 10;
+    }
 
-/* Dark vignette overlay for depth illusion */
-body::before {
-  content: '';
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: radial-gradient(
-    ellipse 110% 80% at 50% 50%,
-    transparent 35%,
-    rgba(0,0,0,0.55) 100%
-  );
-  pointer-events: none;
-  z-index: 1;
-}
+    .resize-n {
+      top: -4px;
+      left: 8px;
+      right: 8px;
+      height: 8px;
+      cursor: url('assets/cursor/vertical.cur'), ns-resize !important;
+    }
 
-/* ══════════════════════════════════════════
+    .resize-s {
+      bottom: -4px;
+      left: 8px;
+      right: 8px;
+      height: 8px;
+      cursor: url('assets/cursor/vertical.cur'), ns-resize !important;
+    }
+
+    .resize-w {
+      left: -4px;
+      top: 8px;
+      bottom: 8px;
+      width: 8px;
+      cursor: url('assets/cursor/horizontal.cur'), ew-resize !important;
+    }
+
+    .resize-e {
+      right: -4px;
+      top: 8px;
+      bottom: 8px;
+      width: 8px;
+      cursor: url('assets/cursor/horizontal.cur'), ew-resize !important;
+    }
+
+    .resize-nw {
+      top: -4px;
+      left: -4px;
+      width: 14px;
+      height: 14px;
+      cursor: url('assets/cursor/diag2.cur'), nwse-resize !important;
+    }
+
+    .resize-ne {
+      top: -4px;
+      right: -4px;
+      width: 14px;
+      height: 14px;
+      cursor: url('assets/cursor/diag1.cur'), nesw-resize !important;
+    }
+
+    .resize-sw {
+      bottom: -4px;
+      left: -4px;
+      width: 14px;
+      height: 14px;
+      cursor: url('assets/cursor/diag1.cur'), nesw-resize !important;
+    }
+
+    .resize-se {
+      bottom: -4px;
+      right: -4px;
+      width: 14px;
+      height: 14px;
+      cursor: url('assets/cursor/diag2.cur'), nwse-resize !important;
+    }
+
+    /* Dark vignette overlay for depth illusion */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(ellipse 110% 80% at 50% 50%,
+          transparent 35%,
+          rgba(0, 0, 0, 0.55) 100%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* ══════════════════════════════════════════
    DESKTOP WINDOW – XP style container (title bar + screen)
  ╔═══════════════════════════════════════════ */
-.desktop-window {
-  width: 806px;
-  flex-shrink: 0;
-  position: relative;
-  z-index: 2;
-  border-radius: 0 !important;
-  background: silver !important;
-  box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #dfdfdf, inset -2px -2px grey, inset 2px 2px #fff !important;
-  padding: 3px !important;
-}
+    .desktop-window {
+      width: 806px;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 2;
+      border-radius: 0 !important;
+      background: silver !important;
+      box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #dfdfdf, inset -2px -2px grey, inset 2px 2px #fff !important;
+      padding: 3px !important;
+    }
 
-.desktop-window > .title-bar {
-  border-radius: 0 !important;
-  background: linear-gradient(90deg, navy, #1084d0) !important;
-  font-family: Arial, sans-serif !important;
-  text-shadow: none !important;
-  height: auto !important;
-  border: none !important;
-  padding: 3px 2px 3px 3px !important;
-}
+    .desktop-window>.title-bar {
+      border-radius: 0 !important;
+      background: linear-gradient(90deg, navy, #1084d0) !important;
+      font-family: Arial, sans-serif !important;
+      text-shadow: none !important;
+      height: auto !important;
+      border: none !important;
+      padding: 3px 2px 3px 3px !important;
+    }
 
-.desktop-window > .title-bar .title-bar-text {
-  font-weight: bold !important;
-  color: white !important;
-  font-size: 11px !important;
-}
+    .desktop-window>.title-bar .title-bar-text {
+      font-weight: bold !important;
+      color: white !important;
+      font-size: 11px !important;
+    }
 
-/* ── Title Bar (XP style via XP.css .title-bar) ── */
-.global-titlebar {
-  flex-shrink: 0;
-  position: relative;
-}
+    /* ── Title Bar (XP style via XP.css .title-bar) ── */
+    .global-titlebar {
+      flex-shrink: 0;
+      position: relative;
+    }
 
-.global-titlebar .gtb-text {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+    .global-titlebar .gtb-text {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
 
-/* ══════════════════════════════════════════
+    /* ══════════════════════════════════════════
    SCREEN – 800×600 desktop area (inside XP window)
  ╔═══════════════════════════════════════════ */
-.screen {
-  width: 800px;
-  height: 600px;
-  position: relative;
-  overflow: hidden;
-  flex-shrink: 0;
-}
+    .screen {
+      width: 800px;
+      height: 600px;
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
 
-/* ── Wallpaper (behind everything inside screen) ── */
-.screen::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: url('assets/images/wallpaper.png');
-  background-size: 100% 100%;
-  background-position: center;
-  z-index: 1;
-}
+    /* ── Wallpaper (behind everything inside screen) ── */
+    .screen::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('assets/images/wallpaper.png');
+      background-size: 100% 100%;
+      background-position: center;
+      z-index: 1;
+    }
 
-.screen > * { position: relative; z-index: 2; }
+    .screen>* {
+      position: relative;
+      z-index: 2;
+    }
 
-/* ══════════════════════════════════════════
+    /* ══════════════════════════════════════════
    LOGIN SCREEN – Windows XP welcome
 ╔═══════════════════════════════════════════ */
 
-.login-screen {
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 200;
-  background-image: url('assets/images/login.png');
-  background-size: 100% 100%;
-  background-position: center;
-  background-repeat: no-repeat;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  transition: opacity 0.6s ease;
-}
+    .login-screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 200;
+      background-image: url('assets/images/login.png');
+      background-size: 100% 100%;
+      background-position: center;
+      background-repeat: no-repeat;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.6s ease;
+    }
 
-.login-screen.hidden {
-  opacity: 0;
-  pointer-events: none;
-  /* FIX: visibility:hidden prevents children (.login-body.visible) from
+    .login-screen.hidden {
+      opacity: 0;
+      pointer-events: none;
+      /* FIX: visibility:hidden prevents children (.login-body.visible) from
      intercepting pointer events even when their pointer-events are auto */
-  visibility: hidden;
-}
+      visibility: hidden;
+    }
 
-.login-welcome {
-  font-family: 'Framdit', 'Tahoma', sans-serif;
-  font-size: 72px;
-  font-weight: bold;
-  font-style: italic;
-  color: #ffffff;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
-  opacity: 0;
-  transition: opacity 0.8s ease;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
+    .login-welcome {
+      font-family: 'Framdit', 'Tahoma', sans-serif;
+      font-size: 72px;
+      font-weight: bold;
+      font-style: italic;
+      color: #ffffff;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+      opacity: 0;
+      transition: opacity 0.8s ease;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
 
-.login-welcome.visible { opacity: 1; }
-.login-welcome.hidden { opacity: 0; }
+    .login-welcome.visible {
+      opacity: 1;
+    }
 
-.login-body {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0;
-  width: 100%;
-  padding: 0 40px;
-  opacity: 0;
-  /* FIX 1: block all clicks until Phase 2 is active */
-  pointer-events: none;
-  transition: opacity 0.8s ease;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -55%);
-}
+    .login-welcome.hidden {
+      opacity: 0;
+    }
 
-.login-body.visible {
-  opacity: 1;
-  pointer-events: auto; /* clicks enabled only after 3s Phase 2 */
-}
+    .login-body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      width: 100%;
+      padding: 0 40px;
+      opacity: 0;
+      /* FIX 1: block all clicks until Phase 2 is active */
+      pointer-events: none;
+      transition: opacity 0.8s ease;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -55%);
+    }
 
-.login-left {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 2px;
-  width: 240px;
-  flex-shrink: 0;
-  padding-right: 0;
-}
+    .login-body.visible {
+      opacity: 1;
+      pointer-events: auto;
+      /* clicks enabled only after 3s Phase 2 */
+    }
 
-.login-left .winlogo {
-  width: 192px;
-  height: 192px;
-  background-image: url('assets/images/winlogo.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center right;
-}
+    .login-left {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 2px;
+      width: 240px;
+      flex-shrink: 0;
+      padding-right: 0;
+    }
 
-.login-left .instruction {
-  font-family: 'Tahoma', sans-serif;
-  font-size: 26px;
-  font-weight: bold;
-  color: #ffffff;
-  text-align: right;
-  line-height: 1.2;
-  width: 100%;
-  transform: translateX(-20px);
-  margin-top: -6px;
-}
+    .login-left .winlogo {
+      width: 192px;
+      height: 192px;
+      background-image: url('assets/images/winlogo.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center right;
+    }
 
-.login-separator {
-  width: 2px;
-  height: 300px;
-  background: linear-gradient(
-    to bottom,
-    transparent 0%,
-    rgba(255,255,255,0.6) 10%,
-    rgba(255,255,255,0.8) 50%,
-    rgba(255,255,255,0.6) 90%,
-    transparent 100%
-  );
-  margin: 0 30px;
-  flex-shrink: 0;
-}
+    .login-left .instruction {
+      font-family: 'Tahoma', sans-serif;
+      font-size: 26px;
+      font-weight: bold;
+      color: #ffffff;
+      text-align: right;
+      line-height: 1.2;
+      width: 100%;
+      transform: translateX(-20px);
+      margin-top: -6px;
+    }
 
-.login-user {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 14px;
-  cursor: pointer;
-  padding: 12px 20px 12px 16px;
-  border-radius: 8px;
-  position: relative;
-  transition: background 0.2s ease;
-  background: linear-gradient(
-    to right,
-    rgba(10, 50, 150, 0.45) 0%,
-    rgba(10, 50, 150, 0.2) 70%,
-    transparent 100%
-  );
-}
+    .login-separator {
+      width: 2px;
+      height: 300px;
+      background: linear-gradient(to bottom,
+          transparent 0%,
+          rgba(255, 255, 255, 0.6) 10%,
+          rgba(255, 255, 255, 0.8) 50%,
+          rgba(255, 255, 255, 0.6) 90%,
+          transparent 100%);
+      margin: 0 30px;
+      flex-shrink: 0;
+    }
 
-.login-user::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 5px;
-  border-radius: 8px 0 0 8px;
-  background: linear-gradient(
-    to bottom,
-    transparent 5%,
-    rgba(255,255,255,0.85) 20%,
-    rgba(255,255,255,0.6) 40%,
-    rgba(80,130,220,0.5) 70%,
-    rgba(40,80,180,0.4) 90%,
-    transparent 100%
-  );
-}
+    .login-user {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+      padding: 12px 20px 12px 16px;
+      border-radius: 8px;
+      position: relative;
+      transition: background 0.2s ease;
+      background: linear-gradient(to right,
+          rgba(10, 50, 150, 0.45) 0%,
+          rgba(10, 50, 150, 0.2) 70%,
+          transparent 100%);
+    }
 
-.login-user:hover {
-  background: linear-gradient(
-    to right,
-    rgba(10, 50, 150, 0.65) 0%,
-    rgba(10, 50, 150, 0.35) 60%,
-    transparent 100%
-  );
-}
+    .login-user::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 5px;
+      border-radius: 8px 0 0 8px;
+      background: linear-gradient(to bottom,
+          transparent 5%,
+          rgba(255, 255, 255, 0.85) 20%,
+          rgba(255, 255, 255, 0.6) 40%,
+          rgba(80, 130, 220, 0.5) 70%,
+          rgba(40, 80, 180, 0.4) 90%,
+          transparent 100%);
+    }
 
-.login-user.selected {
-  background: linear-gradient(
-    to right,
-    rgba(5, 30, 90, 0.85) 0%,
-    rgba(5, 30, 90, 0.4) 60%,
-    transparent 100%
-  );
-}
+    .login-user:hover {
+      background: linear-gradient(to right,
+          rgba(10, 50, 150, 0.65) 0%,
+          rgba(10, 50, 150, 0.35) 60%,
+          transparent 100%);
+    }
 
-.login-user .profile-pic {
-  width: 80px;
-  height: 80px;
-  border: 3px solid #ffffff;
-  border-radius: 8px;
-  background-image: url('assets/images/profilepic.png');
-  background-size: cover;
-  background-position: center;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
-  flex-shrink: 0;
-}
+    .login-user.selected {
+      background: linear-gradient(to right,
+          rgba(5, 30, 90, 0.85) 0%,
+          rgba(5, 30, 90, 0.4) 60%,
+          transparent 100%);
+    }
 
-.login-user .username {
-  font-family: 'Tahoma', sans-serif;
-  font-size: 24px;
-  font-weight: bold;
-  color: #ffffff;
-  text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
-  white-space: nowrap;
-}
+    .login-user .profile-pic {
+      width: 80px;
+      height: 80px;
+      border: 3px solid #ffffff;
+      border-radius: 8px;
+      background-image: url('assets/images/profilepic.png');
+      background-size: cover;
+      background-position: center;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+      flex-shrink: 0;
+    }
 
-.login-power {
-  position: absolute;
-  bottom: 20px;
-  left: 20px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  padding: 6px 10px;
-  border-radius: 4px;
-  transition: background 0.15s ease;
-}
+    .login-user .username {
+      font-family: 'Tahoma', sans-serif;
+      font-size: 24px;
+      font-weight: bold;
+      color: #ffffff;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+      white-space: nowrap;
+    }
 
-.login-power:hover { background: rgba(255,255,255,0.1); }
+    .login-power {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      padding: 6px 10px;
+      border-radius: 4px;
+      transition: background 0.15s ease;
+    }
 
-.login-power .power-icon {
-  width: 32px;
-  height: 32px;
-  background-image: url('assets/icons/power.ico');
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-}
+    .login-power:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
 
-.login-power .power-label {
-  font-family: 'Tahoma', sans-serif;
-  font-size: 13px;
-  color: #ffffff;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
-}
+    .login-power .power-icon {
+      width: 32px;
+      height: 32px;
+      background-image: url('assets/icons/power.ico');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
 
-/* ══════════════════════════════════════════
+    .login-power .power-label {
+      font-family: 'Tahoma', sans-serif;
+      font-size: 13px;
+      color: #ffffff;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    }
+
+    /* ══════════════════════════════════════════
    DESKTOP WRAPPER – hidden until login
 ╔═══════════════════════════════════════════ */
-.desktop-wrapper {
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  z-index: 2;
-  opacity: 0;
-  transition: opacity 0.6s ease;
-  pointer-events: none;
-}
+    .desktop-wrapper {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 2;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+      pointer-events: none;
+    }
 
-.desktop-wrapper.visible {
-  opacity: 1;
-  pointer-events: auto;
-}
+    .desktop-wrapper.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
 
-/* ══════════════════════════════════════════
+    /* ══════════════════════════════════════════
    TASKBAR (XP Style)
 ╔═══════════════════════════════════════════ */
-.taskbar {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 30px;
-  background: linear-gradient(to bottom,
-    #245dd7 0%, #0e3cbd 8%, #114fe5 45%,
-    #104ce2 90%, #0a329b 100%);
-  border-top: 1px solid #001c70;
-  box-shadow: inset 0 1px 1px rgba(255,255,255,0.4);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  z-index: 100;
-}
+    .taskbar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 30px;
+      background: linear-gradient(to bottom,
+          #245dd7 0%, #0e3cbd 8%, #114fe5 45%,
+          #104ce2 90%, #0a329b 100%);
+      border-top: 1px solid #001c70;
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+    }
 
-.taskbar-left {
-  display: flex;
-  align-items: center;
-  height: 100%;
-  flex-grow: 1;
-}
+    .taskbar-left {
+      display: flex;
+      align-items: center;
+      height: 100%;
+      flex-grow: 1;
+    }
 
-/* ── Part 5: Start Button – image-asset states ── */
-.start-btn {
-  height: 100%;
-  padding: 0 20px 0 10px;
-  /* Image-based button casing */
-  background-image: url('assets/images/start-normal.png');
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  background-color: transparent;
-  border: none;
-  border-top-right-radius: 9px;
-  border-bottom-right-radius: 9px;
-  color: white;
-  font-family: 'Framdit', 'Tahoma', sans-serif;
-  font-size: 18px;
-  font-weight: bold;
-  font-style: italic;
-  text-shadow: 1px 1px 1px rgba(0,0,0,0.6);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  outline: none;
-  transition: background-image 0.05s;
-}
+    /* ── Part 5: Start Button – image-asset states ── */
+    .start-btn {
+      height: 100%;
+      padding: 0 20px 0 10px;
+      /* Image-based button casing */
+      background-image: url('assets/images/start-normal.png');
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+      background-color: transparent;
+      border: none;
+      border-top-right-radius: 9px;
+      border-bottom-right-radius: 9px;
+      color: white;
+      font-family: 'Framdit', 'Tahoma', sans-serif;
+      font-size: 18px;
+      font-weight: bold;
+      font-style: italic;
+      text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.6);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      outline: none;
+      transition: background-image 0.05s;
+    }
 
-.start-btn:hover {
-  background-image: url('assets/images/start-highlight.png');
-}
+    .start-btn:hover {
+      background-image: url('assets/images/start-highlight.png');
+    }
 
-.start-btn:active,
-.start-btn.active {
-  background-image: url('assets/images/start-pressed.png');
-  outline: none !important;
-  border: none !important;
-}
+    .start-btn:active,
+    .start-btn.active {
+      background-image: url('assets/images/start-pressed.png');
+      outline: none !important;
+      border: none !important;
+    }
 
-.start-btn:focus,
-.start-btn:focus-visible {
-  outline: none !important;
-  border: none !important;
-}
+    .start-btn:focus,
+    .start-btn:focus-visible {
+      outline: none !important;
+      border: none !important;
+    }
 
-.start-logo {
-  width: 24px;
-  height: 21px;
-  background-image: url('assets/icons/logo.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  flex-shrink: 0;
-}
+    .start-logo {
+      width: 24px;
+      height: 21px;
+      background-image: url('assets/icons/logo.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      flex-shrink: 0;
+    }
 
-/* Part 2A: Fluid + chronological taskbar */
-.task-items {
-  display: flex;
-  align-items: center;
-  padding-left: 8px;
-  gap: 4px;
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
-}
+    /* Part 2A: Fluid + chronological taskbar */
+    .task-items {
+      display: flex;
+      align-items: center;
+      padding-left: 8px;
+      gap: 4px;
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+    }
 
-.task-item {
-  height: 22px;
-  /* Fluid: shrink/grow to share space equally */
-  flex: 1 1 0;
-  min-width: 60px;
-  max-width: 200px;
-  background: linear-gradient(to bottom,
-    #3a7ec9 0%, #2659be 12%, #225ad7 45%,
-    #1640a3 90%, #0d2a75 100%);
-  border: 1px solid #081947;
-  border-radius: 2px;
-  color: #ffffff;
-  font-size: 11px;
-  padding: 0 6px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  box-shadow: inset 0 1px 1px rgba(255,255,255,0.2),
-              1px 1px 1px rgba(0,0,0,0.2);
-  cursor: pointer;
-  /* Prevent overflow / clip text */
-  white-space: nowrap;
-  overflow: hidden;
-  outline: none;
-  flex-shrink: 1;
-}
+    .task-item {
+      height: 22px;
+      /* Fluid: shrink/grow to share space equally */
+      flex: 1 1 0;
+      min-width: 60px;
+      max-width: 133px;
+      background: linear-gradient(to bottom,
+          #3a7ec9 0%, #2659be 12%, #225ad7 45%,
+          #1640a3 90%, #0d2a75 100%);
+      border: 1px solid #081947;
+      border-radius: 2px;
+      color: #ffffff;
+      font-size: 11px;
+      padding: 0 6px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.2),
+        1px 1px 1px rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+      /* Prevent overflow / clip text */
+      white-space: nowrap;
+      overflow: hidden;
+      outline: none;
+      flex-shrink: 1;
+    }
 
-/* Task item label text — ellipsis when compressed */
-.task-item span {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  min-width: 0;
-  flex: 1;
-}
+    /* Task item label text — ellipsis when compressed */
+    .task-item span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      min-width: 0;
+      flex: 1;
+    }
 
-.task-item:active,
-.task-item.active {
-  background: linear-gradient(to bottom, #0d2a75 0%, #225ad7 100%);
-  box-shadow: inset 1px 1px 2px rgba(0,0,0,0.5);
-}
+    .task-item:active,
+    .task-item.active {
+      background: linear-gradient(to bottom, #0d2a75 0%, #225ad7 100%);
+      box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.5);
+    }
 
-.task-icon {
-  width: 16px;
-  height: 16px;
-  flex-shrink: 0;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-}
+    .task-icon {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
 
-.systray {
-  height: 100%;
-  background: linear-gradient(to bottom,
-    #0c82e9 0%, #0f62bc 12%, #008ee3 45%,
-    #05408f 90%, #002c6b 100%);
-  border-left: 1px solid #09346d;
-  box-shadow: inset 1px 0 0 rgba(255,255,255,0.3);
-  padding: 0 14px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #ddedff;
-  font-size: 11px;
-  text-shadow: 1px 1px 1px rgba(0,0,0,0.4);
-}
+    .systray {
+      height: 100%;
+      background: linear-gradient(to bottom,
+          #0c82e9 0%, #0f62bc 12%, #008ee3 45%,
+          #05408f 90%, #002c6b 100%);
+      border-left: 1px solid #09346d;
+      box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.3);
+      padding: 0 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #ddedff;
+      font-size: 11px;
+      text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
+    }
 
-.systray-icon {
-  width: 16px;
-  height: 16px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  cursor: default;
-  position: relative;
-}
+    .systray-icon {
+      width: 16px;
+      height: 16px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      cursor: default;
+      position: relative;
+    }
 
-.systray-icon.info { cursor: help; }
-.systray-icon.volume { cursor: pointer; }
+    .systray-icon.info {
+      cursor: help;
+    }
 
-.tooltip-container,
-.tray-tooltip-container {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
+    .systray-icon.volume {
+      cursor: pointer;
+    }
 
-.tooltip-box,
-.tray-tooltip {
-  position: absolute;
-  bottom: 130%;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #fffacd;
-  border: 1px solid #000;
-  border-radius: 4px;
-  padding: 4px 8px;
-  font-size: 10px;
-  font-family: Tahoma, sans-serif;
-  color: #333;
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  z-index: 1000;
-  animation: hideTooltip 0.3s ease-out forwards;
-}
+    .tooltip-container,
+    .tray-tooltip-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
 
-.tooltip-box::after,
-.tray-tooltip::after {
-  content: '';
-  position: absolute;
-  bottom: -6px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 0;
-  height: 0;
-  border-left: 6px solid transparent;
-  border-right: 6px solid transparent;
-  border-top: 6px solid #fffacd;
-}
+    .tooltip-box,
+    .tray-tooltip {
+      position: absolute;
+      bottom: 130%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #fffacd;
+      border: 1px solid #000;
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-size: 10px;
+      font-family: Tahoma, sans-serif;
+      color: #333;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 1000;
+      animation: hideTooltip 0.3s ease-out forwards;
+    }
 
-.tooltip-container:hover .tooltip-box,
-.tray-tooltip-container:hover .tray-tooltip {
-  animation: showTooltip 0.3s 1s forwards;
-}
+    .tooltip-box::after,
+    .tray-tooltip::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-top: 6px solid #fffacd;
+    }
 
-@keyframes showTooltip { to { opacity: 1; } }
-@keyframes hideTooltip { to { opacity: 0; } }
+    .tooltip-container:hover .tooltip-box,
+    .tray-tooltip-container:hover .tray-tooltip {
+      animation: showTooltip 0.3s 1s forwards;
+    }
 
-.tray-clock { min-width: 42px; text-align: center; }
+    @keyframes showTooltip {
+      to {
+        opacity: 1;
+      }
+    }
 
-#dateTooltip {
-  left: auto;
-  right: 0;
-  transform: translateX(0);
-}
-#dateTooltip::after { left: auto; right: 20px; }
+    @keyframes hideTooltip {
+      to {
+        opacity: 0;
+      }
+    }
 
-/* ══════════════════════════════════════════
+    .tray-clock {
+      min-width: 42px;
+      text-align: center;
+    }
+
+    #dateTooltip {
+      left: auto;
+      right: 0;
+      transform: translateX(0);
+    }
+
+    #dateTooltip::after {
+      left: auto;
+      right: 20px;
+    }
+
+    /* ══════════════════════════════════════════
    MAIN WINDOW – starts hidden, appears 1s after desktop
 ╔═══════════════════════════════════════════ */
-/* ══════════════════════════════════════════
+    /* ══════════════════════════════════════════
    SHARED DRAGGABLE WINDOW WRAPPER
    Used by: main warning window, CS wizard
 ╔═══════════════════════════════════════════ */
-.window-wrapper {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -56%);
-  /* FIX 3 / z-index: bumped to 110 so it floats above Webamp (z:15) */
-  z-index: 110;
-  opacity: 0;
-  transition: opacity 0.5s ease;
-  pointer-events: none;
-}
+    .window-wrapper {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -56%);
+      /* FIX 3 / z-index: bumped to 110 so it floats above Webamp (z:15) */
+      z-index: 110;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      pointer-events: none;
+    }
 
-.window-wrapper.visible {
-  opacity: 1;
-  pointer-events: auto;
-}
+    .window-wrapper.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
 
-.window-wrapper.minimized {
-  opacity: 0;
-  pointer-events: none;
-}
+    .window-wrapper.minimized {
+      opacity: 0;
+      pointer-events: none;
+    }
 
-.window-wrapper .window { width: 280px; }
+    .window-wrapper .window {
+      width: 280px;
+    }
 
-/* Part 1: Let XP.css fully own title-bar geometry.
+    /* Part 1: Let XP.css fully own title-bar geometry.
    We only ensure correct flex layout on the containers. */
-.window-wrapper .title-bar,
-.cs-wizard-wrapper .title-bar,
-.ie6-wrapper .title-bar {
-  display: flex !important;
-  align-items: center !important;
-}
+    .window-wrapper .title-bar,
+    .cs-wizard-wrapper .title-bar,
+    .ie6-wrapper .title-bar {
+      display: flex !important;
+      align-items: center !important;
+    }
 
-.window-body {
-  padding: 14px 16px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
+    /* Part 3: Authentic XP title bar reconstruction */
+    .window-wrapper .title-bar,
+    .cs-wizard-wrapper .title-bar,
+    .ie6-wrapper .title-bar {
+      background: linear-gradient(180deg,
+          #0997ff 0%, #0684e8 3%, #0564cd 6%,
+          #0350b5 10%, #0240a5 14%, #013698 20%,
+          #0234a0 28%, #0246b9 40%, #025fd6 56%,
+          #0262d9 60%, #0260d5 68%, #0255c5 76%,
+          #024abd 84%, #0241b3 90%, #023cab 95%,
+          #0235a1 100%) !important;
+      padding: 3px 5px 3px 4px !important;
+      min-height: 26px !important;
+    }
 
-.just4fun {
-  font-family: Tahoma, sans-serif;
-  font-size: 11px;
-  color: #555;
-  font-style: normal;
-}
+    /* Inactive title bar fades to grey */
+    .window-wrapper .title-bar.inactive,
+    .cs-wizard-wrapper .title-bar.inactive,
+    .ie6-wrapper .title-bar.inactive {
+      background: linear-gradient(180deg,
+          #7b96b9 0%, #748eb5 10%, #6d86b0 20%,
+          #6a83ac 30%, #6780a7 50%, #6c84ab 70%,
+          #7089b0 85%, #7b96b9 100%) !important;
+    }
 
-.btn-row {
-  display: flex;
-  gap: 6px;
-}
-.btn-row button {
-  flex: 1;
-  font-family: Tahoma, sans-serif;
-  font-size: 11px;
-}
+    /* Title bar text — Trebuchet MS bold with subtle white text-shadow */
+    .window-wrapper .title-bar-text,
+    .cs-wizard-wrapper .title-bar-text,
+    .ie6-wrapper .title-bar-text {
+      font-family: 'Trebuchet MS', 'Trebuchet', sans-serif !important;
+      font-size: 11px !important;
+      font-weight: bold !important;
+      color: #ffffff !important;
+      text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4) !important;
+      letter-spacing: 0 !important;
+    }
 
-/* ══════════════════════════════════════════
+    /* Title bar control buttons — perfect internal alignment for idle state */
+    .window-wrapper .title-bar-controls button:not(:active),
+    .cs-wizard-wrapper .title-bar-controls button:not(:active),
+    .ie6-wrapper .title-bar-controls button:not(:active) {
+      box-sizing: content-box !important;
+      padding: 0 !important;
+      border: none !important;
+      box-shadow: none !important;
+      background-position: center center !important;
+      background-origin: padding-box !important;
+    }
+
+    /* Flexbox Title Bar Alignment */
+    .window-wrapper .title-bar-controls,
+    .cs-wizard-wrapper .title-bar-controls,
+    .ie6-wrapper .title-bar-controls {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: flex-end !important;
+      gap: 2px !important;
+      margin-left: auto !important;
+    }
+
+    /* Remove individual margins from buttons so Flexbox gap handles spacing */
+    .window-wrapper .title-bar-controls button,
+    .cs-wizard-wrapper .title-bar-controls button,
+    .ie6-wrapper .title-bar-controls button {
+      margin: 0 !important;
+    }
+
+    .window-body {
+      padding: 14px 16px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .just4fun {
+      font-family: Tahoma, sans-serif;
+      font-size: 11px;
+      color: #555;
+      font-style: normal;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 6px;
+    }
+
+    .btn-row button {
+      flex: 1;
+      font-family: Tahoma, sans-serif;
+      font-size: 11px;
+    }
+
+    /* ══════════════════════════════════════════
    COUNTER-STRIKE GLITCHED SETUP WIZARD
 ╔═══════════════════════════════════════════ */
-.cs-wizard-wrapper {
-  /* overrides .window-wrapper defaults */
-  top: 80px;
-  left: 160px;
-  transform: none;
-  z-index: 115; /* just above main warning window */
-  width: 420px;
-}
+    .cs-wizard-wrapper {
+      /* overrides .window-wrapper defaults */
+      top: 80px;
+      left: 160px;
+      transform: none;
+      z-index: 115;
+      /* just above main warning window */
+      width: 420px;
+    }
 
-.cs-wizard-wrapper .window {
-  width: 420px;
-  /* remove any min-width from xp.css */
-}
+    .cs-wizard-wrapper .window,
+    .ie6-wrapper .window {
+      box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #dfdfdf, inset -2px -2px #808080, inset 2px 2px #fff !important;
+      padding: 3px !important;
+      background-color: #ece9d8;
+    }
 
-.cs-wizard-wrapper .title-bar-text {
-  font-family: 'Tahoma', sans-serif !important;
-  font-size: 11px !important;
-  letter-spacing: 0.3px;
-}
+    .cs-wizard-wrapper .window {
+      width: 420px;
+      /* remove any min-width from xp.css */
+    }
 
-/* Inner layout: sidebar + main panel */
-.cs-wizard-body {
-  display: flex;
-  flex-direction: row;
-  height: 220px;
-  border-bottom: 1px solid #808080;
-}
+    .cs-wizard-wrapper .title-bar-text {
+      font-family: 'Tahoma', sans-serif !important;
+      font-size: 11px !important;
+      letter-spacing: 0.3px;
+    }
 
-/* LEFT SIDEBAR — deep navy with old computer icon */
-.cs-wizard-sidebar {
-  width: 120px;
-  flex-shrink: 0;
-  background: linear-gradient(180deg, #00007b 0%, #000051 100%);
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
-  padding-bottom: 10px;
-}
+    /* Inner layout: sidebar + main panel */
+    .cs-wizard-body {
+      display: flex;
+      flex-direction: row;
+      height: 220px;
+      border-bottom: 1px solid #808080;
+    }
 
-/* Retro decorative lines on sidebar */
-.cs-wizard-sidebar::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, #3333cc, #6666ff, #3333cc);
-}
+    /* LEFT SIDEBAR — deep navy with old computer icon */
+    .cs-wizard-sidebar {
+      width: 120px;
+      flex-shrink: 0;
+      background: linear-gradient(180deg, #00007b 0%, #000051 100%);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding-bottom: 10px;
+    }
 
-.cs-wizard-sidebar-icon {
-  font-size: 44px;
-  line-height: 1;
-  color: #8888dd;
-  text-align: center;
-  opacity: 0.75;
-  /* Subtle shimmer animation */
-  animation: sidebarGlow 3s ease-in-out infinite alternate;
-}
+    /* Retro decorative lines on sidebar */
+    .cs-wizard-sidebar::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #3333cc, #6666ff, #3333cc);
+    }
 
-.cs-wizard-sidebar-title {
-  font-family: 'Tahoma', sans-serif;
-  font-size: 8px;
-  color: #6666bb;
-  text-align: center;
-  margin-top: 4px;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-}
+    .cs-wizard-sidebar-icon {
+      font-size: 44px;
+      line-height: 1;
+      color: #8888dd;
+      text-align: center;
+      opacity: 0.75;
+      /* Subtle shimmer animation */
+      animation: sidebarGlow 3s ease-in-out infinite alternate;
+    }
 
-@keyframes sidebarGlow {
-  from { color: #6666aa; text-shadow: none; }
-  to   { color: #aaaaff; text-shadow: 0 0 8px rgba(100,100,255,0.6); }
-}
+    .cs-wizard-sidebar-title {
+      font-family: 'Tahoma', sans-serif;
+      font-size: 8px;
+      color: #6666bb;
+      text-align: center;
+      margin-top: 4px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
 
-/* RIGHT MAIN PANEL */
-.cs-wizard-content {
-  flex: 1;
-  background: #ffffff;
-  padding: 16px 14px 12px;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
+    @keyframes sidebarGlow {
+      from {
+        color: #6666aa;
+        text-shadow: none;
+      }
 
-.cs-wizard-step { display: none; flex-direction: column; height: 100%; }
-.cs-wizard-step.active { display: flex; }
+      to {
+        color: #aaaaff;
+        text-shadow: 0 0 8px rgba(100, 100, 255, 0.6);
+      }
+    }
 
-.cs-wizard-title {
-  font-family: 'Tahoma', sans-serif;
-  font-size: 13px;
-  font-weight: bold;
-  color: #000080;
-  margin-bottom: 10px;
-  padding-bottom: 6px;
-  border-bottom: 1px solid #c0c0c0;
-  line-height: 1.3;
-}
+    /* RIGHT MAIN PANEL */
+    .cs-wizard-content {
+      flex: 1;
+      background: #ffffff;
+      padding: 16px 14px 12px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
 
-.cs-wizard-text {
-  font-family: 'Courier New', monospace;
-  font-size: 10px;
-  color: #222;
-  line-height: 1.55;
-  flex: 1;
-  overflow-y: auto;
-  word-break: break-all;
-}
+    .cs-wizard-step {
+      display: none;
+      flex-direction: column;
+      height: 100%;
+    }
 
-.cs-wizard-hint {
-  font-family: 'Tahoma', sans-serif;
-  font-size: 10px;
-  color: #444;
-  margin-top: 8px;
-  padding-top: 6px;
-  border-top: 1px solid #e0e0e0;
-  font-style: italic;
-}
+    .cs-wizard-step.active {
+      display: flex;
+    }
 
-/* Part 4: Native XP.css <progress> for CS wizard step 3 */
-#csProgressBar {
-  width: 100%;
-  margin-top: 8px;
-  display: block;
-}
+    .cs-wizard-title {
+      font-family: 'Tahoma', sans-serif;
+      font-size: 13px;
+      font-weight: bold;
+      color: #000080;
+      margin-bottom: 10px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid #c0c0c0;
+      line-height: 1.3;
+    }
 
-/* FOOTER BUTTON BAR */
-.cs-wizard-footer {
-  background: #d4d0c8;
-  border-top: 1px solid #808080;
-  padding: 6px 8px;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 6px;
-}
+    .cs-wizard-text {
+      font-family: 'Courier New', monospace;
+      font-size: 10px;
+      color: #222;
+      line-height: 1.55;
+      flex: 1;
+      overflow-y: auto;
+      word-break: break-all;
+    }
 
-.cs-wizard-footer button {
-  font-family: 'Tahoma', sans-serif;
-  font-size: 11px;
-  min-width: 72px;
-  height: 23px;
-  padding: 0 8px;
-}
+    .cs-wizard-hint {
+      font-family: 'Tahoma', sans-serif;
+      font-size: 10px;
+      color: #444;
+      margin-top: 8px;
+      padding-top: 6px;
+      border-top: 1px solid #e0e0e0;
+      font-style: italic;
+    }
 
-.cs-wizard-footer button:disabled {
-  color: #808080;
-  cursor: not-allowed !important;
-}
+    /* Part 4: Native XP.css <progress> for CS wizard step 3 */
+    #csProgressBar {
+      width: 100%;
+      margin-top: 8px;
+      display: block;
+    }
 
-/* Glitch flicker on wizard title */
-@keyframes glitchFlicker {
-  0%   { opacity: 1; }
-  92%  { opacity: 1; }
-  93%  { opacity: 0.4; }
-  94%  { opacity: 1; }
-  97%  { opacity: 1; }
-  98%  { opacity: 0.3; }
-  100% { opacity: 1; }
-}
+    /* FOOTER BUTTON BAR */
+    .cs-wizard-footer {
+      background: #d4d0c8;
+      border-top: 1px solid #808080;
+      padding: 6px 8px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 6px;
+    }
 
-.cs-wizard-wrapper .title-bar-text {
-  animation: glitchFlicker 4s ease-in-out infinite;
-}
+    .cs-wizard-footer button {
+      font-family: 'Tahoma', sans-serif;
+      font-size: 11px;
+      min-width: 72px;
+      height: 23px;
+      padding: 0 8px;
+    }
 
-/* ══════════════════════════════════════════
+    .cs-wizard-footer button:disabled {
+      color: #808080;
+      cursor: not-allowed !important;
+    }
+
+    /* Glitch flicker on wizard title */
+    @keyframes glitchFlicker {
+      0% {
+        opacity: 1;
+      }
+
+      92% {
+        opacity: 1;
+      }
+
+      93% {
+        opacity: 0.4;
+      }
+
+      94% {
+        opacity: 1;
+      }
+
+      97% {
+        opacity: 1;
+      }
+
+      98% {
+        opacity: 0.3;
+      }
+
+      100% {
+        opacity: 1;
+      }
+    }
+
+    .cs-wizard-wrapper .title-bar-text {
+      animation: glitchFlicker 4s ease-in-out infinite;
+    }
+
+    /* ══════════════════════════════════════════
    DESKTOP ICONS
 ╔═══════════════════════════════════════════ */
-.desktop-icons {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 17px;
-  z-index: 5;
-}
+    .desktop-icons {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 17px;
+      z-index: 5;
+    }
 
-.desktop-icon {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
-  cursor: pointer;
-  user-select: none;
-}
+    .desktop-icon {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      user-select: none;
+    }
 
-.desktop-icon-img {
-  width: 48px;
-  height: 48px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+    .desktop-icon-img {
+      width: 48px;
+      height: 48px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-.desktop-icon-label {
-  font-size: 11px;
-  color: white;
-  text-align: center;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
-  width: 60px;
-  word-wrap: break-word;
-  font-family: Tahoma, sans-serif;
-}
+    .desktop-icon-label {
+      font-size: 11px;
+      color: white;
+      text-align: center;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+      width: 60px;
+      word-wrap: break-word;
+      font-family: Tahoma, sans-serif;
+    }
 
-.recycle-bin {
-  position: absolute;
-  bottom: 45px;
-  left: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
-  cursor: pointer;
-  user-select: none;
-  z-index: 5;
-}
-.recycle-bin .desktop-icon-img { width: 48px; height: 48px; }
-.recycle-bin .desktop-icon-label { font-size: 11px; }
+    .recycle-bin {
+      position: absolute;
+      bottom: 45px;
+      left: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      user-select: none;
+      z-index: 5;
+    }
 
-/* ══════════════════════════════════════════
+    .recycle-bin .desktop-icon-img {
+      width: 48px;
+      height: 48px;
+    }
+
+    .recycle-bin .desktop-icon-label {
+      font-size: 11px;
+    }
+
+    /* ══════════════════════════════════════════
    DVD SCREENSAVER
 ╔═══════════════════════════════════════════ */
-/* Part 4: Multi-instance DVD screensaver — base styles, color managed via JS */
-.dvd-screensaver {
-  position: fixed; /* All 3 logos are body-level, fixed */
-  width: 48px;
-  height: 48px;
-  background-image: url('assets/images/dvd.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  /* 50% intensity as a background aesthetic */
-  opacity: 0.5;
-  /* Smooth color fade between chromatic states */
-  transition: filter 2s ease;
-  filter: brightness(0) invert(1); /* default: white */
-  z-index: 0;
-  pointer-events: none;
-  top: 0;
-  left: 0;
-}
+    /* Part 4: Multi-instance DVD screensaver — base styles, color managed via JS */
+    .dvd-screensaver {
+      position: fixed;
+      /* All 3 logos are body-level, fixed */
+      width: 48px;
+      height: 48px;
+      background-image: url('assets/images/dvd.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      /* 50% intensity as a background aesthetic */
+      opacity: 0.5;
+      /* Smooth color fade between chromatic states */
+      transition: filter 2s ease;
+      filter: brightness(0) invert(1);
+      /* default: white */
+      z-index: 0;
+      pointer-events: none;
+      top: 0;
+      left: 0;
+    }
 
-/* ══════════════════════════════════════════
+    /* ══════════════════════════════════════════
    IE6 BROWSER WINDOW
 ╔═══════════════════════════════════════════ */
-.ie6-wrapper {
-  top: 30px;
-  left: 80px;
-  transform: none;
-  z-index: 112;
-  width: 600px;
-  /* Part 2B: relative so resize handles position correctly */
-  position: absolute;
-}
+    .ie6-wrapper {
+      top: 30px;
+      left: 80px;
+      transform: none;
+      z-index: 112;
+      width: 600px;
+      /* Part 2B: relative so resize handles position correctly */
+      position: absolute;
+    }
 
-.ie6-wrapper .window {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-}
+    .ie6-wrapper .window {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+    }
 
-/* IE6 Chrome: toolbar area above the iframe */
-.ie6-chrome {
-  background: #ece9d8;
-  border-bottom: 1px solid #aca899;
-  display: flex;
-  flex-direction: column;
-  flex-shrink: 0;
-}
+    /* IE6 Chrome: toolbar area above the iframe */
+    .ie6-chrome {
+      background: #ece9d8;
+      border-bottom: 1px solid #aca899;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
 
-/* Menu bar: File | Edit | View | Favorites | Tools | Help */
-.ie6-menubar {
-  display: flex;
-  align-items: center;
-  gap: 0;
-  padding: 1px 4px;
-  font-family: Tahoma, 'Microsoft Sans Serif', sans-serif;
-  font-size: 11px;
-  color: #000;
-  border-bottom: 1px solid #aca899;
-  user-select: none;
-}
+    /* Menu bar: File | Edit | View | Favorites | Tools | Help */
+    .ie6-menubar {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      padding: 1px 4px;
+      font-family: Tahoma, 'Microsoft Sans Serif', sans-serif;
+      font-size: 11px;
+      color: #000;
+      border-bottom: 1px solid #aca899;
+      user-select: none;
+    }
 
-.ie6-menubar span {
-  padding: 1px 6px;
-  cursor: default;
-  border: 1px solid transparent;
-  border-radius: 2px;
-}
+    .ie6-menubar span {
+      padding: 1px 6px;
+      cursor: default;
+      border: 1px solid transparent;
+      border-radius: 2px;
+    }
 
-.ie6-menubar span:hover {
-  background: #316ac5;
-  color: #fff;
-  border-color: #0b2463;
-}
+    .ie6-menubar span:hover {
+      background: #316ac5;
+      color: #fff;
+      border-color: #0b2463;
+    }
 
-/* Icon toolbar row */
-.ie6-toolbar {
-  display: flex;
-  align-items: center;
-  padding: 2px 4px;
-  gap: 1px;
-  border-bottom: 1px solid #aca899;
-}
+    /* Icon toolbar row */
+    .ie6-toolbar {
+      display: flex;
+      align-items: center;
+      padding: 2px 4px;
+      gap: 1px;
+      border-bottom: 1px solid #aca899;
+    }
 
-.ie6-tb-btn {
-  width: 34px;
-  height: 34px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1px;
-  cursor: pointer;
-  border: 1px solid transparent;
-  border-radius: 2px;
-  background: transparent;
-  padding: 1px;
-  flex-shrink: 0;
-}
+    .ie6-tb-btn {
+      width: 34px;
+      height: 34px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      border-radius: 2px;
+      background: transparent;
+      padding: 1px;
+      flex-shrink: 0;
+    }
 
-.ie6-tb-btn:hover {
-  border-color: #316ac5;
-  background: linear-gradient(to bottom, #dceeff 0%, #c5dfff 100%);
-}
+    .ie6-tb-btn:hover {
+      border-color: #316ac5;
+      background: linear-gradient(to bottom, #dceeff 0%, #c5dfff 100%);
+    }
 
-.ie6-tb-btn:active {
-  background: linear-gradient(to bottom, #c5dfff 0%, #dceeff 100%);
-  border-color: #0a2a8f;
-}
+    .ie6-tb-btn:active {
+      background: linear-gradient(to bottom, #c5dfff 0%, #dceeff 100%);
+      border-color: #0a2a8f;
+    }
 
-.ie6-tb-btn img {
-  width: 22px;
-  height: 22px;
-  object-fit: contain;
-  display: block;
-  flex-shrink: 0;
-}
+    .ie6-tb-btn img {
+      width: 22px;
+      height: 22px;
+      object-fit: contain;
+      display: block;
+      flex-shrink: 0;
+    }
 
-.ie6-tb-label {
-  font-family: Tahoma, sans-serif;
-  font-size: 9px;
-  color: #222;
-  white-space: nowrap;
-  line-height: 1;
-}
+    .ie6-tb-label {
+      font-family: Tahoma, sans-serif;
+      font-size: 9px;
+      color: #222;
+      white-space: nowrap;
+      line-height: 1;
+    }
 
-.ie6-tb-separator {
-  width: 1px;
-  height: 30px;
-  background: linear-gradient(to bottom, transparent, #aca899, transparent);
-  margin: 0 3px;
-  flex-shrink: 0;
-}
+    .ie6-tb-separator {
+      width: 1px;
+      height: 30px;
+      background: linear-gradient(to bottom, transparent, #aca899, transparent);
+      margin: 0 3px;
+      flex-shrink: 0;
+    }
 
-/* Address bar row */
-.ie6-addressbar {
-  display: flex;
-  align-items: center;
-  padding: 2px 4px;
-  gap: 4px;
-  border-bottom: 1px solid #aca899;
-  background: #ece9d8;
-}
+    /* Address bar row */
+    .ie6-addressbar {
+      display: flex;
+      align-items: center;
+      padding: 2px 4px;
+      gap: 4px;
+      border-bottom: 1px solid #aca899;
+      background: #ece9d8;
+    }
 
-.ie6-addr-label {
-  font-family: Tahoma, sans-serif;
-  font-size: 11px;
-  color: #000;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
+    .ie6-addr-label {
+      font-family: Tahoma, sans-serif;
+      font-size: 11px;
+      color: #000;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
 
-.ie6-addr-icon {
-  width: 16px;
-  height: 16px;
-  background-image: url('assets/icons/ie.ico');
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  flex-shrink: 0;
-}
+    .ie6-addr-icon {
+      width: 16px;
+      height: 16px;
+      background-image: url('assets/icons/ie.ico');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      flex-shrink: 0;
+    }
 
-.ie6-addr-input {
-  flex: 1;
-  height: 19px;
-  border: 2px inset #808080;
-  background: #fff;
-  font-family: Tahoma, sans-serif;
-  font-size: 11px;
-  color: #000;
-  padding: 0 3px;
-  outline: none;
-  min-width: 0;
-}
+    .ie6-addr-input {
+      flex: 1;
+      height: 19px;
+      border: 2px inset #808080;
+      background: #fff;
+      font-family: Tahoma, sans-serif;
+      font-size: 11px;
+      color: #000;
+      padding: 0 3px;
+      outline: none;
+      min-width: 0;
+    }
 
-.ie6-go-btn {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  height: 21px;
-  padding: 0 5px;
-  font-family: Tahoma, sans-serif;
-  font-size: 11px;
-  background: linear-gradient(to bottom, #f5f4f0 0%, #dbd9cf 100%);
-  border: 1px solid #aca899;
-  border-radius: 2px;
-  cursor: pointer;
-  flex-shrink: 0;
-}
+    .ie6-go-btn {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      height: 21px;
+      padding: 0 5px;
+      font-family: Tahoma, sans-serif;
+      font-size: 11px;
+      background: linear-gradient(to bottom, #f5f4f0 0%, #dbd9cf 100%);
+      border: 1px solid #aca899;
+      border-radius: 2px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
 
-.ie6-go-btn:hover {
-  background: linear-gradient(to bottom, #dceeff 0%, #c5dfff 100%);
-  border-color: #316ac5;
-}
+    .ie6-go-btn:hover {
+      background: linear-gradient(to bottom, #dceeff 0%, #c5dfff 100%);
+      border-color: #316ac5;
+    }
 
-.ie6-go-btn img {
-  width: 16px;
-  height: 16px;
-  object-fit: contain;
-}
+    .ie6-go-btn img {
+      width: 16px;
+      height: 16px;
+      object-fit: contain;
+    }
 
-/* Part 2C: iframe content scaling — scale Baixaki ~2010 layout to fit window */
-.ie6-frame-wrap {
-  flex: 1;
-  overflow: hidden;
-  position: relative;
-  background: #fff;
-  min-height: 0;
-}
+    /* Part 2C: iframe content scaling — scale Baixaki ~2010 layout to fit window */
+    .ie6-frame-wrap {
+      flex: 1;
+      overflow: hidden;
+      position: relative;
+      background: #fff;
+      min-height: 0;
+    }
 
-.ie6-frame {
-  border: none;
-  display: block;
-  background: #fff;
-  /* Scale down the archived page content; compensate dimensions upward */
-  transform: scale(0.6);
-  transform-origin: top left;
-  width: calc(100% / 0.6);
-  height: calc(100% / 0.6);
-}
+    .ie6-frame {
+      border: none;
+      display: block;
+      background: #fff;
+      /* Scale down the archived page content; compensate dimensions upward */
+      transform: scale(0.6);
+      transform-origin: top left;
+      width: calc(100% / 0.6);
+      height: calc(100% / 0.6);
+    }
 
-/* Part 2A: Maximized state — fill the entire .screen minus taskbar */
-.ie6-wrapper.maximized {
-  top: 0 !important;
-  left: 0 !important;
-  width: 100% !important;
-  height: calc(100% - 30px) !important;
-  transform: none !important;
-}
+    /* Part 2A: Maximized state — fill the entire .screen minus taskbar */
+    .ie6-wrapper.maximized {
+      top: 0 !important;
+      left: 0 !important;
+      width: 100% !important;
+      height: calc(100% - 30px) !important;
+      transform: none !important;
+    }
 
-.ie6-wrapper.maximized .window {
-  width: 100%;
-  height: 100%;
-}
+    .ie6-wrapper.maximized .window {
+      width: 100%;
+      height: 100%;
+    }
 
-/* In maximized mode the frame-wrap fills all remaining space */
-.ie6-wrapper.maximized .ie6-frame-wrap {
-  flex: 1;
-}
-</style>
+    /* In maximized mode the frame-wrap fills all remaining space */
+    .ie6-wrapper.maximized .ie6-frame-wrap {
+      flex: 1;
+    }
+
+    /* Part 4.2: Maximized windows lose border-radius (authentic XP behavior) */
+    .window-wrapper.maximized .window,
+    .ie6-wrapper.maximized .window {
+      border-radius: 0 !important;
+    }
+
+    .window-wrapper.maximized .title-bar,
+    .ie6-wrapper.maximized .title-bar {
+      border-top-left-radius: 0 !important;
+      border-top-right-radius: 0 !important;
+    }
+
+    /* Webamp deep integration overrides */
+    #webamp-container>* {
+      pointer-events: auto;
+    }
+
+    .webamp-playlist * {
+      cursor: url('assets/cursor/arrow.cur'), default !important;
+    }
+  </style>
 </head>
+
 <body>
 
 
-<!-- Desktop Window – XP style border encompassing title bar + screen -->
-<div class="window desktop-window">
+  <!-- Desktop Window – XP style border encompassing title bar + screen -->
+  <div class="window desktop-window">
 
-  <!-- Global Title Bar – XP style -->
-  <div class="title-bar global-titlebar">
-    <div class="title-bar-text gtb-text">c:\user\danixd\documents\bootleg_realm.exe</div>
-  </div>
-
-  <div class="screen">
-
-  <!-- ═══ LOGIN SCREEN ═══ -->
-  <div class="login-screen" id="loginScreen">
-    <div class="login-welcome" id="loginWelcome">welcome</div>
-    <div class="login-body" id="loginBody">
-      <div class="login-left">
-        <div class="winlogo"></div>
-        <div class="instruction">To begin, click your user name</div>
-      </div>
-      <div class="login-separator"></div>
-      <div class="login-user" id="loginUser">
-        <div class="profile-pic"></div>
-        <div class="username">Daniel</div>
-      </div>
-    </div>
-    <div class="login-power" id="loginPower">
-      <div class="power-icon"></div>
-      <div class="power-label">Turn off computer</div>
-    </div>
-  </div>
-
-  <!-- ═══ DESKTOP WRAPPER ═══ -->
-  <div class="desktop-wrapper" id="desktopWrapper">
-
-    <div class="desktop-icons">
-      <div class="desktop-icon" id="csIcon">
-        <div class="desktop-icon-img" style="background-image: url('assets/icons/cs_p6.ico');"></div>
-        <div class="desktop-icon-label">Counter-Strike</div>
-      </div>
-      <div class="desktop-icon" id="winampIcon">
-        <div class="desktop-icon-img" style="background-image: url('assets/icons/winamp.ico');"></div>
-        <div class="desktop-icon-label">Winamp</div>
-      </div>
-      <div class="desktop-icon" id="ieIcon">
-        <div class="desktop-icon-img" style="background-image: url('assets/icons/ie.ico');"></div>
-        <div class="desktop-icon-label">Internet Explorer</div>
-      </div>
+    <!-- Global Title Bar – XP style -->
+    <div class="title-bar global-titlebar">
+      <div class="title-bar-text gtb-text">c:\user\danixd\documents\bootleg_realm.exe</div>
     </div>
 
-    <div class="recycle-bin">
-      <div class="desktop-icon-img" style="background-image: url('assets/icons/bin.ico');"></div>
-      <div class="desktop-icon-label">Recycle Bin</div>
-    </div>
+    <div class="screen">
 
-    <!-- Main Window – hidden by default, appears 1s after desktop -->
-    <div class="window-wrapper" id="mainWindow">
-      <div class="window">
-        <div class="title-bar">
-          <div class="title-bar-text">Warning://aviso!</div>
-          <div class="title-bar-controls">
-            <button aria-label="Minimize" id="minimizeBtn"></button>
-            <button aria-label="Maximize" id="maximizeBtn"></button>
-            <button aria-label="Close" id="closeBtn"></button>
+      <!-- ═══ LOGIN SCREEN ═══ -->
+      <div class="login-screen" id="loginScreen">
+        <div class="login-welcome" id="loginWelcome">welcome</div>
+        <div class="login-body" id="loginBody">
+          <div class="login-left">
+            <div class="winlogo"></div>
+            <div class="instruction">To begin, click your user name</div>
+          </div>
+          <div class="login-separator"></div>
+          <div class="login-user" id="loginUser">
+            <div class="profile-pic"></div>
+            <div class="username">Daniel</div>
           </div>
         </div>
-        <div class="window-body">
-          <p class="just4fun">welcome, stranger. here you'll find interest things, or not! wanna see?</p>
-          <div class="btn-row">
-            <button onclick="window.open('https://youtube.com/theseanlegion','_blank')">YouTube</button>
-            <button onclick="window.open('https://open.spotify.com/user/theseanlegion','_blank')">Spotify</button>
-            <button onclick="window.open('https://github.com/balofote','_blank')">GitHub</button>
-          </div>
+        <div class="login-power" id="loginPower">
+          <div class="power-icon"></div>
+          <div class="power-label">Turn off computer</div>
         </div>
       </div>
-    </div>
 
-    <!-- ═══ CS GLITCHED SETUP WIZARD ═══ (hidden by default) -->
-    <div class="window-wrapper cs-wizard-wrapper" id="csWizardWindow">
-      <div class="window cs-wizard">
-        <div class="title-bar">
-          <div class="title-bar-text">Устàнôвкà Wizàrd — Cöüntër-Strïkê 1.6 █░</div>
-          <div class="title-bar-controls">
-            <button aria-label="Minimize" id="csWizardMinBtn"></button>
-            <button aria-label="Close" id="csWizardCloseBtn"></button>
+      <!-- ═══ DESKTOP WRAPPER ═══ -->
+      <div class="desktop-wrapper" id="desktopWrapper">
+
+        <div class="desktop-icons">
+          <div class="desktop-icon" id="csIcon">
+            <div class="desktop-icon-img" style="background-image: url('assets/icons/cs_p6.ico');"></div>
+            <div class="desktop-icon-label">Counter-Strike</div>
+          </div>
+          <div class="desktop-icon" id="winampIcon">
+            <div class="desktop-icon-img" style="background-image: url('assets/icons/winamp.ico');"></div>
+            <div class="desktop-icon-label">Winamp</div>
+          </div>
+          <div class="desktop-icon" id="ieIcon">
+            <div class="desktop-icon-img" style="background-image: url('assets/icons/ie.ico');"></div>
+            <div class="desktop-icon-label">Internet Explorer</div>
           </div>
         </div>
-        <!-- inner layout: sidebar + content -->
-        <div class="cs-wizard-body">
-          <!-- LEFT SIDEBAR -->
-          <div class="cs-wizard-sidebar">
-            <div class="cs-wizard-sidebar-icon">🖥</div>
-            <div class="cs-wizard-sidebar-title">CS 1.6<br>Setup</div>
-          </div>
-          <!-- RIGHT CONTENT PANEL -->
-          <div class="cs-wizard-content">
-            <!-- STEP 1: Welcome -->
-            <div class="cs-wizard-step active" id="csStep1">
-              <div class="cs-wizard-title">WëLcöМê t0 Th3 InstàLLàtïôN Wizàrd!<br>█ Cöüntër-Strïkê ░░ v1.6 █▄</div>
-              <div class="cs-wizard-text">Этöт Wizàrd устàн0вит Cöüntër-Strïkê 1.6<br>
-░░░ нà вàш köмпьютëр. ░▄█<br><br>
-Пëрëд тëм кàк прôdолжïть,<br>
-зàкрôйтë ВСЁ öткрытыë прôгрàммы.<br><br>
-█ ВНÎМÀНÎË! ░░<br>
-ÿôü MÜST àGRÊÊ t0 thê LÎCÊNSÊ ▄█░<br>
-bëFÖRÊ cöNTÎNÜÎNG!! ░░░░<br><br>
-Вëрсïя: CS_1.6_Full_RU_RePack_v2.exe<br>
-Рàзмëр: 243 МБ (???)<br><br>
-██████▓▓▒▒░░ L0DAENG... ░░▒▒▓▓██████</div>
-              <div class="cs-wizard-hint">Для прод0лжэнïя — нàжмïтэ Далëë &rsaquo;</div>
+
+        <div class="recycle-bin">
+          <div class="desktop-icon-img" style="background-image: url('assets/icons/bin.ico');"></div>
+          <div class="desktop-icon-label">Recycle Bin</div>
+        </div>
+
+        <!-- Main Window – hidden by default, appears 1s after desktop -->
+        <div class="window-wrapper" id="mainWindow">
+          <div class="window">
+            <div class="title-bar">
+              <div class="title-bar-text">Warning://aviso!</div>
+              <div class="title-bar-controls">
+                <button aria-label="Minimize" id="minimizeBtn"></button>
+                <button aria-label="Maximize" id="maximizeBtn"></button>
+                <button aria-label="Close" id="closeBtn"></button>
+              </div>
             </div>
-            <!-- STEP 2: License Agreement -->
-            <div class="cs-wizard-step" id="csStep2">
-              <div class="cs-wizard-title">Лïцëнзïöннöë Cöглàшëнïë ░░ EULA █▄</div>
-              <div class="cs-wizard-text">ÊÜLÀ ░▄ LÎCÊNSÊ ÀGRÊÊMÊNT ░░░<br><br>
-Прöчïтàйтë дàнный дöгöвöр внïмàтëльнö.<br>
-???? ??? ???? ???? ? ????? ????!<br><br>
-§1. ВÀМ ЗÀПРЕЩËНÖ:<br>
-░ Пëрëпрôdàвàть ïгрü.<br>
-░ Кöпïрöвàть бëз рàзрëшëнïя.<br>
-░ Мödïфïцïрöвàть кöд ïгры.<br>
-░ Рàзрëшàть öрüжïë нà сëрвëрàх.<br><br>
-§2. Ïзгöтöвïтëль НЕ НЕСЕТ:<br>
-??? ??? ???????? ??? ??????????<br>
-!!! WARRÎNG !!! ░░ YÖÜR PC ▄█▓<br>
-màÿ ÊXPÊRÎÊNCÊ █░▄ ÊRRÖRS!!!<br><br>
-Вы прïнïмàëтë услöвïя? ██████▒▒░</div>
-              <div class="cs-wizard-hint">Д à / Yes — нàжмïтë Далëë &rsaquo; &ensp; Нëт / No — Öτмëνà</div>
+            <div class="window-body">
+              <p class="just4fun">welcome, stranger. here you'll find interest things, or not! wanna see?</p>
+              <div class="btn-row">
+                <button onclick="window.open('https://youtube.com/theseanlegion','_blank')">YouTube</button>
+                <button onclick="window.open('https://open.spotify.com/user/theseanlegion','_blank')">Spotify</button>
+                <button onclick="window.open('https://github.com/balofote','_blank')">GitHub</button>
+              </div>
             </div>
-            <!-- STEP 3: Installing -->
-            <div class="cs-wizard-step" id="csStep3">
-              <div class="cs-wizard-title">Üstan0vkà... ░░░ Пöжàлüïстà Ждïтë █▄</div>
-              <div class="cs-wizard-text" id="csInstallLog">Кöпïрöвàнïë фàйлöв... ░░░<br></div>
-              <!-- Part 4: Native XP.css progress bar -->
-              <progress id="csProgressBar" max="100" value="0"></progress>
-              <div class="cs-wizard-hint" id="csInstallHint">Нë вïклôчàйтë кöмпьютëр! ░░</div>
+          </div>
+        </div>
+
+        <!-- ═══ CS GLITCHED SETUP WIZARD ═══ (hidden by default) -->
+        <div class="window-wrapper cs-wizard-wrapper" id="csWizardWindow">
+          <div class="window cs-wizard">
+            <div class="title-bar">
+              <div class="title-bar-text">Устàнôвкà Wizàrd — Cöüntër-Strïkê 1.6 █░</div>
+              <div class="title-bar-controls">
+                <button aria-label="Minimize" id="csWizardMinBtn"></button>
+                <button aria-label="Close" id="csWizardCloseBtn"></button>
+              </div>
             </div>
-          </div><!-- /.cs-wizard-content -->
-        </div><!-- /.cs-wizard-body -->
-        <!-- FOOTER CONTROLS -->
-        <div class="cs-wizard-footer">
-          <button id="csBackBtn" disabled>&#9664; Нàзàд</button>
-          <button id="csNextBtn">Далëë &#9654;</button>
-          <button id="csCancelBtn">Öτмëνà</button>
-        </div>
-      </div><!-- /.window -->
-    </div><!-- /.cs-wizard-wrapper -->
+            <!-- inner layout: sidebar + content -->
+            <div class="cs-wizard-body">
+              <!-- LEFT SIDEBAR -->
+              <div class="cs-wizard-sidebar">
+                <div class="cs-wizard-sidebar-icon">🖥</div>
+                <div class="cs-wizard-sidebar-title">CS 1.6<br>Setup</div>
+              </div>
+              <!-- RIGHT CONTENT PANEL -->
+              <div class="cs-wizard-content">
+                <!-- STEP 1: Welcome -->
+                <div class="cs-wizard-step active" id="csStep1">
+                  <div class="cs-wizard-title">WëLcöМê t0 Th3 InstàLLàtïôN Wizàrd!<br>█ Cöüntër-Strïkê ░░ v1.6 █▄</div>
+                  <div class="cs-wizard-text">Этöт Wizàrd устàн0вит Cöüntër-Strïkê 1.6<br>
+                    ░░░ нà вàш köмпьютëр. ░▄█<br><br>
+                    Пëрëд тëм кàк прôdолжïть,<br>
+                    зàкрôйтë ВСЁ öткрытыë прôгрàммы.<br><br>
+                    █ ВНÎМÀНÎË! ░░<br>
+                    ÿôü MÜST àGRÊÊ t0 thê LÎCÊNSÊ ▄█░<br>
+                    bëFÖRÊ cöNTÎNÜÎNG!! ░░░░<br><br>
+                    Вëрсïя: CS_1.6_Full_RU_RePack_v2.exe<br>
+                    Рàзмëр: 243 МБ (???)<br><br>
+                    ██████▓▓▒▒░░ L0DAENG... ░░▒▒▓▓██████</div>
+                  <div class="cs-wizard-hint">Для прод0лжэнïя — нàжмïтэ Далëë &rsaquo;</div>
+                </div>
+                <!-- STEP 2: License Agreement -->
+                <div class="cs-wizard-step" id="csStep2">
+                  <div class="cs-wizard-title">Лïцëнзïöннöë Cöглàшëнïë ░░ EULA █▄</div>
+                  <div class="cs-wizard-text">ÊÜLÀ ░▄ LÎCÊNSÊ ÀGRÊÊMÊNT ░░░<br><br>
+                    Прöчïтàйтë дàнный дöгöвöр внïмàтëльнö.<br>
+                    ???? ??? ???? ???? ? ????? ????!<br><br>
+                    §1. ВÀМ ЗÀПРЕЩËНÖ:<br>
+                    ░ Пëрëпрôdàвàть ïгрü.<br>
+                    ░ Кöпïрöвàть бëз рàзрëшëнïя.<br>
+                    ░ Мödïфïцïрöвàть кöд ïгры.<br>
+                    ░ Рàзрëшàть öрüжïë нà сëрвëрàх.<br><br>
+                    §2. Ïзгöтöвïтëль НЕ НЕСЕТ:<br>
+                    ??? ??? ???????? ??? ??????????<br>
+                    !!! WARRÎNG !!! ░░ YÖÜR PC ▄█▓<br>
+                    màÿ ÊXPÊRÎÊNCÊ █░▄ ÊRRÖRS!!!<br><br>
+                    Вы прïнïмàëтë услöвïя? ██████▒▒░</div>
+                  <div class="cs-wizard-hint">Д à / Yes — нàжмïтë Далëë &rsaquo; &ensp; Нëт / No — Öτмëνà</div>
+                </div>
+                <!-- STEP 3: Installing -->
+                <div class="cs-wizard-step" id="csStep3">
+                  <div class="cs-wizard-title">Üstan0vkà... ░░░ Пöжàлüïстà Ждïтë █▄</div>
+                  <div class="cs-wizard-text" id="csInstallLog">Кöпïрöвàнïë фàйлöв... ░░░<br></div>
+                  <!-- Part 4: Native XP.css progress bar -->
+                  <progress id="csProgressBar" max="100" value="0"></progress>
+                  <div class="cs-wizard-hint" id="csInstallHint">Нë вïклôчàйтë кöмпьютëр! ░░</div>
+                </div>
+              </div><!-- /.cs-wizard-content -->
+            </div><!-- /.cs-wizard-body -->
+            <!-- FOOTER CONTROLS -->
+            <div class="cs-wizard-footer">
+              <button id="csBackBtn" disabled>&#9664; Нàзàд</button>
+              <button id="csNextBtn">Далëë &#9654;</button>
+              <button id="csCancelBtn">Öτмëνà</button>
+            </div>
+          </div><!-- /.window -->
+        </div><!-- /.cs-wizard-wrapper -->
 
-    <!-- ═══ INTERNET EXPLORER 6 WINDOW ═══ (hidden by default) -->
-    <div class="window-wrapper ie6-wrapper" id="ie6Window">
-      <div class="window ie6-window">
-        <div class="title-bar">
-          <div class="title-bar-text">Internet Explorer - Baixaki.com.br</div>
-          <div class="title-bar-controls">
-            <button aria-label="Minimize" id="ie6MinBtn"></button>
-            <button aria-label="Maximize" id="ie6MaxBtn"></button>
-            <button aria-label="Close" id="ie6CloseBtn"></button>
+        <!-- ═══ INTERNET EXPLORER 6 WINDOW ═══ (hidden by default) -->
+        <div class="window-wrapper ie6-wrapper" id="ie6Window">
+          <div class="window ie6-window">
+            <div class="title-bar">
+              <div class="title-bar-text">Internet Explorer - Habbo Hotel</div>
+              <div class="title-bar-controls">
+                <button aria-label="Minimize" id="ie6MinBtn"></button>
+                <button aria-label="Maximize" id="ie6MaxBtn"></button>
+                <button aria-label="Close" id="ie6CloseBtn"></button>
+              </div>
+            </div>
+            <!-- IE6 Chrome: menu bar, icon toolbar, address bar -->
+            <div class="ie6-chrome">
+              <!-- Menu bar -->
+              <div class="ie6-menubar">
+                <span>File</span>
+                <span>Edit</span>
+                <span>View</span>
+                <span>Favorites</span>
+                <span>Tools</span>
+                <span>Help</span>
+              </div>
+              <!-- Icon toolbar -->
+              <div class="ie6-toolbar">
+                <button class="ie6-tb-btn" title="Back">
+                  <img src="iebrowser/icons/back.png" alt="Back">
+                  <span class="ie6-tb-label">Back</span>
+                </button>
+                <button class="ie6-tb-btn" title="Forward">
+                  <img src="iebrowser/icons/forward.png" alt="Forward">
+                  <span class="ie6-tb-label">Forward</span>
+                </button>
+                <button class="ie6-tb-btn" title="Stop">
+                  <img src="iebrowser/icons/IE_Stop.png" alt="Stop">
+                  <span class="ie6-tb-label">Stop</span>
+                </button>
+                <button class="ie6-tb-btn" title="Refresh">
+                  <img src="iebrowser/icons/IE_Refresh.png" alt="Refresh">
+                  <span class="ie6-tb-label">Refresh</span>
+                </button>
+                <button class="ie6-tb-btn" title="Home">
+                  <img src="iebrowser/icons/IE_Home.png" alt="Home">
+                  <span class="ie6-tb-label">Home</span>
+                </button>
+                <div class="ie6-tb-separator"></div>
+                <button class="ie6-tb-btn" title="Search">
+                  <img src="iebrowser/icons/IE_Search.png" alt="Search">
+                  <span class="ie6-tb-label">Search</span>
+                </button>
+                <button class="ie6-tb-btn" title="Favorites">
+                  <img src="iebrowser/icons/Favorites.png" alt="Favorites">
+                  <span class="ie6-tb-label">Favorites</span>
+                </button>
+                <button class="ie6-tb-btn" title="History">
+                  <img src="iebrowser/icons/IE_History.png" alt="History">
+                  <span class="ie6-tb-label">History</span>
+                </button>
+              </div>
+              <!-- Address bar -->
+              <div class="ie6-addressbar">
+                <span class="ie6-addr-label">Address</span>
+                <div class="ie6-addr-icon"></div>
+                <input class="ie6-addr-input" id="ie6AddrInput" type="text" value="http://www.habbo.com.br/" readonly />
+                <button class="ie6-go-btn" id="ie6GoBtn">
+                  <img src="iebrowser/icons/go.png" alt="Go">
+                  Go
+                </button>
+              </div>
+            </div>
+            <!-- Part 2C: image replaced iframe for static Habbo integration -->
+            <div class="ie6-frame-wrap">
+              <img class="ie6-frame" id="ie6Frame" src="iebrowser/homepage.png"
+                style="width: 100%; height: 100%; object-fit: fill; transform: none;" alt="Habbo Hotel" />
+            </div>
+          </div>
+        </div><!-- /.ie6-wrapper -->
+
+        <div class="taskbar">
+          <div class="taskbar-left">
+            <div class="start-btn" id="startBtn">
+              <div class="start-logo"></div>
+              start
+            </div>
+            <!-- Task items: dynamically managed by JS (chronological, shrinkable) -->
+            <div class="task-items" id="taskItemsContainer"></div>
+          </div>
+          <div class="systray">
+            <div class="tray-tooltip-container">
+              <div class="systray-icon" style="background-image: url('assets/icons/net.ico');"></div>
+              <div class="tray-tooltip">redebr1 has internet connection</div>
+            </div>
+            <div class="tray-tooltip-container">
+              <div class="systray-icon volume" id="volumeIcon" style="background-image: url('assets/icons/sound.ico');">
+              </div>
+              <div class="tray-tooltip" id="volumeTooltip">Speakers: 100%</div>
+            </div>
+            <div class="tooltip-container">
+              <div class="systray-icon info" style="background-image: url('assets/icons/info.ico');"></div>
+              <div class="tooltip-box">made by balofote</div>
+            </div>
+            <div class="tray-tooltip-container">
+              <div class="tray-clock" id="clock">00:00</div>
+              <div class="tray-tooltip" id="dateTooltip">January 1st 2024</div>
+            </div>
           </div>
         </div>
-        <!-- IE6 Chrome: menu bar, icon toolbar, address bar -->
-        <div class="ie6-chrome">
-          <!-- Menu bar -->
-          <div class="ie6-menubar">
-            <span>File</span>
-            <span>Edit</span>
-            <span>View</span>
-            <span>Favorites</span>
-            <span>Tools</span>
-            <span>Help</span>
-          </div>
-          <!-- Icon toolbar -->
-          <div class="ie6-toolbar">
-            <button class="ie6-tb-btn" title="Back">
-              <img src="iebrowser/icons/back.png" alt="Back">
-              <span class="ie6-tb-label">Back</span>
-            </button>
-            <button class="ie6-tb-btn" title="Forward">
-              <img src="iebrowser/icons/forward.png" alt="Forward">
-              <span class="ie6-tb-label">Forward</span>
-            </button>
-            <button class="ie6-tb-btn" title="Stop">
-              <img src="iebrowser/icons/IE_Stop.png" alt="Stop">
-              <span class="ie6-tb-label">Stop</span>
-            </button>
-            <button class="ie6-tb-btn" title="Refresh">
-              <img src="iebrowser/icons/IE_Refresh.png" alt="Refresh">
-              <span class="ie6-tb-label">Refresh</span>
-            </button>
-            <button class="ie6-tb-btn" title="Home">
-              <img src="iebrowser/icons/IE_Home.png" alt="Home">
-              <span class="ie6-tb-label">Home</span>
-            </button>
-            <div class="ie6-tb-separator"></div>
-            <button class="ie6-tb-btn" title="Search">
-              <img src="iebrowser/icons/IE_Search.png" alt="Search">
-              <span class="ie6-tb-label">Search</span>
-            </button>
-            <button class="ie6-tb-btn" title="Favorites">
-              <img src="iebrowser/icons/Favorites.png" alt="Favorites">
-              <span class="ie6-tb-label">Favorites</span>
-            </button>
-            <button class="ie6-tb-btn" title="History">
-              <img src="iebrowser/icons/IE_History.png" alt="History">
-              <span class="ie6-tb-label">History</span>
-            </button>
-          </div>
-          <!-- Address bar -->
-          <div class="ie6-addressbar">
-            <span class="ie6-addr-label">Address</span>
-            <div class="ie6-addr-icon"></div>
-            <input class="ie6-addr-input" id="ie6AddrInput" type="text" value="http://www.baixaki.com.br/" readonly />
-            <button class="ie6-go-btn" id="ie6GoBtn">
-              <img src="iebrowser/icons/go.png" alt="Go">
-              Go
-            </button>
-          </div>
-        </div>
-        <!-- Part 2C: iframe wrapped for scaling containment -->
-        <div class="ie6-frame-wrap">
-          <iframe class="ie6-frame" id="ie6Frame" src="iebrowser/ie-web.html" sandbox="allow-same-origin allow-scripts"></iframe>
-        </div>
-      </div>
-    </div><!-- /.ie6-wrapper -->
 
-    <div class="taskbar">
-      <div class="taskbar-left">
-        <button class="start-btn" id="startBtn">
-          <div class="start-logo"></div>
-          start
-        </button>
-        <!-- Task items: dynamically managed by JS (chronological, shrinkable) -->
-        <div class="task-items" id="taskItemsContainer"></div>
-      </div>
-      <div class="systray">
-        <div class="tray-tooltip-container">
-          <div class="systray-icon" style="background-image: url('assets/icons/net.ico');"></div>
-          <div class="tray-tooltip">redebr1 has internet connection</div>
-        </div>
-        <div class="tray-tooltip-container">
-          <div class="systray-icon volume" id="volumeIcon" style="background-image: url('assets/icons/sound.ico');"></div>
-          <div class="tray-tooltip" id="volumeTooltip">Speakers: 100%</div>
-        </div>
-        <div class="tooltip-container">
-          <div class="systray-icon info" style="background-image: url('assets/icons/info.ico');"></div>
-          <div class="tooltip-box">made by balofote</div>
-        </div>
-        <div class="tray-tooltip-container">
-          <div class="tray-clock" id="clock">00:00</div>
-          <div class="tray-tooltip" id="dateTooltip">January 1st 2024</div>
-        </div>
-      </div>
-    </div>
+      </div><!-- /.desktop-wrapper -->
 
-  </div><!-- /.desktop-wrapper -->
+    </div><!-- /.screen -->
 
-  </div><!-- /.screen -->
+  </div><!-- /.desktop-window -->
 
-</div><!-- /.desktop-window -->
+  <script>
+    /* ══════════════════════════════════════════
+       VOLUME / MUTE – declare FIRST to avoid forward-reference from the login IIFE
+       (FIX: AUDIT ALTO #3)
+    ╔═══════════════════════════════════════════ */
+    let isMuted = false;
 
-<script>
-/* ══════════════════════════════════════════
-   VOLUME / MUTE – declare FIRST to avoid forward-reference from the login IIFE
-   (FIX: AUDIT ALTO #3)
-╔═══════════════════════════════════════════ */
-let isMuted = false;
+    /* ══════════════════════════════════════════
+       LOGIN SCREEN LOGIC
+    ╔═══════════════════════════════════════════ */
+    (function () {
+      const loginScreen = document.getElementById('loginScreen');
+      const welcomeEl = document.getElementById('loginWelcome');
+      const loginBody = document.getElementById('loginBody');
+      const loginUser = document.getElementById('loginUser');
+      const desktopWrap = document.getElementById('desktopWrapper');
+      const _mainWindow = document.getElementById('mainWindow'); // local alias avoids duplicate-const
 
-/* ══════════════════════════════════════════
-   LOGIN SCREEN LOGIC
-╔═══════════════════════════════════════════ */
-(function() {
-  const loginScreen  = document.getElementById('loginScreen');
-  const welcomeEl    = document.getElementById('loginWelcome');
-  const loginBody    = document.getElementById('loginBody');
-  const loginUser    = document.getElementById('loginUser');
-  const desktopWrap  = document.getElementById('desktopWrapper');
-  const _mainWindow  = document.getElementById('mainWindow'); // local alias avoids duplicate-const
+      requestAnimationFrame(() => {
+        welcomeEl.classList.add('visible');
+      });
 
-  requestAnimationFrame(() => {
-    welcomeEl.classList.add('visible');
-  });
+      /* Phase 1 → Phase 2: after 3 s the welcome text fades out and
+         .login-body gains .visible which sets pointer-events: auto.
+         FIX 1: No clicks reach .login-user before this point. */
+      setTimeout(() => {
+        welcomeEl.classList.remove('visible');
+        welcomeEl.classList.add('hidden');
+        loginBody.classList.add('visible'); // ← enables interactions for first time
+      }, 3000);
 
-  /* Phase 1 → Phase 2: after 3 s the welcome text fades out and
-     .login-body gains .visible which sets pointer-events: auto.
-     FIX 1: No clicks reach .login-user before this point. */
-  setTimeout(() => {
-    welcomeEl.classList.remove('visible');
-    welcomeEl.classList.add('hidden');
-    loginBody.classList.add('visible'); // ← enables interactions for first time
-  }, 3000);
+      let desktopShown = false;
 
-  let desktopShown = false;
+      loginUser.addEventListener('click', function onClick() {
+        // FIX 1: one-shot listener — fires only once, after Phase 2 is visible
+        this.removeEventListener('click', onClick);
+        this.classList.add('selected');
 
-  loginUser.addEventListener('click', function onClick() {
-    // FIX 1: one-shot listener — fires only once, after Phase 2 is visible
-    this.removeEventListener('click', onClick);
-    this.classList.add('selected');
+        // FIX 1: startup.wav plays exclusively here, on successful user click
+        const audio = new Audio('assets/sounds/startup.wav');
+        audio.volume = 1;
+        if (isMuted) audio.muted = true;
 
-    // FIX 1: startup.wav plays exclusively here, on successful user click
-    const audio = new Audio('assets/sounds/startup.wav');
-    audio.volume = 1;
-    if (isMuted) audio.muted = true;
+        const fallbackTimer = setTimeout(showDesktop, 4500);
 
-    const fallbackTimer = setTimeout(showDesktop, 4500);
+        audio.addEventListener('ended', () => {
+          clearTimeout(fallbackTimer);
+          showDesktop();
+        });
 
-    audio.addEventListener('ended', () => {
-      clearTimeout(fallbackTimer);
-      showDesktop();
-    });
+        audio.play().catch(() => {
+          clearTimeout(fallbackTimer);
+          showDesktop();
+        });
+      });
 
-    audio.play().catch(() => {
-      clearTimeout(fallbackTimer);
-      showDesktop();
-    });
-  });
+      function showDesktop() {
+        if (desktopShown) return;
+        desktopShown = true;
 
-  function showDesktop() {
-    if (desktopShown) return;
-    desktopShown = true;
+        loginScreen.classList.add('hidden');
+        desktopWrap.classList.add('visible');
 
-    loginScreen.classList.add('hidden');
-    desktopWrap.classList.add('visible');
-
-    // After 1 s show the main warning window + ding
-    setTimeout(() => {
-      _mainWindow.classList.add('visible');
-      const ding = new Audio('assets/sounds/ding.wav');
-      if (isMuted) ding.muted = true;
-      ding.play().catch(() => {});
-      bringToFront(_mainWindow);
-      // Reveal taskbar item chronologically when window first appears
-      const mti = document.getElementById('mainTaskItem');
-      if (mti) { mti.style.display = ''; mti.classList.add('active'); }
-    }, 1000);
-  }
-})();
-
-/* ══════════════════════════════════════════
-   CORE ELEMENTS
-   FIX (AUDIT CRÍTICO #1): mainWindow declared exactly once here.
-╔═══════════════════════════════════════════ */
-const mainWindow   = document.getElementById('mainWindow');
-const minimizeBtn  = document.getElementById('minimizeBtn');
-const startBtn     = document.getElementById('startBtn');
-const screen       = document.querySelector('.screen');
-const dateTooltip  = document.getElementById('dateTooltip');
-const clock        = document.getElementById('clock');
-
-/* ══════════════════════════════════════════
-   SHARED makeDraggable() UTILITY
-   FIX 2: Coordinates are now relative to .screen, not the viewport.
-   Works for any .window-wrapper child of .screen.
-╔═══════════════════════════════════════════ */
-function makeDraggable(wrapperEl) {
-  const titleBar = wrapperEl.querySelector('.title-bar');
-  if (!titleBar) return;
-
-  let dragging = false;
-  let offX = 0, offY = 0;
-
-  titleBar.addEventListener('mousedown', e => {
-    if (e.target.closest('.title-bar-controls')) return; // FIX 2: ignore button clicks
-    if (wrapperEl.classList.contains('minimized')) return;
-
-    dragging = true;
-    e.preventDefault(); // stop text selection during drag
-
-    const screenRect = screen.getBoundingClientRect();
-    const winRect    = wrapperEl.getBoundingClientRect();
-
-    // Capture mouse offset from the wrapper's top-left (viewport coords)
-    offX = e.clientX - winRect.left;
-    offY = e.clientY - winRect.top;
-
-    // FIX 2: convert to screen-local absolute coords before removing transform
-    wrapperEl.style.transform = 'none';
-    wrapperEl.style.left = (winRect.left - screenRect.left) + 'px';
-    wrapperEl.style.top  = (winRect.top  - screenRect.top)  + 'px';
-  });
-
-  document.addEventListener('mousemove', e => {
-    if (!dragging) return;
-
-    const screenRect = screen.getBoundingClientRect();
-    const winW = wrapperEl.offsetWidth;
-    const winH = wrapperEl.offsetHeight;
-
-    // FIX 2: new position expressed in .screen-local coordinates
-    let newX = (e.clientX - offX) - screenRect.left;
-    let newY = (e.clientY - offY) - screenRect.top;
-
-    // Clamp inside the 800×600 screen (30 px reserved for taskbar)
-    newX = Math.max(0, Math.min(newX, 800 - winW));
-    newY = Math.max(0, Math.min(newY, 570 - winH));
-
-    wrapperEl.style.left = newX + 'px';
-    wrapperEl.style.top  = newY + 'px';
-  });
-
-  document.addEventListener('mouseup', () => { dragging = false; });
-}
-
-/* ══════════════════════════════════════════
-   WINDOW FOCUS MANAGER (Z-INDEX)
-╔═══════════════════════════════════════════ */
-const managedWindows = []; // { el, isOSWindow }
-
-function registerWindow(el, isOSWindow) {
-  if (!managedWindows.find(w => w.el === el)) {
-    managedWindows.push({ el, isOSWindow });
-    // Webamp container requires capture:true to intercept clicks before Webamp's internal React logic
-    el.addEventListener('mousedown', () => bringToFront(el), true);
-  }
-}
-
-function bringToFront(targetEl) {
-  managedWindows.forEach(w => {
-    if (w.el === targetEl) {
-      w.el.style.zIndex = 120;
-      if (w.isOSWindow) {
-        const tb = w.el.querySelector('.title-bar');
-        if (tb) tb.classList.remove('inactive');
+        // After 1 s show the main warning window + ding
+        setTimeout(() => {
+          _mainWindow.classList.add('visible');
+          const ding = new Audio('assets/sounds/ding.wav');
+          if (isMuted) ding.muted = true;
+          ding.play().catch(() => { });
+          bringToFront(_mainWindow);
+          // Reveal taskbar item chronologically when window first appears
+          const mti = document.getElementById('mainTaskItem');
+          if (mti) { mti.style.display = ''; mti.classList.add('active'); }
+        }, 1000);
       }
-    } else {
-      w.el.style.zIndex = 110;
-      if (w.isOSWindow) {
-        const tb = w.el.querySelector('.title-bar');
-        if (tb) tb.classList.add('inactive');
+    })();
+
+    /* ══════════════════════════════════════════
+       CORE ELEMENTS
+       FIX (AUDIT CRÍTICO #1): mainWindow declared exactly once here.
+    ╔═══════════════════════════════════════════ */
+    const mainWindow = document.getElementById('mainWindow');
+    const minimizeBtn = document.getElementById('minimizeBtn');
+    const maximizeBtn = document.getElementById('maximizeBtn');
+    const closeBtn = document.getElementById('closeBtn');
+    const startBtn = document.getElementById('startBtn');
+    const screen = document.querySelector('.screen');
+    const dateTooltip = document.getElementById('dateTooltip');
+    const clock = document.getElementById('clock');
+
+    /* ══════════════════════════════════════════
+       SHARED makeDraggable() UTILITY
+       FIX 2: Coordinates are now relative to .screen, not the viewport.
+       Works for any .window-wrapper child of .screen.
+    ╔═══════════════════════════════════════════ */
+    function makeDraggable(wrapperEl) {
+      const titleBar = wrapperEl.querySelector('.title-bar');
+      if (!titleBar) return;
+
+      let dragging = false;
+      let offX = 0, offY = 0;
+
+      titleBar.addEventListener('mousedown', e => {
+        if (e.target.closest('.title-bar-controls')) return; // FIX 2: ignore button clicks
+        if (wrapperEl.classList.contains('minimized')) return;
+
+        dragging = true;
+        e.preventDefault(); // stop text selection during drag
+
+        const screenRect = screen.getBoundingClientRect();
+        const winRect = wrapperEl.getBoundingClientRect();
+
+        // Capture mouse offset from the wrapper's top-left (viewport coords)
+        offX = e.clientX - winRect.left;
+        offY = e.clientY - winRect.top;
+
+        // FIX 2: convert to screen-local absolute coords before removing transform
+        wrapperEl.style.transform = 'none';
+        wrapperEl.style.left = (winRect.left - screenRect.left) + 'px';
+        wrapperEl.style.top = (winRect.top - screenRect.top) + 'px';
+      });
+
+      document.addEventListener('mousemove', e => {
+        if (!dragging) return;
+
+        const screenRect = screen.getBoundingClientRect();
+        const winW = wrapperEl.offsetWidth;
+        const winH = wrapperEl.offsetHeight;
+
+        // FIX 2: new position expressed in .screen-local coordinates
+        let newX = (e.clientX - offX) - screenRect.left;
+        let newY = (e.clientY - offY) - screenRect.top;
+
+        // Clamp inside the 800×600 screen (30 px reserved for taskbar)
+        newX = Math.max(0, Math.min(newX, 800 - winW));
+        newY = Math.max(0, Math.min(newY, 570 - winH));
+
+        wrapperEl.style.left = newX + 'px';
+        wrapperEl.style.top = newY + 'px';
+      });
+
+      document.addEventListener('mouseup', () => { dragging = false; });
+    }
+
+    /* ══════════════════════════════════════════
+       WINDOW FOCUS MANAGER (Z-INDEX)
+    ╔═══════════════════════════════════════════ */
+    const managedWindows = []; // { el, isOSWindow }
+
+    function registerWindow(el, isOSWindow) {
+      if (!managedWindows.find(w => w.el === el)) {
+        managedWindows.push({ el, isOSWindow });
+        // Webamp container requires capture:true to intercept clicks before Webamp's internal React logic
+        el.addEventListener('mousedown', () => bringToFront(el), true);
       }
     }
-  });
-}
 
-// Attach drag and focus to the main warning window
-makeDraggable(mainWindow);
-registerWindow(mainWindow, true);
+    function bringToFront(targetEl) {
+      managedWindows.forEach(w => {
+        let sibling = w.el;
+        if (sibling.id === 'webamp') {
+          sibling = document.getElementById('webamp-container');
+        }
+        if (!sibling) return;
 
-/* ══════════════════════════════════════════
-   TASK ITEM FACTORY – chronological, fluid, shrinkable
-   Appends a new .task-item to #taskItemsContainer and returns it.
-╔═══════════════════════════════════════════ */
-function createTaskItem(id, iconUrl, label) {
-  const container = document.getElementById('taskItemsContainer');
-  const item = document.createElement('div');
-  item.className = 'task-item';
-  item.id = id;
-  if (iconUrl) {
-    const icon = document.createElement('div');
-    icon.className = 'task-icon';
-    icon.style.backgroundImage = `url('${iconUrl}')`;
-    item.appendChild(icon);
-  }
-  const span = document.createElement('span');
-  span.textContent = label;
-  item.appendChild(span);
-  container.appendChild(item);
-  return item;
-}
-
-/* Pre-create all task items (hidden by default, revealed chronologically when apps open) */
-const mainTaskItem   = createTaskItem('mainTaskItem',   'assets/icons/app.ico',    'Warning://aviso!');
-const winampTaskItem = createTaskItem('winampTaskItem', 'assets/icons/winamp.ico', 'Winamp');
-const csTaskItem     = createTaskItem('csTaskItem',     'assets/icons/cs_p6.ico',  'CS Setup Wizard');
-const ie6TaskItem    = createTaskItem('ie6TaskItem',    'assets/icons/ie.ico',     'Internet Explorer');
-[mainTaskItem, winampTaskItem, csTaskItem, ie6TaskItem].forEach(ti => ti.style.display = 'none');
-
-/* ══════════════════════════════════════════
-   DVD SCREENSAVER – Part 4: 3 independent logos, chromatic cycle
-   All logos bounce across the full browser viewport (body-level, fixed).
-╔═══════════════════════════════════════════ */
-const DVD_SZ = 48;
-const DVD_LOGOS = [
-  { x: 80,  y: 60,  dx:  1.4, dy:  1.1 },
-  { x: 310, y: 200, dx: -1.2, dy:  1.5 },
-  { x: 560, y: 120, dx:  1.6, dy: -1.3 },
-];
-const DVD_COLOR_FILTERS = {
-  white:   'brightness(0) invert(1)',
-  magenta: 'brightness(0) invert(1) sepia(1) saturate(10) hue-rotate(270deg)',
-  cyan:    'brightness(0) invert(1) sepia(1) saturate(10) hue-rotate(150deg)',
-  yellow:  'brightness(0) invert(1) sepia(1) saturate(10) hue-rotate(40deg)',
-  black:   'brightness(0)',
-};
-const DVD_COLOR_KEYS = ['white', 'magenta', 'cyan', 'yellow', 'black'];
-let dvdColorIdx = 0;
-
-// Create 3 dvd logo elements and append to body
-const dvdEls = DVD_LOGOS.map(() => {
-  const el = document.createElement('div');
-  el.className = 'dvd-screensaver';
-  document.body.appendChild(el);
-  return el;
-});
-
-function applyDvdColor(els, colorKey) {
-  const f = DVD_COLOR_FILTERS[colorKey] || DVD_COLOR_FILTERS.white;
-  els.forEach(el => { el.style.filter = f; });
-}
-// Set initial color
-applyDvdColor(dvdEls, DVD_COLOR_KEYS[dvdColorIdx]);
-
-// Chromatic cycle every 2 seconds with CSS transition smoothing
-setInterval(() => {
-  dvdColorIdx = (dvdColorIdx + 1) % DVD_COLOR_KEYS.length;
-  applyDvdColor(dvdEls, DVD_COLOR_KEYS[dvdColorIdx]);
-}, 2000);
-
-function animateDVD() {
-  const sw = window.innerWidth;
-  const sh = window.innerHeight;
-  DVD_LOGOS.forEach((logo, i) => {
-    logo.x += logo.dx;
-    logo.y += logo.dy;
-    if (logo.x <= 0)             { logo.x = 0;            logo.dx =  Math.abs(logo.dx); }
-    if (logo.x + DVD_SZ >= sw)   { logo.x = sw - DVD_SZ;  logo.dx = -Math.abs(logo.dx); }
-    if (logo.y <= 0)             { logo.y = 0;             logo.dy =  Math.abs(logo.dy); }
-    if (logo.y + DVD_SZ >= sh)   { logo.y = sh - DVD_SZ;  logo.dy = -Math.abs(logo.dy); }
-    dvdEls[i].style.left = logo.x + 'px';
-    dvdEls[i].style.top  = logo.y + 'px';
-  });
-  requestAnimationFrame(animateDVD);
-}
-animateDVD();
-
-/* ══════════════════════════════════════════
-   CLOCK / DATE
-╔═══════════════════════════════════════════ */
-function formatDate() {
-  const months = ['January','February','March','April','May','June',
-    'July','August','September','October','November','December'];
-  const ord = { 1:'st',2:'nd',3:'rd',21:'st',22:'nd',23:'rd',31:'st' };
-  const n = new Date();
-  const d = n.getDate();
-  return `${months[n.getMonth()]} ${d}${ord[d]||'th'} ${n.getFullYear()}`;
-}
-dateTooltip.textContent = formatDate();
-
-function updateClock() {
-  const n = new Date();
-  let h = n.getHours();
-  const m = String(n.getMinutes()).padStart(2,'0');
-  const ap = h >= 12 ? 'PM' : 'AM';
-  h = h % 12 || 12;
-  clock.textContent = String(h).padStart(2,'0') + ':' + m + ' ' + ap;
-}
-updateClock();
-// Sync to next minute boundary (AUDIT MÉDIO #5)
-const msToNextMin = (60 - new Date().getSeconds()) * 1000;
-setTimeout(() => { updateClock(); setInterval(updateClock, 60000); }, msToNextMin);
-
-/* ══════════════════════════════════════════
-   MAIN WINDOW – minimize / restore / close
-╔═══════════════════════════════════════════ */
-const maximizeBtn = document.getElementById('maximizeBtn');
-const closeBtn    = document.getElementById('closeBtn');
-
-minimizeBtn.addEventListener('click', e => {
-  e.stopPropagation();
-  mainWindow.classList.add('minimized');
-  mainTaskItem.classList.remove('active');
-});
-
-maximizeBtn.addEventListener('click', e => {
-  e.stopPropagation();
-  mainWindow.classList.toggle('maximized');
-});
-
-closeBtn.addEventListener('click', e => {
-  e.stopPropagation();
-  mainWindow.classList.add('minimized');
-  mainTaskItem.classList.remove('active');
-});
-
-mainTaskItem.addEventListener('click', () => {
-  if (mainWindow.classList.contains('minimized')) {
-    mainWindow.classList.remove('minimized');
-    mainTaskItem.classList.add('active');
-    bringToFront(mainWindow);
-  } else {
-    mainWindow.classList.add('minimized');
-    mainTaskItem.classList.remove('active');
-  }
-});
-
-/* ══════════════════════════════════════════
-   START BUTTON – press feedback
-╔═══════════════════════════════════════════ */
-startBtn.addEventListener('mousedown', e => { e.stopPropagation(); startBtn.classList.add('active'); });
-startBtn.addEventListener('mouseup',   e => { e.stopPropagation(); startBtn.classList.remove('active'); });
-startBtn.addEventListener('mouseleave', () => { startBtn.classList.remove('active'); });
-
-/* ══════════════════════════════════════════
-   VOLUME / MUTE TOGGLE
-   `isMuted` declared at the very top of this script block.
-╔═══════════════════════════════════════════ */
-const volIcon = document.getElementById('volumeIcon');
-const volTip  = document.getElementById('volumeTooltip');
-
-volIcon.addEventListener('click', () => {
-  isMuted = !isMuted;
-  if (isMuted) {
-    volIcon.style.backgroundImage = "url('assets/icons/nosound.ico')";
-    volTip.textContent = 'Speakers: Mute';
-    document.querySelectorAll('audio').forEach(a => a.muted = true);
-    if (window._webamp) {
-      try { window._webamp.store.dispatch({ type: 'SET_VOLUME', volume: 0 }); } catch(ex) {}
-    }
-  } else {
-    volIcon.style.backgroundImage = "url('assets/icons/sound.ico')";
-    volTip.textContent = 'Speakers: 100%';
-    document.querySelectorAll('audio').forEach(a => a.muted = false);
-    if (window._webamp) {
-      try { window._webamp.store.dispatch({ type: 'SET_VOLUME', volume: 100 }); } catch(ex) {}
-    }
-  }
-});
-
-/* ══════════════════════════════════════════
-   WEBAMP INTEGRATION
-   Opens on double-click of the Winamp desktop icon.
-   Bundle: webamp/built/webamp.bundle.min.js (UMD global Webamp).
-╔═══════════════════════════════════════════ */
-document.getElementById('winampIcon').addEventListener('dblclick', () => {
-  initWebamp();
-});
-
-winampTaskItem.addEventListener('click', () => {
-  const webampEl = document.getElementById('webamp');
-  if (!webampEl) return;
-  if (webampEl.style.display === 'none') {
-    webampEl.style.display = 'block';
-    winampTaskItem.classList.add('active');
-    bringToFront(webampEl);
-  } else {
-    webampEl.style.display = 'none';
-    winampTaskItem.classList.remove('active');
-  }
-});
-
-function initWebamp() {
-  if (typeof Webamp === 'undefined') {
-    console.warn('[Webamp] Bundle not loaded — check <script> tag in <head>.');
-    return;
-  }
-  
-  function clampWebamp(webampEl) {
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach(m => {
-        if (m.attributeName === 'style' && m.target.classList.contains('webamp-window')) {
-          const target = m.target;
-          const transform = target.style.transform;
-          if (!transform) return;
-
-          const match = transform.match(/translate\(([-\d.]+)px,\s*([-\d.]+)px\)/);
-          if (match) {
-            let x = parseFloat(match[1]);
-            let y = parseFloat(match[2]);
-            let clamped = false;
-
-            const maxX = 800 - target.offsetWidth;
-            const maxY = 570 - target.offsetHeight; // 570 = 600 − 30px taskbar
-
-            if (x < 0) { x = 0; clamped = true; }
-            if (x > maxX) { x = maxX; clamped = true; }
-            if (y < 0) { y = 0; clamped = true; }
-            if (y > maxY) { y = maxY; clamped = true; }
-
-            if (clamped) {
-              observer.disconnect();
-              target.style.transform = `translate(${x}px, ${y}px)`;
-              observer.observe(webampEl, { attributes: true, subtree: true, attributeFilter: ['style'] });
-            }
+        if (w.el === targetEl || sibling === targetEl) {
+          sibling.style.zIndex = 100;
+          if (w.isOSWindow) {
+            const tb = w.el.querySelector('.title-bar');
+            if (tb) tb.classList.remove('inactive');
+          }
+        } else {
+          sibling.style.zIndex = 10;
+          if (w.isOSWindow) {
+            const tb = w.el.querySelector('.title-bar');
+            if (tb) tb.classList.add('inactive');
           }
         }
       });
+    }
+
+    // Attach drag and focus to the main warning window
+    makeDraggable(mainWindow);
+    registerWindow(mainWindow, true);
+
+    /* ══════════════════════════════════════════
+       TASK ITEM FACTORY – chronological, fluid, shrinkable
+       Appends a new .task-item to #taskItemsContainer and returns it.
+    ╔═══════════════════════════════════════════ */
+    function createTaskItem(id, iconUrl, label) {
+      const container = document.getElementById('taskItemsContainer');
+      const item = document.createElement('div');
+      item.className = 'task-item';
+      item.id = id;
+      if (iconUrl) {
+        const icon = document.createElement('div');
+        icon.className = 'task-icon';
+        icon.style.backgroundImage = `url('${iconUrl}')`;
+        item.appendChild(icon);
+      }
+      const span = document.createElement('span');
+      span.textContent = label;
+      item.appendChild(span);
+      container.appendChild(item);
+      return item;
+    }
+
+    /* Pre-create all task items (hidden by default, revealed chronologically when apps open) */
+    const mainTaskItem = createTaskItem('mainTaskItem', 'assets/icons/app.ico', 'Warning://aviso!');
+    const winampTaskItem = createTaskItem('winampTaskItem', 'assets/icons/winamp.ico', 'Winamp');
+    const csTaskItem = createTaskItem('csTaskItem', 'assets/icons/cs_p6.ico', 'CS Setup Wizard');
+    const ie6TaskItem = createTaskItem('ie6TaskItem', 'assets/icons/ie.ico', 'Internet Explorer');
+    [mainTaskItem, winampTaskItem, csTaskItem, ie6TaskItem].forEach(ti => ti.style.display = 'none');
+
+    /* ══════════════════════════════════════════
+       DVD SCREENSAVER – Part 4: 3 independent logos, chromatic cycle
+       All logos bounce across the full browser viewport (body-level, fixed).
+    ╔═══════════════════════════════════════════ */
+    const DVD_SZ = 48;
+    const DVD_LOGOS = [
+      { x: 80, y: 60, dx: 1.4, dy: 1.1 },
+      { x: 310, y: 200, dx: -1.2, dy: 1.5 },
+      { x: 560, y: 120, dx: 1.6, dy: -1.3 },
+    ];
+    const DVD_COLOR_FILTERS = {
+      white: 'brightness(0) invert(1)',
+      magenta: 'brightness(0) invert(1) sepia(1) saturate(10) hue-rotate(270deg)',
+      cyan: 'brightness(0) invert(1) sepia(1) saturate(10) hue-rotate(150deg)',
+      yellow: 'brightness(0) invert(1) sepia(1) saturate(10) hue-rotate(40deg)',
+      black: 'brightness(0)',
+    };
+    const DVD_COLOR_KEYS = ['white', 'magenta', 'cyan', 'yellow', 'black'];
+    let dvdColorIdx = 0;
+
+    // Create 3 dvd logo elements and append to body
+    const dvdEls = DVD_LOGOS.map(() => {
+      const el = document.createElement('div');
+      el.className = 'dvd-screensaver';
+      document.body.appendChild(el);
+      return el;
     });
-    observer.observe(webampEl, { attributes: true, subtree: true, attributeFilter: ['style'] });
-  }
 
-  const webampEl = document.getElementById('webamp');
-  if (window._webamp && webampEl) {
-    // Already initialised, restore it
-    webampEl.style.display = 'block';
-    winampTaskItem.classList.add('active');
-    bringToFront(webampEl);
-    return;
-  }
-
-  const webamp = new Webamp({
-    initialTracks: [
-      { url: 'assets/sounds/iwannafku.mp3',  metaData: { artist: 'Akon feat. Snoop Dogg',          title: 'I Wanna F*ck You' }, duration: 244 },
-      { url: 'assets/sounds/dangerous.mp3',  metaData: { artist: 'Akon feat. Kardinal Offishall',   title: 'Dangerous'        }, duration: 234 },
-      { url: 'assets/sounds/closer.mp3',     metaData: { artist: 'Ne-Yo',                           title: 'Closer'           }, duration: 239 },
-      { url: 'assets/sounds/mmhalfway.mp3',  metaData: { artist: 'Black Eyed Peas',                 title: 'Meet Me Halfway'  }, duration: 286 },
-      { url: 'assets/sounds/lasnight.mp3',   metaData: { artist: 'Diddy feat. Keyshia Cole',        title: 'Last Night'       }, duration: 238 },
-      { url: 'assets/sounds/stereolove.mp3', metaData: { artist: 'Edward Maya & Vika Jigulina',     title: 'Stereo Love'      }, duration: 261 },
-      { url: 'assets/sounds/lady.mp3',       metaData: { artist: 'Modjo',                           title: 'Lady'             }, duration: 287 },
-      { url: 'assets/sounds/me_u.mp3',       metaData: { artist: 'Cassie',                          title: 'Me & U'           }, duration: 193 },
-      { url: 'assets/sounds/sayitright.mp3', metaData: { artist: 'Nelly Furtado',                   title: 'Say It Right'     }, duration: 219 },
-    ],
-    windowLayout: {
-      main:      { position: { top: 40,  left: 480 } },
-      equalizer: { position: { top: 156, left: 480 } },
-      playlist:  { position: { top: 40,  left: 755 }, size: { extraHeight: 4, extraWidth: 0 } },
+    function applyDvdColor(els, colorKey) {
+      const f = DVD_COLOR_FILTERS[colorKey] || DVD_COLOR_FILTERS.white;
+      els.forEach(el => { el.style.filter = f; });
     }
-  });
+    // Set initial color
+    applyDvdColor(dvdEls, DVD_COLOR_KEYS[dvdColorIdx]);
 
-  /* Webamp MUST render into a body-level container. */
-  const webampContainer = document.createElement('div');
-  webampContainer.id = 'webamp-container';
-  document.body.appendChild(webampContainer);
+    // Chromatic cycle every 2 seconds with CSS transition smoothing
+    setInterval(() => {
+      dvdColorIdx = (dvdColorIdx + 1) % DVD_COLOR_KEYS.length;
+      applyDvdColor(dvdEls, DVD_COLOR_KEYS[dvdColorIdx]);
+    }, 2000);
 
-  winampTaskItem.style.display = '';
-  winampTaskItem.classList.add('active');
-
-  webamp.onMinimize(() => {
-    const webampEl = document.getElementById('webamp');
-    if (webampEl) webampEl.style.display = 'none';
-    winampTaskItem.classList.remove('active');
-  });
-
-  webamp.onClose(() => {
-    webamp.dispose();
-    webampContainer.remove();
-    const webampEl = document.getElementById('webamp');
-    if (webampEl) webampEl.remove();
-    window._webamp = null;
-    winampTaskItem.style.display = 'none';
-    winampTaskItem.classList.remove('active');
-  });
-
-  webamp.renderWhenReady(webampContainer).then(() => {
-    window._webamp = webamp;
-    if (isMuted) document.querySelectorAll('audio').forEach(a => a.muted = true);
-    const webampEl = document.getElementById('webamp');
-    if (webampEl) {
-      registerWindow(webampEl, false);
-      bringToFront(webampEl);
-      clampWebamp(webampEl);
+    function animateDVD() {
+      const sw = window.innerWidth;
+      const sh = window.innerHeight;
+      DVD_LOGOS.forEach((logo, i) => {
+        logo.x += logo.dx;
+        logo.y += logo.dy;
+        if (logo.x <= 0) { logo.x = 0; logo.dx = Math.abs(logo.dx); }
+        if (logo.x + DVD_SZ >= sw) { logo.x = sw - DVD_SZ; logo.dx = -Math.abs(logo.dx); }
+        if (logo.y <= 0) { logo.y = 0; logo.dy = Math.abs(logo.dy); }
+        if (logo.y + DVD_SZ >= sh) { logo.y = sh - DVD_SZ; logo.dy = -Math.abs(logo.dy); }
+        dvdEls[i].style.left = logo.x + 'px';
+        dvdEls[i].style.top = logo.y + 'px';
+      });
+      requestAnimationFrame(animateDVD);
     }
-  }).catch(err => {
-    console.warn('[Webamp] Render failed:', err);
-  });
-}
+    animateDVD();
 
-/* ══════════════════════════════════════════
-   COUNTER-STRIKE GLITCHED SETUP WIZARD
-   Opens on double-click of the CS desktop icon.
-   Draggable via makeDraggable(). Multi-step (3 pages).
-   Taskbar integration: csTaskItem toggles minimise.
-╔═══════════════════════════════════════════ */
-(function() {
-  const csIcon       = document.getElementById('csIcon');
-  const csWizard     = document.getElementById('csWizardWindow');
-  const csMinBtn     = document.getElementById('csWizardMinBtn');
-  const csCloseBtn   = document.getElementById('csWizardCloseBtn');
-  // csTaskItem is the pre-created outer-scope task item (createTaskItem factory)
-  const csBackBtn    = document.getElementById('csBackBtn');
-  const csNextBtn    = document.getElementById('csNextBtn');
-  const csCancelBtn  = document.getElementById('csCancelBtn');
-
-  const steps = [
-    document.getElementById('csStep1'),
-    document.getElementById('csStep2'),
-    document.getElementById('csStep3'),
-  ];
-  const csProgressBar  = document.getElementById('csProgressBar');
-  const csInstallLog   = document.getElementById('csInstallLog');
-  const csInstallHint  = document.getElementById('csInstallHint');
-
-  let currentStep  = 0;
-  let installTimer = null;
-
-  // ── Double-click detection ──
-  csIcon.addEventListener('dblclick', () => {
-    openWizard();
-  });
-
-  function openWizard() {
-    currentStep = 0;
-    showStep(0);
-    csWizard.classList.remove('minimized');
-    csWizard.classList.add('visible');
-    csTaskItem.style.display = '';
-    csTaskItem.classList.add('active');
-  }
-
-  function showStep(idx) {
-    steps.forEach((s, i) => s.classList.toggle('active', i === idx));
-
-    csBackBtn.disabled = (idx === 0);
-
-    if (idx === 0) {
-      csNextBtn.textContent = 'Далëë \u25BA';
-      csNextBtn.disabled = false;
-      csNextBtn.onclick = null;
-    } else if (idx === 1) {
-      csNextBtn.textContent = 'Прïнïмàю \u25BA';
-      csNextBtn.disabled = false;
-      csNextBtn.onclick = null;
-    } else {
-      // Step 3: installation
-      csNextBtn.textContent = 'Устàнôвкà...';
-      csNextBtn.disabled = true;
-      csNextBtn.onclick = null;
-      startInstall();
+    /* ══════════════════════════════════════════
+       CLOCK / DATE
+    ══════════════════════════════════════════ */
+    function updateClock() {
+      const now = new Date();
+      clock.innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      dateTooltip.innerText = now.toLocaleDateString([], { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
     }
-  }
+    setInterval(updateClock, 1000);
+    updateClock();
 
-  const installLogLines = [
-    'cstrike\\models\\player.mdl ... \u2591\u2591\u2591\u2591',
-    'cstrike\\maps\\de_dust2.bsp \u2588\u2588',
-    'cstrike\\sound\\weapons\\ak47-1.wav',
-    '\u041e\u0448\u00ef\u0431\u043a\u00e0: cl_dll_000.bsp ???',
-    'sprites\\640hud7.spr \u2591\u2591\u2584',
-    'Reg!str!ng CS 1.6 RePack v2...',
-    'hlds.exe ... WARN!NG \u2588\u2591',
-    '\u0424\u00e0\u0439\u043b \u043d\u00e0\u0439\u0434\u00eb\u043d: hl.exe \u2591\u2591\u2591',
-    '\u0417\u00e0\u043f\u0438\u0441\u044c \u0432 \u0440\u00eb\u0435\u0441\u0442\u0440 ... OK?',
-    '\u0423\u0441\u0442\u00e0\u043d\u043e\u0432\u043a\u00e0 \u0437\u00e0\u0432\u00eb\u0440\u0448\u00eb\u043d\u00e0! \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588',
-  ];
+    minimizeBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      mainWindow.classList.add('minimized');
+      mainTaskItem.classList.remove('active');
+    });
 
-  function startInstall() {
-    let pct = 0;
-    clearInterval(installTimer);
-    // Part 4: drive native <progress> value instead of .style.width
-    csProgressBar.value = 0;
-    csInstallLog.innerHTML = '';
-    let logIdx = 0;
+    maximizeBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      // purely aesthetic, do nothing
+    });
 
-    installTimer = setInterval(() => {
-      pct = Math.min(pct + Math.floor(Math.random() * 7) + 2, 100);
-      csProgressBar.value = pct;
+    closeBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      mainWindow.classList.add('minimized');
+      mainTaskItem.classList.remove('active');
+    });
 
-      if (logIdx < installLogLines.length && pct >= (logIdx + 1) * 10) {
-        csInstallLog.innerHTML += installLogLines[logIdx] + '<br>';
-        logIdx++;
-        csInstallLog.scrollTop = csInstallLog.scrollHeight;
+    mainTaskItem.addEventListener('click', () => {
+      if (mainWindow.classList.contains('minimized')) {
+        mainWindow.classList.remove('minimized');
+        mainTaskItem.classList.add('active');
+        bringToFront(mainWindow);
+      } else {
+        mainWindow.classList.add('minimized');
+        mainTaskItem.classList.remove('active');
+      }
+    });
+
+    /* ══════════════════════════════════════════
+       START BUTTON – press feedback
+    ╔═══════════════════════════════════════════ */
+    startBtn.addEventListener('mousedown', e => { e.stopPropagation(); startBtn.classList.add('active'); });
+    startBtn.addEventListener('mouseup', e => { e.stopPropagation(); startBtn.classList.remove('active'); });
+    startBtn.addEventListener('mouseleave', () => { startBtn.classList.remove('active'); });
+
+    /* ══════════════════════════════════════════
+       VOLUME / MUTE TOGGLE
+       `isMuted` declared at the very top of this script block.
+    ╔═══════════════════════════════════════════ */
+    const volIcon = document.getElementById('volumeIcon');
+    const volTip = document.getElementById('volumeTooltip');
+
+    volIcon.addEventListener('click', () => {
+      isMuted = !isMuted;
+      if (isMuted) {
+        volIcon.style.backgroundImage = "url('assets/icons/nosound.ico')";
+        volTip.textContent = 'Speakers: Mute';
+        document.querySelectorAll('audio').forEach(a => a.muted = true);
+        if (window._webamp) {
+          try { window._webamp.store.dispatch({ type: 'SET_VOLUME', volume: 0 }); } catch (ex) { }
+        }
+      } else {
+        volIcon.style.backgroundImage = "url('assets/icons/sound.ico')";
+        volTip.textContent = 'Speakers: 100%';
+        document.querySelectorAll('audio').forEach(a => a.muted = false);
+        if (window._webamp) {
+          try { window._webamp.store.dispatch({ type: 'SET_VOLUME', volume: 100 }); } catch (ex) { }
+        }
+      }
+    });
+
+    /* ══════════════════════════════════════════
+       WEBAMP INTEGRATION
+       Opens on double-click of the Winamp desktop icon.
+       Bundle: webamp/built/webamp.bundle.min.js (UMD global Webamp).
+    ╔═══════════════════════════════════════════ */
+    document.getElementById('winampIcon').addEventListener('dblclick', () => {
+      initWebamp();
+    });
+
+    winampTaskItem.addEventListener('click', () => {
+      const webampEl = document.getElementById('webamp');
+      if (!webampEl) return;
+      if (webampEl.style.display === 'none') {
+        webampEl.style.display = 'block';
+        winampTaskItem.classList.add('active');
+        bringToFront(webampEl);
+      } else {
+        webampEl.style.display = 'none';
+        winampTaskItem.classList.remove('active');
+      }
+    });
+
+    function initWebamp() {
+      if (typeof Webamp === 'undefined') {
+        console.warn('[Webamp] Bundle not loaded — check <script> tag in <head>.');
+        return;
       }
 
-      if (pct >= 100) {
+      function clampWebamp(webampEl) {
+        const observer = new MutationObserver((mutations) => {
+          mutations.forEach(m => {
+            if (m.attributeName === 'style' && m.target.classList.contains('webamp-window')) {
+              const target = m.target;
+              const transform = target.style.transform;
+              if (!transform) return;
+
+              const match = transform.match(/translate\(([-\d.]+)px,\s*([-\d.]+)px\)/);
+              if (match) {
+                let x = parseFloat(match[1]);
+                let y = parseFloat(match[2]);
+                let clamped = false;
+
+                const maxX = 800 - target.offsetWidth;
+                const maxY = 570 - target.offsetHeight; // 570 = 600 − 30px taskbar
+
+                if (x < 0) { x = 0; clamped = true; }
+                if (x > maxX) { x = maxX; clamped = true; }
+                if (y < 0) { y = 0; clamped = true; }
+                if (y > maxY) { y = maxY; clamped = true; }
+
+                if (clamped) {
+                  observer.disconnect();
+                  target.style.transform = `translate(${x}px, ${y}px)`;
+                  observer.observe(webampEl, { attributes: true, subtree: true, attributeFilter: ['style'] });
+                }
+              }
+            }
+          });
+        });
+        observer.observe(webampEl, { attributes: true, subtree: true, attributeFilter: ['style'] });
+      }
+
+      const webampEl = document.getElementById('webamp');
+      if (window._webamp && webampEl) {
+        // Already initialised, restore it
+        webampEl.style.display = 'block';
+        winampTaskItem.classList.add('active');
+        bringToFront(webampEl);
+        return;
+      }
+
+      const webamp = new Webamp({
+        initialTracks: [
+          { url: './assets/sounds/iwannafku.mp3', metaData: { artist: 'Akon feat. Snoop Dogg', title: 'I Wanna F*ck You' }, duration: 244 },
+          { url: './assets/sounds/dangerous.mp3', metaData: { artist: 'Akon feat. Kardinal Offishall', title: 'Dangerous' }, duration: 234 },
+          { url: './assets/sounds/closer.mp3', metaData: { artist: 'Ne-Yo', title: 'Closer' }, duration: 239 },
+          { url: './assets/sounds/mmhalfway.mp3', metaData: { artist: 'Black Eyed Peas', title: 'Meet Me Halfway' }, duration: 286 },
+          { url: './assets/sounds/lasnight.mp3', metaData: { artist: 'Diddy feat. Keyshia Cole', title: 'Last Night' }, duration: 238 },
+          { url: './assets/sounds/stereolove.mp3', metaData: { artist: 'Edward Maya & Vika Jigulina', title: 'Stereo Love' }, duration: 261 },
+          { url: './assets/sounds/lady.mp3', metaData: { artist: 'Modjo', title: 'Lady' }, duration: 287 },
+          { url: './assets/sounds/me_u.mp3', metaData: { artist: 'Cassie', title: 'Me & U' }, duration: 193 },
+          { url: './assets/sounds/sayitright.mp3', metaData: { artist: 'Nelly Furtado', title: 'Say It Right' }, duration: 219 },
+        ],
+        windowLayout: {
+          main: { position: { top: 116, left: 262 } },
+          equalizer: { position: { top: 232, left: 262 } },
+          playlist: { position: { top: 232, left: 262 }, size: { extraHeight: 2, extraWidth: 0 } },
+        }
+      });
+
+      /* Webamp renders into a container INSIDE .screen so it's
+         physically clipped by overflow:hidden and visually sandboxed. */
+      const webampContainer = document.createElement('div');
+      webampContainer.id = 'webamp-container';
+      webampContainer.style.position = 'absolute';
+      webampContainer.style.top = '0';
+      webampContainer.style.left = '0';
+      webampContainer.style.width = '800px';
+      webampContainer.style.height = '570px'; // 600 - 30px taskbar
+      webampContainer.style.zIndex = '999';
+      webampContainer.style.pointerEvents = 'none'; // pass-through except on Webamp children
+      // Insert inside .screen, before taskbar
+      const screenEl = document.querySelector('.screen .desktop-wrapper');
+      if (screenEl) {
+        screenEl.appendChild(webampContainer);
+      } else {
+        document.querySelector('.screen').appendChild(webampContainer);
+      }
+
+      winampTaskItem.style.display = '';
+      winampTaskItem.classList.add('active');
+
+      webamp.onMinimize(() => {
+        const webampEl = document.getElementById('webamp');
+        if (webampEl) webampEl.style.display = 'none';
+        winampTaskItem.classList.remove('active');
+      });
+
+      webamp.onClose(() => {
+        webamp.dispose();
+        webampContainer.remove();
+        const webampEl = document.getElementById('webamp');
+        if (webampEl) webampEl.remove();
+        window._webamp = null;
+        winampTaskItem.style.display = 'none';
+        winampTaskItem.classList.remove('active');
+      });
+
+      webamp.renderWhenReady(webampContainer).then(() => {
+        window._webamp = webamp;
+        if (isMuted) document.querySelectorAll('audio').forEach(a => a.muted = true);
+        const webampEl = document.getElementById('webamp');
+        if (webampEl) {
+          webampEl.style.pointerEvents = 'auto';
+          registerWindow(webampEl, false);
+          bringToFront(webampEl);
+          clampWebamp(webampEl);
+
+          // Disable Webamp playlist drag-and-drop reordering via event capture
+          document.addEventListener('mousemove', e => {
+            if (e.target.closest('.webamp-playlist') && e.buttons === 1) {
+              e.stopPropagation();
+            }
+          }, true);
+        }
+      }).catch(err => {
+        console.warn('[Webamp] Render failed:', err);
+      });
+    }
+
+    /* ══════════════════════════════════════════
+       COUNTER-STRIKE GLITCHED SETUP WIZARD
+       Opens on double-click of the CS desktop icon.
+       Draggable via makeDraggable(). Multi-step (3 pages).
+       Taskbar integration: csTaskItem toggles minimise.
+    ╔═══════════════════════════════════════════ */
+    (function () {
+      const csIcon = document.getElementById('csIcon');
+      const csWizard = document.getElementById('csWizardWindow');
+      const csMinBtn = document.getElementById('csWizardMinBtn');
+      const csCloseBtn = document.getElementById('csWizardCloseBtn');
+      // csTaskItem is the pre-created outer-scope task item (createTaskItem factory)
+      const csBackBtn = document.getElementById('csBackBtn');
+      const csNextBtn = document.getElementById('csNextBtn');
+      const csCancelBtn = document.getElementById('csCancelBtn');
+
+      const steps = [
+        document.getElementById('csStep1'),
+        document.getElementById('csStep2'),
+        document.getElementById('csStep3'),
+      ];
+      const csProgressBar = document.getElementById('csProgressBar');
+      const csInstallLog = document.getElementById('csInstallLog');
+      const csInstallHint = document.getElementById('csInstallHint');
+
+      let currentStep = 0;
+      let installTimer = null;
+
+      // ── Double-click detection ──
+      csIcon.addEventListener('dblclick', () => {
+        openWizard();
+      });
+
+      function openWizard() {
+        currentStep = 0;
+        showStep(0);
+        csWizard.classList.remove('minimized');
+        csWizard.classList.add('visible');
+        csTaskItem.style.display = '';
+        csTaskItem.classList.add('active');
+      }
+
+      function showStep(idx) {
+        steps.forEach((s, i) => s.classList.toggle('active', i === idx));
+
+        csBackBtn.disabled = (idx === 0);
+
+        if (idx === 0) {
+          csNextBtn.textContent = 'Далëë \u25BA';
+          csNextBtn.disabled = false;
+          csNextBtn.onclick = null;
+        } else if (idx === 1) {
+          csNextBtn.textContent = 'Прïнïмàю \u25BA';
+          csNextBtn.disabled = false;
+          csNextBtn.onclick = null;
+        } else {
+          // Step 3: installation
+          csNextBtn.textContent = 'Устàнôвкà...';
+          csNextBtn.disabled = true;
+          csNextBtn.onclick = null;
+          startInstall();
+        }
+      }
+
+      const installLogLines = [
+        'cstrike\\models\\player.mdl ... \u2591\u2591\u2591\u2591',
+        'cstrike\\maps\\de_dust2.bsp \u2588\u2588',
+        'cstrike\\sound\\weapons\\ak47-1.wav',
+        '\u041e\u0448\u00ef\u0431\u043a\u00e0: cl_dll_000.bsp ???',
+        'sprites\\640hud7.spr \u2591\u2591\u2584',
+        'Reg!str!ng CS 1.6 RePack v2...',
+        'hlds.exe ... WARN!NG \u2588\u2591',
+        '\u0424\u00e0\u0439\u043b \u043d\u00e0\u0439\u0434\u00eb\u043d: hl.exe \u2591\u2591\u2591',
+        '\u0417\u00e0\u043f\u0438\u0441\u044c \u0432 \u0440\u00eb\u0435\u0441\u0442\u0440 ... OK?',
+        '\u0423\u0441\u0442\u00e0\u043d\u043e\u0432\u043a\u00e0 \u0437\u00e0\u0432\u00eb\u0440\u0448\u00eb\u043d\u00e0! \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588',
+      ];
+
+      function startInstall() {
+        let pct = 0;
         clearInterval(installTimer);
-        csInstallHint.textContent =
-          '\u0423\u0441\u0442\u00e0\u043d\u043e\u0432\u043a\u00e0 \u0437\u00e0\u0432\u00eb\u0440\u0448\u00eb\u043d\u00e0! ' +
-          '\u041f\u0435\u0440\u0435\u0437\u00e0\u0433\u0440\u00fc\u0437\u0438\u0442\u0435 CS 1.6 \u2588\u2588\u2588 \u2591\u2591\u2591';
-        csNextBtn.textContent = '\u0413\u043e\u0442\u00f6\u0432\u00f6! \u2714';
-        csNextBtn.disabled = false;
-        csNextBtn.onclick = () => closeWizard();
+        // Part 4: drive native <progress> value instead of .style.width
+        csProgressBar.value = 0;
+        csInstallLog.innerHTML = '';
+        let logIdx = 0;
+
+        installTimer = setInterval(() => {
+          pct = Math.min(pct + Math.floor(Math.random() * 7) + 2, 100);
+          csProgressBar.value = pct;
+
+          if (logIdx < installLogLines.length && pct >= (logIdx + 1) * 10) {
+            csInstallLog.innerHTML += installLogLines[logIdx] + '<br>';
+            logIdx++;
+            csInstallLog.scrollTop = csInstallLog.scrollHeight;
+          }
+
+          if (pct >= 100) {
+            clearInterval(installTimer);
+            csInstallHint.textContent =
+              '\u0423\u0441\u0442\u00e0\u043d\u043e\u0432\u043a\u00e0 \u0437\u00e0\u0432\u00eb\u0440\u0448\u00eb\u043d\u00e0! ' +
+              '\u041f\u0435\u0440\u0435\u0437\u00e0\u0433\u0440\u00fc\u0437\u0438\u0442\u0435 CS 1.6 \u2588\u2588\u2588 \u2591\u2591\u2591';
+            csNextBtn.textContent = '\u0413\u043e\u0442\u00f6\u0432\u00f6! \u2714';
+            csNextBtn.disabled = false;
+            csNextBtn.onclick = () => closeWizard();
+          }
+        }, 200);
       }
-    }, 200);
-  }
 
-  // ── Navigation ──
-  csNextBtn.addEventListener('click', () => {
-    if (currentStep < steps.length - 1 && !csNextBtn.onclick) {
-      currentStep++;
-      showStep(currentStep);
-    }
-  });
+      // ── Navigation ──
+      csNextBtn.addEventListener('click', () => {
+        if (currentStep < steps.length - 1 && !csNextBtn.onclick) {
+          currentStep++;
+          showStep(currentStep);
+        }
+      });
 
-  csBackBtn.addEventListener('click', () => {
-    if (currentStep > 0) {
-      clearInterval(installTimer);
-      currentStep--;
-      showStep(currentStep);
-    }
-  });
+      csBackBtn.addEventListener('click', () => {
+        if (currentStep > 0) {
+          clearInterval(installTimer);
+          currentStep--;
+          showStep(currentStep);
+        }
+      });
 
-  csCancelBtn.addEventListener('click', closeWizard);
+      csCancelBtn.addEventListener('click', closeWizard);
 
-  // ── Minimize & Close ──
-  csMinBtn.addEventListener('click', e => {
-    e.stopPropagation();
-    csWizard.classList.add('minimized');
-    csTaskItem.classList.remove('active');
-  });
+      // ── Minimize & Close ──
+      csMinBtn.addEventListener('click', e => {
+        e.stopPropagation();
+        csWizard.classList.add('minimized');
+        csTaskItem.classList.remove('active');
+      });
 
-  csCloseBtn.addEventListener('click', e => {
-    e.stopPropagation();
-    closeWizard();
-  });
+      csCloseBtn.addEventListener('click', e => {
+        e.stopPropagation();
+        closeWizard();
+      });
 
-  // ── Taskbar toggle ──
-  csTaskItem.addEventListener('click', () => {
-    if (csWizard.classList.contains('minimized')) {
-      csWizard.classList.remove('minimized');
-      csTaskItem.classList.add('active');
-      bringToFront(csWizard);
-    } else {
-      csWizard.classList.add('minimized');
-      csTaskItem.classList.remove('active');
-    }
-  });
+      // ── Taskbar toggle ──
+      csTaskItem.addEventListener('click', () => {
+        if (csWizard.classList.contains('minimized')) {
+          csWizard.classList.remove('minimized');
+          csTaskItem.classList.add('active');
+          bringToFront(csWizard);
+        } else {
+          csWizard.classList.add('minimized');
+          csTaskItem.classList.remove('active');
+        }
+      });
 
-  function closeWizard() {
-    clearInterval(installTimer);
-    csWizard.classList.remove('visible');
-    csWizard.classList.add('minimized');
-    csTaskItem.style.display = 'none';
-    csTaskItem.classList.remove('active');
-  }
+      function closeWizard() {
+        clearInterval(installTimer);
+        csWizard.classList.remove('visible');
+        csWizard.classList.add('minimized');
+        csTaskItem.style.display = 'none';
+        csTaskItem.classList.remove('active');
+      }
 
-  // Attach drag support to the CS wizard
-  makeDraggable(csWizard);
-  registerWindow(csWizard, true);
-})();
+      // Attach drag support to the CS wizard
+      makeDraggable(csWizard);
+      registerWindow(csWizard, true);
+    })();
 
-/* ══════════════════════════════════════════
-   INTERNET EXPLORER 6 WINDOW
-   Opens on double-click of the IE desktop icon.
-   Taskbar item uses the pre-created ie6TaskItem.
-╔═══════════════════════════════════════════ */
-(function() {
-  const ie6Win    = document.getElementById('ie6Window');
-  const ie6MinBtn = document.getElementById('ie6MinBtn');
-  const ie6MaxBtn = document.getElementById('ie6MaxBtn');
-  const ie6ClsBtn = document.getElementById('ie6CloseBtn');
+    /* ══════════════════════════════════════════
+       INTERNET EXPLORER 6 WINDOW
+       Opens on double-click of the IE desktop icon.
+       Taskbar item uses the pre-created ie6TaskItem.
+    ╔═══════════════════════════════════════════ */
+    (function () {
+      const ie6Win = document.getElementById('ie6Window');
+      const ie6MinBtn = document.getElementById('ie6MinBtn');
+      const ie6MaxBtn = document.getElementById('ie6MaxBtn');
+      const ie6ClsBtn = document.getElementById('ie6CloseBtn');
 
-  let ie6IsMax  = false;
-  let savedTop  = '30px';
-  let savedLeft = '80px';
-  let savedW    = '600px';
+      let ie6IsMax = false;
+      let savedTop = '30px';
+      let savedLeft = '80px';
+      let savedW = '600px';
 
-  // ── Part 2B: Inject 8-point resize handles ──
-  const IE6_MIN_W = 320, IE6_MIN_H = 220;
-  ['n','s','e','w','nw','ne','sw','se'].forEach(dir => {
-    const h = document.createElement('div');
-    h.className = `resize-handle resize-${dir}`;
-    h.dataset.dir = dir;
-    ie6Win.appendChild(h);
-  });
+      // ── Part 2B: Inject 8-point resize handles ──
+      const IE6_MIN_W = 320, IE6_MIN_H = 220;
+      ['n', 's', 'e', 'w', 'nw', 'ne', 'sw', 'se'].forEach(dir => {
+        const h = document.createElement('div');
+        h.className = `resize-handle resize-${dir}`;
+        h.dataset.dir = dir;
+        ie6Win.appendChild(h);
+      });
 
-  // Resize drag state
-  let resizing = false, resDir = '', rsX0, rsY0, rsW0, rsH0, rsT0, rsL0;
+      // Resize drag state
+      let resizing = false, resDir = '', rsX0, rsY0, rsW0, rsH0, rsT0, rsL0;
 
-  ie6Win.addEventListener('mousedown', e => {
-    const h = e.target.closest('.resize-handle');
-    if (!h || ie6IsMax) return;
-    e.preventDefault();
-    e.stopPropagation();
-    resizing = true;
-    resDir = h.dataset.dir;
-    rsX0 = e.clientX;
-    rsY0 = e.clientY;
-    const scr = screen.getBoundingClientRect();
-    const wr  = ie6Win.getBoundingClientRect();
-    rsW0 = wr.width;
-    rsH0 = wr.height;
-    rsT0 = wr.top  - scr.top;
-    rsL0 = wr.left - scr.left;
-  });
+      ie6Win.addEventListener('mousedown', e => {
+        const h = e.target.closest('.resize-handle');
+        if (!h || ie6IsMax) return;
+        e.preventDefault();
+        e.stopPropagation();
+        resizing = true;
+        resDir = h.dataset.dir;
+        rsX0 = e.clientX;
+        rsY0 = e.clientY;
+        const scr = screen.getBoundingClientRect();
+        const wr = ie6Win.getBoundingClientRect();
+        rsW0 = wr.width;
+        rsH0 = wr.height;
+        rsT0 = wr.top - scr.top;
+        rsL0 = wr.left - scr.left;
+      });
 
-  document.addEventListener('mousemove', e => {
-    if (!resizing) return;
-    const dx = e.clientX - rsX0;
-    const dy = e.clientY - rsY0;
-    let newW = rsW0, newH = rsH0, newT = rsT0, newL = rsL0;
+      document.addEventListener('mousemove', e => {
+        if (!resizing) return;
+        const dx = e.clientX - rsX0;
+        const dy = e.clientY - rsY0;
+        let newW = rsW0, newH = rsH0, newT = rsT0, newL = rsL0;
 
-    if (resDir.includes('e')) newW = Math.max(IE6_MIN_W, rsW0 + dx);
-    if (resDir.includes('s')) newH = Math.max(IE6_MIN_H, rsH0 + dy);
-    if (resDir.includes('w')) {
-      const w2 = Math.max(IE6_MIN_W, rsW0 - dx);
-      newL = rsL0 + (rsW0 - w2);
-      newW = w2;
-    }
-    if (resDir.includes('n')) {
-      const h2 = Math.max(IE6_MIN_H, rsH0 - dy);
-      newT = rsT0 + (rsH0 - h2);
-      newH = h2;
-    }
+        if (resDir.includes('e')) newW = Math.max(IE6_MIN_W, rsW0 + dx);
+        if (resDir.includes('s')) newH = Math.max(IE6_MIN_H, rsH0 + dy);
+        if (resDir.includes('w')) {
+          const w2 = Math.max(IE6_MIN_W, rsW0 - dx);
+          newL = rsL0 + (rsW0 - w2);
+          newW = w2;
+        }
+        if (resDir.includes('n')) {
+          const h2 = Math.max(IE6_MIN_H, rsH0 - dy);
+          newT = rsT0 + (rsH0 - h2);
+          newH = h2;
+        }
 
-    // Clamp inside screen (800 wide, 570 tall = 600 - 30 taskbar)
-    newL = Math.max(0, Math.min(newL, 800 - newW));
-    newT = Math.max(0, Math.min(newT, 570 - newH));
+        // Clamp inside screen (800 wide, 570 tall = 600 - 30 taskbar)
+        newL = Math.max(0, Math.min(newL, 800 - newW));
+        newT = Math.max(0, Math.min(newT, 570 - newH));
 
-    ie6Win.style.width  = newW + 'px';
-    ie6Win.style.top    = newT + 'px';
-    ie6Win.style.left   = newL + 'px';
-    ie6Win.querySelector('.window').style.height = newH + 'px';
-  });
+        ie6Win.style.width = newW + 'px';
+        ie6Win.style.top = newT + 'px';
+        ie6Win.style.left = newL + 'px';
+        ie6Win.querySelector('.window').style.height = newH + 'px';
+      });
 
-  document.addEventListener('mouseup', () => { resizing = false; });
+      document.addEventListener('mouseup', () => { resizing = false; });
 
-  // ── Open on double-click ──
-  document.getElementById('ieIcon').addEventListener('dblclick', () => {
-    if (!ie6Win.classList.contains('visible')) {
-      ie6Win.classList.add('visible');
-      ie6Win.classList.remove('minimized');
-      ie6TaskItem.style.display = '';
-      ie6TaskItem.classList.add('active');
-      bringToFront(ie6Win);
-    } else if (ie6Win.classList.contains('minimized')) {
-      ie6Win.classList.remove('minimized');
-      ie6TaskItem.classList.add('active');
-      bringToFront(ie6Win);
-    } else {
-      bringToFront(ie6Win);
-    }
-  });
+      // ── Open on double-click ──
+      document.getElementById('ieIcon').addEventListener('dblclick', () => {
+        if (!ie6Win.classList.contains('visible')) {
+          // Always start maximized
+          ie6IsMax = true;
+          ie6Win.querySelector('.window').style.height = '';
+          ie6Win.style.width = '';
+          ie6Win.classList.add('maximized');
+          ie6Win.classList.add('visible');
+          ie6Win.classList.remove('minimized');
+          ie6TaskItem.style.display = '';
+          ie6TaskItem.classList.add('active');
+          bringToFront(ie6Win);
+        } else if (ie6Win.classList.contains('minimized')) {
+          ie6Win.classList.remove('minimized');
+          ie6TaskItem.classList.add('active');
+          bringToFront(ie6Win);
+        } else {
+          bringToFront(ie6Win);
+        }
+      });
 
-  // ── Minimize ──
-  ie6MinBtn.addEventListener('click', e => {
-    e.stopPropagation();
-    ie6Win.classList.add('minimized');
-    ie6TaskItem.classList.remove('active');
-  });
+      // ── Minimize ──
+      ie6MinBtn.addEventListener('click', e => {
+        e.stopPropagation();
+        ie6Win.classList.add('minimized');
+        ie6TaskItem.classList.remove('active');
+      });
 
-  // ── Maximize / Restore ──
-  ie6MaxBtn.addEventListener('click', e => {
-    e.stopPropagation();
-    ie6IsMax = !ie6IsMax;
-    if (ie6IsMax) {
-      savedTop  = ie6Win.style.top    || '30px';
-      savedLeft = ie6Win.style.left   || '80px';
-      savedW    = ie6Win.style.width  || '600px';
-      // Clear inline height set by resize so CSS takes over
-      ie6Win.querySelector('.window').style.height = '';
-      ie6Win.style.width = '';
-      ie6Win.classList.add('maximized');
-    } else {
-      ie6Win.classList.remove('maximized');
-      ie6Win.style.top   = savedTop;
-      ie6Win.style.left  = savedLeft;
-      ie6Win.style.width = savedW;
-    }
-  });
+      // ── Maximize / Restore ──
+      ie6MaxBtn.addEventListener('click', e => {
+        e.stopPropagation();
+        ie6IsMax = !ie6IsMax;
+        if (ie6IsMax) {
+          savedTop = ie6Win.style.top || '30px';
+          savedLeft = ie6Win.style.left || '80px';
+          savedW = ie6Win.style.width || '600px';
+          // Clear inline height set by resize so CSS takes over
+          ie6Win.querySelector('.window').style.height = '';
+          ie6Win.style.width = '';
+          ie6Win.classList.add('maximized');
+        } else {
+          ie6Win.classList.remove('maximized');
+          ie6Win.style.top = savedTop;
+          ie6Win.style.left = savedLeft;
+          ie6Win.style.width = savedW;
+        }
+      });
 
-  // ── Close ──
-  ie6ClsBtn.addEventListener('click', e => {
-    e.stopPropagation();
-    ie6Win.classList.remove('visible');
-    ie6Win.classList.add('minimized');
-    ie6TaskItem.style.display = 'none';
-    ie6TaskItem.classList.remove('active');
-    if (ie6IsMax) {
-      ie6IsMax = false;
-      ie6Win.classList.remove('maximized');
-    }
-  });
+      // ── Close ──
+      ie6ClsBtn.addEventListener('click', e => {
+        e.stopPropagation();
+        ie6Win.classList.remove('visible');
+        ie6Win.classList.add('minimized');
+        ie6TaskItem.style.display = 'none';
+        ie6TaskItem.classList.remove('active');
+        if (ie6IsMax) {
+          ie6IsMax = false;
+          ie6Win.classList.remove('maximized');
+        }
+      });
 
-  // ── Taskbar toggle ──
-  ie6TaskItem.addEventListener('click', () => {
-    if (ie6Win.classList.contains('minimized')) {
-      ie6Win.classList.remove('minimized');
-      ie6TaskItem.classList.add('active');
-      bringToFront(ie6Win);
-    } else {
-      ie6Win.classList.add('minimized');
-      ie6TaskItem.classList.remove('active');
-    }
-  });
+      // ── Taskbar toggle ──
+      ie6TaskItem.addEventListener('click', () => {
+        if (ie6Win.classList.contains('minimized')) {
+          ie6Win.classList.remove('minimized');
+          ie6TaskItem.classList.add('active');
+          bringToFront(ie6Win);
+        } else {
+          ie6Win.classList.add('minimized');
+          ie6TaskItem.classList.remove('active');
+        }
+      });
 
-  makeDraggable(ie6Win);
-  registerWindow(ie6Win, true);
-})();
+      makeDraggable(ie6Win);
+      registerWindow(ie6Win, true);
+    })();
 
-/* ══════════════════════════════════════════
-   PART 3B: Global loading cursor on desktop icon dblclick
-   1500ms load.cur, then revert to arrow.
-╔═══════════════════════════════════════════ */
-['csIcon', 'winampIcon', 'ieIcon'].forEach(id => {
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.addEventListener('dblclick', () => {
-    document.body.classList.add('cursor-loading');
-    setTimeout(() => document.body.classList.remove('cursor-loading'), 1500);
-  });
-});
-</script>
+    /* ══════════════════════════════════════════
+       PART 3B: Global loading cursor on desktop icon dblclick
+       1500ms load.cur, then revert to arrow.
+    ╔═══════════════════════════════════════════ */
+    ['csIcon', 'winampIcon', 'ieIcon'].forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.addEventListener('dblclick', () => {
+        document.body.classList.add('cursor-loading');
+        setTimeout(() => document.body.classList.remove('cursor-loading'), 1500);
+      });
+    });
+  </script>
 
 </body>
-</html>
 
+</html>
